@@ -1,0 +1,75 @@
+.bg-werewolf {
+  background-color: #405364; /* For browsers that do not support gradients */
+  background-image: linear-gradient(-90deg, #405364 , #0E1A23); /* Standard syntax (must be last) */
+  height: 10px;
+  font-family: Balthazar;
+}
+.container-mid {
+  margin: 0;
+  /* position: absolute;
+  top: 70%;
+  left: 50%;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%); */
+  max-width: 480px;
+  border: white 5px solid;  
+}
+
+.details {
+    padding: 20px 0px;
+    font-size: 25px;
+}
+
+.room {
+    font-size: 40px !important;
+    font-weight: bold !important;
+}
+.room-code-text { font-size: 25px !important; }
+.room-code-code { font-size: 30px !important; font-family: 'Courier New', Courier, monospace;} 
+
+.player {
+    border: white 5px solid;
+    padding: 5px 0;
+    margin: 5px 0;
+    text-transform: uppercase;
+    font-size: 25px;
+    font-weight: 100;
+}
+
+.room-status {
+
+}
+
+.details > .player-with-role:first-child {
+    color: red;
+    border: red 5px solid;
+}
+
+.player-with-role {
+    text-align: left;
+    border: white 5px solid;
+    padding: 5px;
+    margin: 5px 0;
+    text-transform: uppercase;
+    font-size: 25px;
+    font-weight: 100;
+}
+
+
+.player-name {
+    font-size: 30px;
+}
+.player-role {
+    font-size: 20px;
+}
+
+.player-avatar {
+    height: 50px;
+    width: 50px;
+    float: right;
+    background-color: white;
+}
+
+.day-night {
+    text-align: right;
+}
