@@ -8,7 +8,9 @@ const {
     findPlayerInLobby,
     createNewLobby,
     upsertPlayerToLobby,
-    removePlayerfromLobby
+    removePlayerfromLobby,
+    createNewLobbyPlayer,
+    makePlayerHost
 } = require('../models/lobby');
 
 /** Manage Lobby store */
@@ -23,23 +25,16 @@ module.exports = class LobbyService extends EventEmitter {
     constructor() {
         super();
     }
-    /** set lobby. returns updated lobby.
-     * @private
-     * @param {Lobby} lobby
-     * @returns {Lobby}
-     */
-    #setLobby = (lobby) => {
-        this.#lobby = lobby;
-        this.emit(LobbyService.lobbyUpdatedEvent, lobby);
-        return this.#lobby;
-    }
     /** insert player. if exists, update player.
      * @param {string} playerId
      * @param {string} socketId
      * @returns {Promise<Lobby>}
      */
     upsertPlayer = async (playerId, socketId) => {
-        return this.#setLobby(upsertPlayerToLobby(playerId, socketId, this.#lobby));
+        const newPlayer = createNewLobbyPlayer(playerId, socketId);
+        let newLobby = upsertPlayerToLobby(newPlayer, this.#lobby)
+        newLobby = this.#assignHostPlayer(newLobby);
+        return this.#setLobby(newLobby);
     }
     /** get player by socket Id
      * @param {string} socketId
@@ -67,6 +62,31 @@ module.exports = class LobbyService extends EventEmitter {
      */
     removePlayer = async (socketId) => {
         if (!(await this.getPlayerBySocketId(socketId))) { return this.#lobby; }
-        return this.#setLobby(removePlayerfromLobby(socketId, this.#lobby))
+        let newLobby = removePlayerfromLobby(socketId, this.#lobby);
+        newLobby = this.#assignHostPlayer(newLobby);
+        return this.#setLobby(newLobby)
+    }
+    /** Assign host to lobby
+     * @param {Lobby} lobby
+     * @returns {Lobby}
+    */
+    #assignHostPlayer = (lobby) => {
+        if (!(lobby && lobby.players && lobby.players.length > 0)) { return lobby; }
+        const host = findPlayerInLobby(pl => pl.isHost, lobby);
+        if (host !== undefined) { return lobby; }
+
+        const players = [...lobby.players];
+        players[0] = makePlayerHost(lobby.players[0])
+        return { players };
+    }
+    /** set lobby. returns updated lobby.
+     * @private
+     * @param {Lobby} lobby
+     * @returns {Lobby}
+     */
+    #setLobby = (lobby) => {
+        this.#lobby = lobby;
+        this.emit(LobbyService.lobbyUpdatedEvent, lobby);
+        return this.#lobby;
     }
 }

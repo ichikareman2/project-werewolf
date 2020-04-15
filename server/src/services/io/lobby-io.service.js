@@ -1,6 +1,5 @@
 // @ts-check
 
-
 /** @typedef {import('../player.service')} PlayerService */
 /** @typedef {import('../lobby.service')} LobbyService */
 /** @typedef {import('../../models/lobby').Lobby} Lobby */
@@ -14,8 +13,9 @@
 /**# Imports */
 const LobbyService = require('../lobby.service');
 const { createFailedResponse, createSuccessResponse } = require('../../models/response');
-const { noop } = require('../../util');
 const { getPublicPlayer } = require('../../models/player');
+const { createPublicLobbyPlayer } = require('../../models/lobby');
+const { noop } = require('../../util');
 
 module.exports = class LobbyIoService {
     #lobbyNs = '/lobby';
@@ -57,11 +57,14 @@ module.exports = class LobbyIoService {
     /** players without sensitive info. 
      * @param {Lobby} [lobby]
     * @returns {Promise<PublicPlayer[]>} */
-    getLobbyPlayersPublic = async (lobby) => {
+    getPublicLobbyPlayers = async (lobby) => {
         const lobbyPlayers = (lobby && lobby.players) ? lobby.players : await this.#lobbyService.getPlayers();
-        const playerIds = lobbyPlayers.map(x => x.playerId)
-        const players = await this.#playerService.getPlayersByIds(playerIds)
-        return players.map(getPublicPlayer)
+        const playerIds = lobbyPlayers.map(x => x.playerId);
+        const players = await this.#playerService.getPlayersByIds(playerIds);
+        return lobbyPlayers.map(lobbyPl => {
+            const matchingPl = players.find(pl => pl.id === lobbyPl.playerId);
+            return createPublicLobbyPlayer(matchingPl.aliasId, matchingPl.name, lobbyPl.isHost);
+        });
     }
 
     /** emit updates to sockets in the room.
@@ -70,7 +73,7 @@ module.exports = class LobbyIoService {
      * @param {Lobby} lobby
      */
     emitLobbyUpdates = async (lobby) => {
-        const publicPlayers = await this.getLobbyPlayersPublic(lobby);
+        const publicPlayers = await this.getPublicLobbyPlayers(lobby);
         lobby.players.forEach(x => this.#lobbyIo.to(x.socketId)
             .emit(this.#playerListEmit, publicPlayers));
     }
@@ -110,6 +113,6 @@ module.exports = class LobbyIoService {
         if (!this.#lobbyService.getPlayerById(id)) {
             cb(createFailedResponse('player not in room'));
         }
-        cb(createSuccessResponse(await this.getLobbyPlayersPublic()));
+        cb(createSuccessResponse(await this.getPublicLobbyPlayers()));
     }
 }
