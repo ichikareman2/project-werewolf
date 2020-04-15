@@ -16,7 +16,7 @@
 const Role = {
   VILLAGER: 'villager',
   WEREWOLF: 'Werewolf',
-  SSER: 'Seer',
+  SEER: 'Seer',
 }
 
 /**
