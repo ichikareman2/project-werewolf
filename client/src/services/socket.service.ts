@@ -5,7 +5,10 @@ import { Lobby, GamePhase } from '../models';
 import { environment } from '../environments/environment';
 
 const SOCKET_EVENTS = {
-    LOBBY: 'lobby',
+    LOBBY_PLAYER_GET: 'getLobbyPlayers',
+    LOBBY_PLAYER_LIST: 'playerList',
+    LOBBY_JOIN: 'joinLobby',
+    LOBBY_LEAVE: 'leaveLobby',
     GAME_PHASE: 'game-phase'
 };
 
@@ -21,7 +24,7 @@ export class SocketIOService {
     constructor() {
         this.socket = io(environment.SOCKET_ENDPOINT);
 
-        this.lobby = fromEvent(this.socket, SOCKET_EVENTS.LOBBY);
+        this.lobby = fromEvent(this.socket, SOCKET_EVENTS.LOBBY_PLAYER_LIST);
         this.gamePhase = fromEvent(this.socket, SOCKET_EVENTS.GAME_PHASE);
     }
 
