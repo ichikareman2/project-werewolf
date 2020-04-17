@@ -3,7 +3,7 @@ const uuid = require('uuid').v4
 /** player object
  * @typedef {Object} Player
  * @property {string} id unique identifier. stored in browser
- * @property {string} aliasId identifier for when others reference the player.
+ * @property {string} aliasId identifier for when other players reference a player. For security reasons.
  * @property {string} name name of the player
  */
 /** Player object without sensitive data
