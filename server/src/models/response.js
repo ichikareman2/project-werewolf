@@ -2,12 +2,17 @@
 /**
  * @template T
  * @typedef {Object} SuccessResponse
- * @property {T} data
+ * @property {T} data successful response data
  */
 /**
  * @typedef {Object} FailedResponse
- * @property {string} error
+ * @property {string} error error message
  */
+/**
+ * @template T
+ * @typedef {(data:FailedResponse | SuccessResponse<T>) => void} CallbackFn
+ */
+
 /**
  * @template T
  * @param {T} [data] 

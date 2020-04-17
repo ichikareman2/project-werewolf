@@ -3,8 +3,8 @@
 /** @typedef {import('../player.service')} PlayerService */
 /** @typedef {import('../lobby.service')} LobbyService */
 /** @typedef {import('../../models/lobby').Lobby} Lobby */
+/** @typedef {import('../../models/lobby').PublicLobbyPlayer} PublicLobbyPlayer */
 /** @typedef {import('../../models/player').Player} Player */
-/** @typedef {import('../../models/player').PublicPlayer} PublicPlayer */
 /** @typedef {import('../../models/response').FailedResponse} FailedResponse */
 /** @template T
  * @typedef {import('../../models/response').SuccessResponse<T>} SuccessResponse<T> 
@@ -56,7 +56,7 @@ module.exports = class LobbyIoService {
 
     /** players without sensitive info. 
      * @param {Lobby} [lobby]
-    * @returns {Promise<PublicPlayer[]>} */
+    * @returns {Promise<PublicLobbyPlayer[]>} */
     getPublicLobbyPlayers = async (lobby) => {
         const lobbyPlayers = (lobby && lobby.players) ? lobby.players : await this.#lobbyService.getPlayers();
         const playerIds = lobbyPlayers.map(x => x.playerId);
@@ -105,7 +105,7 @@ module.exports = class LobbyIoService {
     /** get players currently in lobby
      * @function getLobbyPlayers
      * @param {string} id
-     * @param {(a:FailedResponse | SuccessResponse<PublicPlayer[]>) => void} 
+     * @param {(a:FailedResponse | SuccessResponse<PublicLobbyPlayer[]>) => void} 
      * [cb] callback
      * @returns {Promise<void>}
      */

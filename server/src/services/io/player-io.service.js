@@ -6,6 +6,8 @@
 /** @template T
  * @typedef {import('../../models/response').SuccessResponse<T>} SuccessResponse<T> 
 */
+/** @template T
+ * @typedef {import('../../models/response').CallbackFn<T>} CallbackFn<T> */
 /** @typedef {import('socket.io')} SocketIO */
 
 /**# Imports */
@@ -59,7 +61,7 @@ module.exports = class PlayerIoService {
         /** create new player and add to list of players
          * @function createPlayer
          * @param {string} name
-         * @param {(a:FailedResponse | SuccessResponse<Player>) => void} [cb]
+         * @param {CallbackFn<Player>} [cb]
          */
         (name, cb = noop) => {
             try {
@@ -78,7 +80,7 @@ module.exports = class PlayerIoService {
     onGetPlayer = socket =>
         /** get player and return as callback parameter
          * @param {string} id
-         * @param {(a:FailedResponse | SuccessResponse<Player>) => void} [cb]
+         * @param {CallbackFn<Player>} [cb]
          */
         async (id, cb = noop) => {
             try {
@@ -92,7 +94,7 @@ module.exports = class PlayerIoService {
         };
     /** update player name
      * @param {string} id
-     * @param {(a:FailedResponse | SuccessResponse<Player>) => void} [cb]
+     * @param {CallbackFn<Player>} [cb]
      */
     updatePlayerName = async (id, name, cb = noop) => {
         try {
