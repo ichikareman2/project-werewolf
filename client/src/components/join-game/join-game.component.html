@@ -13,14 +13,17 @@
           class="form-control"
           placeholder="Player Name"
           required
+          isAlphanumeric
           minlength="4"
           maxlength="8"
           name="playerName"
           [(ngModel)]="playerName"
         />
-        <small>
-          Must contain 4-8 alphanumeric characters
-        </small>
+        <div *ngIf="joinGameForm.form.touched && joinGameForm.form.invalid">
+          <small>
+            Player name is required and must contain 4-8 alphanumeric characters
+          </small>
+        </div>
       </div>
       <button
         type="submit"

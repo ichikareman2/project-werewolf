@@ -7,7 +7,6 @@ import { Component } from '@angular/core';
 })
 export class JoinGameComponent {
   playerName = '';
-  
 
   onSubmit(form) {
     console.log(form.value);
