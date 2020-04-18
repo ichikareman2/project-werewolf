@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
-import { LobbyComponent } from '../modules/lobby/lobby.component';
+import { LobbyComponent } from '../components/lobby/lobby.component';
 
 @NgModule({
   declarations: [
