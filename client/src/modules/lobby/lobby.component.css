@@ -1,10 +1,7 @@
-<<<<<<< HEAD
 .lobby {
     color: white;
 }
 
-=======
->>>>>>> ce473106c1ad01ea88edad61335f1f83bec10dd5
 .container-mid {
     margin: 0;
     /* position: absolute;
@@ -13,10 +10,6 @@
     -ms-transform: translate(-50%, -50%);
     transform: translate(-50%, -50%); */
     max-width: 480px;
-<<<<<<< HEAD
-=======
-    border: white 5px solid;  
->>>>>>> ce473106c1ad01ea88edad61335f1f83bec10dd5
   }
   
   .details {
