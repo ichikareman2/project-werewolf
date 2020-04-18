@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { ApiService } from 'src/services/api.service';
+import { PlayerService } from 'src/services/player.service';
 
 @Component({
   selector: 'join-game',
@@ -10,15 +11,9 @@ import { ApiService } from 'src/services/api.service';
 export class JoinGameComponent {
   playerName = '';
 
-  constructor(private apiService: ApiService, private router: Router) {}
+  constructor(private playerService: PlayerService) {}
 
   onSubmit(form) {
-    this.apiService
-      .post('/player', { name: form.value.playerName })
-      .subscribe(response => {
-        localStorage.setItem('werewolf-player-id', response.id);
-        localStorage.setItem('werewolf-player-name', response.name);
-        this.router.navigate(['/lobby']);
-      });
+    this.playerService.registerPlayer(form.value.playerName);
   }
 }
