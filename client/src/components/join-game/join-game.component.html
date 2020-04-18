@@ -2,13 +2,31 @@
     <h1 class="display-4">Welcome to Werewolf!</h1>
   </div>
   <div class="container container-home">
-    <form class="form">
+    <form
+      class="form"
+      #joinGameForm="ngForm"
+      (ngSubmit)="joinGameForm.form.valid && onSubmit(joinGameForm)"
+    >
       <div class="form-group">
         <label>Enter player name:</label>
-        <input class="form-control" placeholder="Player Name" />
-        <small></small>
+        <input
+          class="form-control"
+          placeholder="Player Name"
+          required
+          minlength="4"
+          maxlength="8"
+          name="playerName"
+          [(ngModel)]="playerName"
+        />
+        <small>
+          Must contain 4-8 alphanumeric characters
+        </small>
       </div>
-      <button type="submit" class="btn btn-danger btn-lg btn-block">
+      <button
+        type="submit"
+        class="btn btn-danger btn-lg btn-block"
+        [disabled]="joinGameForm.form.invalid"
+      >
         JOIN
       </button>
     </form>

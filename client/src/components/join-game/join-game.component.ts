@@ -5,4 +5,11 @@ import { Component } from '@angular/core';
   templateUrl: './join-game.component.html',
   styleUrls: ['./join-game.component.css']
 })
-export class JoinGameComponent {}
+export class JoinGameComponent {
+  playerName = '';
+  
+
+  onSubmit(form) {
+    console.log(form.value);
+  }
+}
