@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { ApiService } from 'src/services/api.service';
 
 @Component({
   selector: 'join-game',
@@ -8,7 +9,11 @@ import { Component } from '@angular/core';
 export class JoinGameComponent {
   playerName = '';
 
+  constructor(private apiService: ApiService) {}
+
   onSubmit(form) {
-    console.log(form.value);
+    this.apiService
+      .post('/player', { name: form.value.playerName })
+      .subscribe(response => console.log(response));
   }
 }
