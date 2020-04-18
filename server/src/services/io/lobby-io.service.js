@@ -88,7 +88,10 @@ module.exports = class LobbyIoService {
          */
         async (id, cb = noop) => {
             const playerFound = await this.#playerService.getPlayerById(id)
-            if (!playerFound) { cb(createFailedResponse('player not found')) }
+            if (!playerFound) {
+                cb(createFailedResponse('player not found'));
+                return;
+            }
             await this.#lobbyService.upsertPlayer(playerFound.id, socket.id);
             cb(createSuccessResponse(undefined));
         };
@@ -112,6 +115,7 @@ module.exports = class LobbyIoService {
     getLobbyPlayers = async (id, cb = noop) => {
         if (!this.#lobbyService.getPlayerById(id)) {
             cb(createFailedResponse('player not in room'));
+            return;
         }
         cb(createSuccessResponse(await this.getPublicLobbyPlayers()));
     }
