@@ -4,9 +4,9 @@ import { Router } from '@angular/router';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { JoinGameModule } from '../components/join-game/join-game.module';
-import { FormValidationService } from '../services/form-validation.service';
-
 import { LobbyComponent } from '../components/lobby/lobby.component';
+import { LobbySocketService } from '../services/lobby.service';
+import { FormValidationService } from '../services/form-validation.service';
 
 @NgModule({
   declarations: [
@@ -20,6 +20,9 @@ import { LobbyComponent } from '../components/lobby/lobby.component';
   ],
   providers: [
     FormValidationService
+  ],
+  providers: [
+    LobbySocketService
   ],
   bootstrap: [AppComponent]
 })
