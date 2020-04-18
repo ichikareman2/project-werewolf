@@ -4,4 +4,7 @@ body {
     background-image: linear-gradient(-90deg, #405364 , #0E1A23); /* Standard syntax (must be last) */
     height: 10px;
     font-family: Balthazar;
+    color: white;
+    margin: 0;
+    padding: 0;
 }

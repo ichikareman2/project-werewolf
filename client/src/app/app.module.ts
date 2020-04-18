@@ -4,8 +4,10 @@ import { Router } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { JoinGameModule } from '../components/join-game/join-game.module';
 import { LobbyComponent } from '../components/lobby/lobby.component';
 import { LobbySocketService } from '../services/lobby.service';
+import { FormValidationService } from '../services/form-validation.service';
 
 @NgModule({
   declarations: [
@@ -15,9 +17,11 @@ import { LobbySocketService } from '../services/lobby.service';
   imports: [
     BrowserModule,
     HttpClientModule,
-    AppRoutingModule
+    AppRoutingModule,
+    JoinGameModule
   ],
   providers: [
+    FormValidationService,
     LobbySocketService
   ],
   bootstrap: [AppComponent]
