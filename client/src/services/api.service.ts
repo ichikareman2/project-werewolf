@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, retry } from 'rxjs/operators';
 import { environment } from '../environments/environment';
@@ -15,8 +15,8 @@ export class ApiService {
 
     constructor(private http: HttpClient) { }
 
-    get(path: string, params: any | null) {
-        this.http.get(
+    get(path: string, params: any | null) : Observable<any> {
+        return this.http.get(
             `${environment.SERVER_ENDPOINT}${path}`,
             {
                 ...this.defaultOptions,
@@ -25,8 +25,8 @@ export class ApiService {
         );
     }
 
-    post(path: string, params: any | null) {
-        this.http.post(
+    post(path: string, params: any | null) : Observable<any> {
+        return this.http.post(
             `${environment.SERVER_ENDPOINT}${path}`,
             params,
             this.defaultOptions
