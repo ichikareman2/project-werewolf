@@ -4,8 +4,7 @@ import { LobbySocketService } from '../../services/lobby.service';
 @Component({
   selector: 'lobby',
   templateUrl: './lobby.component.html',
-  styleUrls: ['./lobby.component.css'],
-  providers: [LobbySocketService]
+  styleUrls: ['./lobby.component.css']
 })
 export class LobbyComponent {
   constructor(private lobbySocketService: LobbySocketService) {}
