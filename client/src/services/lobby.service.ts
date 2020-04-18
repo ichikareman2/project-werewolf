@@ -20,7 +20,7 @@ export class LobbySocketService {
     private lobby: Observable<Lobby>;
 
     constructor() {
-        this.socket = io(`${environment.SOCKET_ENDPOINT}/lobby`);
+        this.socket = io(`${environment.SERVER_ENDPOINT}/lobby`);
 
         this.socket.emit( SOCKET_EVENTS.LOBBY_JOIN, 'player_id' )
         this.lobby = fromEvent(this.socket, SOCKET_EVENTS.LOBBY_PLAYER_LIST);
