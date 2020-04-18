@@ -1,1 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
+body {
+    background-color: #405364; /* For browsers that do not support gradients */
+    background-image: linear-gradient(-90deg, #405364 , #0E1A23); /* Standard syntax (must be last) */
+    height: 10px;
+    font-family: Balthazar;
+}
