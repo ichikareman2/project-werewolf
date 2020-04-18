@@ -1,21 +1,23 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-
+import { Router } from '@angular/router';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
-import { LobbyModule } from '../modules/lobby/lobby.module';
+import { LobbyComponent } from '../components/lobby/lobby.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    LobbyComponent
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule,
-    LobbyModule
+    AppRoutingModule
   ],
   providers: [],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+  constructor(router: Router) {}
+}
