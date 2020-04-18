@@ -19,9 +19,7 @@ import { FormValidationService } from '../services/form-validation.service';
     JoinGameModule
   ],
   providers: [
-    FormValidationService
-  ],
-  providers: [
+    FormValidationService,
     LobbySocketService
   ],
   bootstrap: [AppComponent]
