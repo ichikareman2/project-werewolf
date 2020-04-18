@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { JoinGameModule } from '../components/join-game/join-game.module';
+import { FormValidationService } from '../services/form-validation.service';
 
 import { LobbyComponent } from '../components/lobby/lobby.component';
 
@@ -17,7 +18,9 @@ import { LobbyComponent } from '../components/lobby/lobby.component';
     AppRoutingModule,
     JoinGameModule
   ],
-  providers: [],
+  providers: [
+    FormValidationService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {
