@@ -1,0 +1,18 @@
+.banner-image {
+    width: 10%;
+    height: 10%;
+}
+
+.banner-tagline {
+    margin-left: 24px;
+    font-weight: 500;
+    font-style: italic;
+}
+
+.jumbotron {
+    padding: 0 12px;
+    margin-bottom: 48px;
+    color: black;
+    display: flex;
+    align-items: center;
+}
