@@ -9,6 +9,8 @@ import { CreateRoomModule } from '../components/create-room/create-room.module';
 import { LobbyComponent } from '../components/lobby/lobby.component';
 import { LobbySocketService } from '../services/lobby.service';
 import { FormValidationService } from '../services/form-validation.service';
+import { ApiService } from '../services/api.service';
+import { PlayerService } from '../services/player.service';
 
 @NgModule({
   declarations: [
@@ -24,6 +26,8 @@ import { FormValidationService } from '../services/form-validation.service';
   ],
   providers: [
     FormValidationService,
+    ApiService,
+    PlayerService,
     LobbySocketService
   ],
   bootstrap: [AppComponent]
