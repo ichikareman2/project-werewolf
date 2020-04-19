@@ -4,6 +4,7 @@ import * as io from 'socket.io-client';
 import { Player } from '../models';
 import { environment } from '../environments/environment';
 import { ApiService } from './api.service';
+import { LocalStorageService } from './local-storage.service';
 
 const SOCKET_EVENTS = {};
 const LOCAL_STORAGE_KEY = 'werewolf-player';
@@ -16,7 +17,11 @@ export class PlayerService {
     private socket;
     private player: Player;
 
-    constructor(private apiService: ApiService, private router: Router) {
+    constructor(
+        private apiService: ApiService,
+        private localStorageService: LocalStorageService,
+        private router: Router
+    ) {
         this.socket = io(`${environment.SERVER_ENDPOINT}/player`);
     }
 
@@ -24,7 +29,7 @@ export class PlayerService {
         this.apiService
             .post('/player', { name })
             .subscribe(response => {
-                localStorage.setItem(LOCAL_STORAGE_KEY, response.id);
+                this.localStorageService.setItem(LOCAL_STORAGE_KEY, response.id);
                 this.player = response;
                 this.router.navigate(['/lobby']);
             });

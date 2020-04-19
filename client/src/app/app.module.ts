@@ -9,6 +9,7 @@ import { LobbyComponent } from '../components/lobby/lobby.component';
 import { LobbyService } from '../services/lobby.service';
 import { FormValidationService } from '../services/form-validation.service';
 import { ApiService } from '../services/api.service';
+import { LocalStorageService } from '../services/local-storage.service';
 import { PlayerService } from '../services/player.service';
 
 @NgModule({
@@ -25,6 +26,7 @@ import { PlayerService } from '../services/player.service';
   providers: [
     FormValidationService,
     ApiService,
+    LocalStorageService,
     PlayerService,
     LobbyService
   ],
