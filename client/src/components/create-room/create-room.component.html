@@ -1,0 +1,35 @@
+<div class="jumbotron jumbotron-fluid">
+  <h1 class="display-4"><h1 class="display-4">Welcome to Werewolf!</h1></h1>
+</div>
+<div class="container">
+  <form
+    class="form"
+    #createRoomForm="ngForm"
+    (ngSubmit)="createRoomForm.form.valid && onSubmit(createRoomForm)"
+  >
+    <div class="form-group">
+      <input 
+        class="form-control"
+        placeholder="Player Name"
+        required
+        isAlphanumeric
+        minlength="4"
+        maxlength="8"
+        name="playerName"
+        [(ngModel)]="playerName"
+      />
+      <div *ngIf="createRoomForm.form.touched && createRoomForm.form.invalid">
+        <small>
+          Player name is required and must contain 4-8 alphanumeric characters
+        </small>
+      </div>
+    </div>
+    <button 
+      type="submit"
+      class="btn btn-danger btn-lg btn-block"
+      [disabled]="createRoomForm.form.invalid"
+    >
+      CREATE ROOM
+    </button>
+  </form>
+</div>
