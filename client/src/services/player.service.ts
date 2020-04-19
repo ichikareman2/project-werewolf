@@ -25,14 +25,11 @@ export class PlayerService {
         this.socket = io(`${environment.SERVER_ENDPOINT}/player`);
     }
 
-    registerPlayer(name: string) {
-        this.apiService
-            .post('/player', { name })
-            .subscribe(response => {
-                this.localStorageService.setItem(LOCAL_STORAGE_KEY, response.id);
-                this.player = response;
-                this.router.navigate(['/lobby']);
-            });
+    async registerPlayer(name: string) {
+        const response = await this.apiService.post('/player', { name }).toPromise();
+        this.localStorageService.setItem(LOCAL_STORAGE_KEY, response.id);
+        this.player = response;
+        this.router.navigate(['/lobby']);
     }
 
     async getPlayer() : Promise<Player> | null {
