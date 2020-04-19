@@ -1,12 +1,11 @@
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { AlphanumericValidatorDirective } from '../../directives/alphanumeric-validator.directive';
+import { ValidateFormsModule } from '../../modules/validate-forms.module';
 import { JoinGameComponent } from './join-game.component';
 
 @NgModule({
   declarations: [
-    AlphanumericValidatorDirective,
     JoinGameComponent
   ],
   exports: [
@@ -14,7 +13,8 @@ import { JoinGameComponent } from './join-game.component';
   ],
   imports: [
     CommonModule,
-    FormsModule
+    FormsModule,
+    ValidateFormsModule
   ],
 })
 export class JoinGameModule { }
