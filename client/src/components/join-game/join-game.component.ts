@@ -6,6 +6,7 @@ import { Component } from '@angular/core';
   styleUrls: ['./join-game.component.css']
 })
 export class JoinGameComponent {
+  roomCode = '';
   playerName = '';
 
   onSubmit(form) {

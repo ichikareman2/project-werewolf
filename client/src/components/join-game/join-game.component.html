@@ -8,6 +8,22 @@
       (ngSubmit)="joinGameForm.form.valid && onSubmit(joinGameForm)"
     >
       <div class="form-group">
+        <label>Enter Room code:</label>
+        <input
+          class="form-control"
+          placeholder="Room Code"
+          required
+          minlength="4"
+          name="roomCode"
+          [(ngModel)]="roomCode"
+        />
+        <div *ngIf="joinGameForm.form.touched && joinGameForm.form.invalid">
+          <small>
+            Room code is required
+          </small>
+        </div>
+      </div>
+      <div class="form-group">
         <label>Enter player name:</label>
         <input
           class="form-control"
