@@ -11,16 +11,12 @@ import { PlayerService } from 'src/services/player.service';
 export class JoinGameComponent implements OnInit {
   playerName = '';
 
-  constructor(private playerService: PlayerService) {}
+  constructor(private playerService: PlayerService, private router: Router) {}
 
-  ngOnInit() {
-    const player = this.playerService.getPlayer();
+  async ngOnInit() {
+    const player = await this.playerService.getPlayer();
     if( player ) {
-      player.subscribe(response => {
-        if( response ) {
-          this.playerService.registerPlayer(response.name);
-        }
-      });
+      this.router.navigate(['/lobby']);
     }
   }
 

@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import * as io from 'socket.io-client';
-import { Observable, from } from 'rxjs';
 import { Player } from '../models';
 import { environment } from '../environments/environment';
 import { ApiService } from './api.service';
@@ -16,7 +15,7 @@ const LOCAL_STORAGE_KEY = 'werewolf-player';
 export class PlayerService {
 
     private socket;
-    private player: Observable<Player>;
+    private player: Player;
 
     constructor(
         private apiService: ApiService,
@@ -36,15 +35,15 @@ export class PlayerService {
             });
     }
 
-    getPlayer() : Observable<Player> | null {
+    async getPlayer() : Promise<Player> | null {
         if( ! this.player ) {
             const playerId = this.localStorageService.getItem(LOCAL_STORAGE_KEY);
             if( ! playerId ) {
                 return null;
             }
-            this.player = from(this.apiService.get(`/player/${playerId}`, {}));
+            return this.apiService.get(`/player/${playerId}`, {}).toPromise();
         }
 
-        return this.player;
+        return Promise.resolve(this.player);
     }
 }
