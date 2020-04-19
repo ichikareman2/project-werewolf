@@ -7,6 +7,10 @@ import { Component } from '@angular/core';
 })
 export class CreateRoomComponent {
   playerName = '';
+
+  // TODO: When room code generation service is available,
+  // Add a parameter for the service related to it and
+  // use it with onSubmit() method
   constructor() { }
 
   onSubmit(form) {
