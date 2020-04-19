@@ -1,4 +1,7 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
+import { ApiService } from 'src/services/api.service';
+import { PlayerService } from 'src/services/player.service';
 
 @Component({
   selector: 'join-game',
@@ -8,7 +11,9 @@ import { Component } from '@angular/core';
 export class JoinGameComponent {
   playerName = '';
 
+  constructor(private playerService: PlayerService) {}
+
   onSubmit(form) {
-    console.log(form.value);
+    this.playerService.registerPlayer(form.value.playerName);
   }
 }
