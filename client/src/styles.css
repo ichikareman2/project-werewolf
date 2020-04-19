@@ -3,7 +3,7 @@ body {
     background-color: #405364; /* For browsers that do not support gradients */
     background-image: linear-gradient(-90deg, #405364 , #0E1A23); /* Standard syntax (must be last) */
     height: 10px;
-    font-family: Balthazar;
+    font-family: 'PT Sans', sans-serif;
     color: white;
     margin: 0;
     padding: 0;
