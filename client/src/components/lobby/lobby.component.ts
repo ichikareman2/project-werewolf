@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { LobbySocketService } from '../../services/lobby.service';
+import { LobbyService } from '../../services/lobby.service';
 
 @Component({
   selector: 'lobby',
@@ -7,5 +7,5 @@ import { LobbySocketService } from '../../services/lobby.service';
   styleUrls: ['./lobby.component.css']
 })
 export class LobbyComponent {
-  constructor(private lobbySocketService: LobbySocketService) {}
+  constructor(private lobbySocketService: LobbyService) {}
 }

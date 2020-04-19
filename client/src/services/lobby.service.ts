@@ -14,7 +14,7 @@ const SOCKET_EVENTS = {
 @Injectable({
   providedIn: 'root'
 })
-export class LobbySocketService {
+export class LobbyService {
 
     private socket;
     private lobby: Observable<Lobby>;

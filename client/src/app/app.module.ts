@@ -6,7 +6,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { JoinGameModule } from '../components/join-game/join-game.module';
 import { LobbyComponent } from '../components/lobby/lobby.component';
-import { LobbySocketService } from '../services/lobby.service';
+import { LobbyService } from '../services/lobby.service';
 import { FormValidationService } from '../services/form-validation.service';
 import { ApiService } from '../services/api.service';
 import { PlayerService } from '../services/player.service';
@@ -26,7 +26,7 @@ import { PlayerService } from '../services/player.service';
     FormValidationService,
     ApiService,
     PlayerService,
-    LobbySocketService
+    LobbyService
   ],
   bootstrap: [AppComponent]
 })
