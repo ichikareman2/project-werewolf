@@ -5,6 +5,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { JoinGameModule } from '../components/join-game/join-game.module';
+import { CreateRoomModule } from '../components/create-room/create-room.module';
 import { LobbyComponent } from '../components/lobby/lobby.component';
 import { LobbySocketService } from '../services/lobby.service';
 import { FormValidationService } from '../services/form-validation.service';
@@ -18,7 +19,8 @@ import { FormValidationService } from '../services/form-validation.service';
     BrowserModule,
     HttpClientModule,
     AppRoutingModule,
-    JoinGameModule
+    JoinGameModule,
+    CreateRoomModule
   ],
   providers: [
     FormValidationService,
