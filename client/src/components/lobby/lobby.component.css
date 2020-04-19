@@ -1,5 +1,5 @@
 .lobby {
-    color: white;
+    color: #E4E5E8;
 }
 
 .container-mid {
@@ -30,7 +30,7 @@
   .room-code-code { font-size: 30px !important; font-family: 'Courier New', Courier, monospace;} 
   
   .player {
-      border: white 2px solid;
+      border: #E4E5E8 1px solid;
       padding: 8px 0;
       margin: 4px 0;
       text-transform: uppercase;
