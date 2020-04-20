@@ -1,9 +1,9 @@
-.banner-image {
+.header-image {
     width: 10%;
     height: 10%;
 }
 
-.banner-tagline {
+.header-tagline {
     margin-left: 24px;
     font-weight: 500;
     font-style: italic;

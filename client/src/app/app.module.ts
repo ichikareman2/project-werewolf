@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { HeaderModule } from 'src/components/header/header.module';
 import { JoinGameModule } from '../components/join-game/join-game.module';
 import { LobbyComponent } from '../components/lobby/lobby.component';
 import { LobbyService } from '../services/lobby.service';
@@ -21,6 +22,7 @@ import { PlayerService } from '../services/player.service';
     BrowserModule,
     HttpClientModule,
     AppRoutingModule,
+    HeaderModule,
     JoinGameModule
   ],
   providers: [
