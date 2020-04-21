@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { AlphanumericValidatorDirective } from '../../directives/alphanumeric-validator.directive';
+import { AlphanumericValidatorDirective } from 'src/directives/alphanumeric-validator.directive';
 import { JoinGameComponent } from './join-game.component';
 
 @NgModule({
