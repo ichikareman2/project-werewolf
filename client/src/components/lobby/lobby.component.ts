@@ -1,11 +1,21 @@
-import { Component } from '@angular/core';
-import { LobbyService } from '../../services/lobby.service';
+import { Component, OnInit } from '@angular/core';
+import { LobbyService } from 'src/services/lobby.service';
 
 @Component({
   selector: 'lobby',
   templateUrl: './lobby.component.html',
   styleUrls: ['./lobby.component.css']
 })
-export class LobbyComponent {
-  constructor(private lobbySocketService: LobbyService) {}
+export class LobbyComponent implements OnInit {
+  playerList;
+  roomCode: string = 'CODE';
+
+  constructor(private lobbyService: LobbyService) {}
+
+  ngOnInit(): void {
+    const lobbyObservable = this.lobbyService.getLobby();
+    lobbyObservable.subscribe(response => {
+      this.playerList = response;
+    });
+  }
 }

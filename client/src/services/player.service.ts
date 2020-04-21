@@ -34,7 +34,7 @@ export class PlayerService {
 
     async getPlayer() : Promise<Player> | null {
         if( ! this.player ) {
-            const playerId = this.localStorageService.getItem(LOCAL_STORAGE_KEY);
+            const playerId = this.getPlayerId();
             if( ! playerId ) {
                 return null;
             }
@@ -42,5 +42,9 @@ export class PlayerService {
         }
 
         return Promise.resolve(this.player);
+    }
+
+    getPlayerId() : string | null {
+        return this.localStorageService.getItem(LOCAL_STORAGE_KEY);
     }
 }
