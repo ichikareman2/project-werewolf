@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnChanges } from '@angular/core';
 import { GamePhase, RolesEnum, getInstructionMessage } from 'src/models';
 
 @Component({
@@ -6,12 +6,12 @@ import { GamePhase, RolesEnum, getInstructionMessage } from 'src/models';
   templateUrl: './instruction.component.html',
   styleUrls: ['./instruction.component.css']
 })
-export class GameInstructionComponent {
+export class GameInstructionComponent implements OnChanges {
     @Input() gamePhase: GamePhase;
     @Input() role: RolesEnum;
-    instructionMessage: string = 'Welcome!';
+    instructionMessage: string;
 
-    getInstruction() {
-        this.instructionMessage = getInstructionMessage(this.gamePhase.dayOrNight, this.role);
+    ngOnChanges() {
+      this.instructionMessage = getInstructionMessage(this.gamePhase.dayOrNight, this.role);
     }
 }
