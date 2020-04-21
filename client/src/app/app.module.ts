@@ -5,13 +5,14 @@ import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HeaderModule } from 'src/components/header/header.module';
-import { JoinGameModule } from '../components/join-game/join-game.module';
-import { LobbyComponent } from '../components/lobby/lobby.component';
-import { LobbyService } from '../services/lobby.service';
-import { FormValidationService } from '../services/form-validation.service';
-import { ApiService } from '../services/api.service';
-import { LocalStorageService } from '../services/local-storage.service';
-import { PlayerService } from '../services/player.service';
+import { JoinGameModule } from 'src/components/join-game/join-game.module';
+import { GameModule } from 'src/components/game/game.module';
+import { LobbyComponent } from 'src/components/lobby/lobby.component';
+import { LobbyService } from 'src/services/lobby.service';
+import { FormValidationService } from 'src/services/form-validation.service';
+import { ApiService } from 'src/services/api.service';
+import { LocalStorageService } from 'src/services/local-storage.service';
+import { PlayerService } from 'src/services/player.service';
 
 @NgModule({
   declarations: [
@@ -23,7 +24,8 @@ import { PlayerService } from '../services/player.service';
     HttpClientModule,
     AppRoutingModule,
     HeaderModule,
-    JoinGameModule
+    JoinGameModule,
+    GameModule
   ],
   providers: [
     FormValidationService,
