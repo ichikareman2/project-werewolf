@@ -8,7 +8,7 @@ const INSTRUCTION_MESSAGES = {
         [RolesEnum.SEER]: 'Discuss',
     },
     [GamePhaseEnum.NIGHT]: {
-        [RolesEnum.VILLAGER]: 'It\'s been a day. Sleep tight',
+        [RolesEnum.VILLAGER]: 'It\'s been a day. Sleep tight.',
         [RolesEnum.WEREWOLF]: 'Who would you like to eliminate tonight?',
         [RolesEnum.SEER]: 'Whose role would you like to have a peak?'
     }
