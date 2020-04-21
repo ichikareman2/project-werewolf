@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
 import * as io from 'socket.io-client';
 import { Observable, fromEvent } from 'rxjs';
-import { Lobby } from '../models';
-import { environment } from '../environments/environment';
+import { Lobby } from 'src/models';
+import { environment } from 'src/environments/environment';
+import { PlayerService } from './player.service';
+import { Router } from '@angular/router';
 
 const SOCKET_EVENTS = {
     LOBBY_PLAYER_GET: 'getLobbyPlayers',
@@ -14,15 +16,23 @@ const SOCKET_EVENTS = {
 @Injectable({
   providedIn: 'root'
 })
-export class LobbySocketService {
+export class LobbyService {
 
     private socket;
     private lobby: Observable<Lobby>;
 
-    constructor() {
+    constructor(
+        private playerService: PlayerService,
+        private router: Router
+    ) {
         this.socket = io(`${environment.SERVER_ENDPOINT}/lobby`);
 
-        this.socket.emit( SOCKET_EVENTS.LOBBY_JOIN, 'player_id' )
+        const playerId = this.playerService.getPlayerId();
+        if( !playerId ) {
+            this.router.navigate(['/']);
+        }
+
+        this.socket.emit( SOCKET_EVENTS.LOBBY_JOIN, playerId );
         this.lobby = fromEvent(this.socket, SOCKET_EVENTS.LOBBY_PLAYER_LIST);
     }
 
