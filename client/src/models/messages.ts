@@ -14,6 +14,15 @@ const INSTRUCTION_MESSAGES = {
     }
 }
 
+const PHASE_MESSAGES = {
+    [GamePhaseEnum.DAY]: 'Day in the Village',
+    [GamePhaseEnum.NIGHT]: 'Night in the Village'
+}
+
 export const getInstructionMessage = ( mode: GamePhaseEnum, role: RolesEnum ) => {
     return INSTRUCTION_MESSAGES[mode][role];
+}
+
+export const getPhaseMessage = ( mode: GamePhaseEnum ) => {
+    return PHASE_MESSAGES[mode];
 }
