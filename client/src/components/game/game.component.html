@@ -1,6 +1,6 @@
 <div class="container container-sm lobby">
     <div class="col justify-content-center">
         <game-instruction [gamePhase]="gamePhase" [role]="role"></game-instruction>
-        <game-phase mode="NIGHT"></game-phase>
+        <game-phase [mode]="gamePhase.dayOrNight"></game-phase>
     </div>
 </div>
