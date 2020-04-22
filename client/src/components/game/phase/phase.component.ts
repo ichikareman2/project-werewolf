@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'game-phase',
@@ -6,5 +6,5 @@ import { Component } from '@angular/core';
   styleUrls: ['./phase.component.css']
 })
 export class GamePhaseComponent {
-  mode: string = '';
+  @Input() mode: string = '';
 }
