@@ -11,12 +11,15 @@ export class GameComponent implements OnInit {
     {
       id: '1',
       name: 'Player 1',
-      isHost: true
+      isHost: true,
+      alive: true,
     },
     {
       id: '2',
       name: 'Player 2',
-      isHost: false
+      isHost: false,
+      alive: false,
+      role: RolesEnum.VILLAGER
     }
   ];
   gamePhase: GamePhase = {
