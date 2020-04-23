@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { GameComponent } from './game.component';
 import { GameInstructionModule } from './instructions/instruction.module';
 import { GamePhaseModule } from './phase/phase.module';
+import { GamePlayerModule } from './player/player.module';
 
 @NgModule({
   declarations: [
@@ -14,7 +15,8 @@ import { GamePhaseModule } from './phase/phase.module';
   imports: [
     CommonModule,
     GameInstructionModule,
-    GamePhaseModule
+    GamePhaseModule,
+    GamePlayerModule
   ],
 })
 export class GameModule { }
