@@ -1,19 +1,20 @@
 
-enum dayOrNightEnum {
+export enum GamePhaseEnum {
     DAY = "Day",
-    NGIHT = "Night"
+    NIGHT = "Night"
 };
 
-enum DayPhaseEnum {
+export enum DayPhaseEnum {
     VILLAGERSVOTE = "Villagers Vote",
+    VILLAGEDISCUSSION = "Village Discussion"
 };
 
-enum NightPhaseEnum {
+export enum NightPhaseEnum {
     WEREWOLVESHUNT = "Werewolves Hunt",
     SEERPREEK = "Seer Peek"
 };
 
 export type GamePhase = {
-    dayOrNight: dayOrNightEnum;
+    dayOrNight: GamePhaseEnum;
     roundPhase: DayPhaseEnum | NightPhaseEnum;
 }
