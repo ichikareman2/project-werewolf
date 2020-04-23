@@ -1,0 +1,43 @@
+.game-player {
+    max-width: 480px;
+    border: 1px solid white;
+    margin: 4px auto;
+    padding: 8px 12px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.player-thumbnail {
+    border-radius: 100px;
+    text-transform: uppercase;
+    font-size: larger;
+    font-weight: bold;
+    width: 56px;
+    height: 56px;
+    border: 1px solid white;
+    position: relative;
+}
+
+.player-thumbnail-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+.player-details {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.player-details-role {
+    font-size: small;
+}
+
+.text-muted, .text-muted .player-thumbnail {
+    border-color: #6c757d !important;
+}
