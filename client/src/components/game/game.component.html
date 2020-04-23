@@ -1,7 +1,9 @@
 <div class="container container-sm lobby">
     <div class="col justify-content-center">
         <game-instruction [gamePhase]="gamePhase" [role]="role"></game-instruction>
-        <game-player></game-player>
+        <div class="col justify-content-center">
+            <game-player *ngFor="let p of players" [player]="p"></game-player>
+        </div>
         <game-phase [mode]="gamePhase.dayOrNight"></game-phase>
     </div>
 </div>
