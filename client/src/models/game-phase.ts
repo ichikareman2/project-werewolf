@@ -13,7 +13,7 @@ enum NightPhaseEnum {
     SEERPREEK = "Seer Peek"
 };
 
-export interface GamePhase {
+export type GamePhase = {
     dayOrNight: dayOrNightEnum;
     roundPhase: DayPhaseEnum | NightPhaseEnum;
 }

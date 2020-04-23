@@ -1,5 +1,5 @@
 
-export interface Player {
+export type Player = {
     id: string;
     name: string;
     isHost: boolean;
