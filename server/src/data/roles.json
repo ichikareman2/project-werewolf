@@ -1,0 +1,17 @@
+[
+    {
+        "name": "Villager",
+        "description": "Good",
+        "points": 1
+    },
+    {
+        "name": "Werewolf",
+        "description": "Bad",
+        "points": 1
+    },
+    {
+        "name": "Seer",
+        "description": "Good",
+        "points": 1
+    }
+]
