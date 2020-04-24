@@ -1,7 +1,16 @@
-<div class="container container-sm">
-    <div class="col justify-content-center">
-        <div class="row" *ngFor="let role of data">
-            {{ role.name }}
+<div class="container container-sm roles-container">
+    <div class="col">
+        <div class="row role-heading">
+            There are two main roles - Werewolves and Villagers. Games can play with a variation of each of these. This version supports the following roles at the moment. Watch out as we add more roles to level up the fun!
+        </div>
+        <div class="row role" *ngFor="let role of data">
+            <div class="role-image-container">
+                <img [src]="role.image" class="role-image" />
+            </div>
+            <div class="role-details">
+                <h4>{{ role.name }}</h4>
+                <p>{{ role.description }}</p>
+            </div>
         </div>
     </div>
 </div>

@@ -13,8 +13,9 @@ export class RolesComponent implements OnInit {
 
     async ngOnInit() {
         const response = await this.apiService.get('/role').toPromise();
-        this.data = response;
-
-        console.log(this.data);
+        this.data = response.map((r: any) => ({
+          ...r,
+          image: `assets/images/roles/${r.name.toLowerCase()}.png`
+        }));
     }
 }
