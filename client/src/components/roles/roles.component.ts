@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from 'src/services/api.service';
+import { Role } from 'src/models';
 
 @Component({
   selector: 'roles',
@@ -7,7 +8,7 @@ import { ApiService } from 'src/services/api.service';
   styleUrls: ['./roles.component.css']
 })
 export class RolesComponent implements OnInit {
-    data: any[];
+    data: Role[];
 
     constructor(private apiService: ApiService) {}
 
