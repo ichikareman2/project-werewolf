@@ -53,18 +53,7 @@ export class GameComponent implements OnInit {
   }
   role: RolesEnum = RolesEnum.VILLAGER;
 
-  constructor() {
-    const roles = [
-      RolesEnum.VILLAGER,
-      RolesEnum.WEREWOLF,
-      RolesEnum.SEER
-    ];
-
-    setInterval(() => {
-      const i = (Math.ceil(Math.random() * roles.length)) % roles.length;
-      this.role = roles[i];
-    }, 5000);
-  }
+  constructor() {}
 
   ngOnInit(): void {}
 }
