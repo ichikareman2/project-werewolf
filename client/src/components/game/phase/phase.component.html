@@ -1,3 +1,6 @@
-<div class="row text-right game-phase">
-    <h4>{{phaseMessage}}</h4>
+<div class="row game-phase">
+    <i class="fa fa-2x game-phase-icon" [ngClass]="[mode === 'Night' ? 'fa-moon-o' : 'fa-sun-o']"></i>
+    <div class="game-phase-text">
+        {{phaseMessage}}
+    </div>
 </div>
