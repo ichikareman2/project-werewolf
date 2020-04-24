@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { GamePhase, RolesEnum, GamePhaseEnum, DayPhaseEnum } from 'src/models';
+import { GamePhase, RolesEnum, GamePhaseEnum, DayPhaseEnum, Player } from 'src/models';
 
 @Component({
   selector: 'game',
@@ -7,7 +7,21 @@ import { GamePhase, RolesEnum, GamePhaseEnum, DayPhaseEnum } from 'src/models';
   styleUrls: ['./game.component.css']
 })
 export class GameComponent implements OnInit {
-  players: any[] = [];
+  players: Player[] = [
+    {
+      id: '1',
+      name: 'Player 1',
+      isHost: true,
+      alive: true,
+    },
+    {
+      id: '2',
+      name: 'Player 2',
+      isHost: false,
+      alive: false,
+      role: RolesEnum.VILLAGER
+    }
+  ];
   gamePhase: GamePhase = {
     dayOrNight: GamePhaseEnum.NIGHT,
     roundPhase: DayPhaseEnum.VILLAGERSVOTE
