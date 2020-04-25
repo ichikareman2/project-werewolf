@@ -31,7 +31,7 @@ function shuffleArray(array) {
         const j = Math.floor(Math.random() * (i + 1));
         const temp = acc[j];
         acc[j] = acc[i];
-        acc[i] = acc[j];
+        acc[i] = temp;
         return acc;
     }, [...array])
 }
@@ -44,9 +44,20 @@ async function readFile(filepath) {
     return JSON.parse(fileContents || '');
 }
 
+/** map item in the list if condition is met
+ * @template T
+ * @param {(item: T) => boolean} matchFn if true, map
+ * @param {(item: T) => T} mapFn modify T
+ * @param {T[]} list list of T
+ */
+function conditionalMap(matchFn, mapFn, list) {
+    return list.map(item => matchFn(item) ? mapFn(item) : item)
+}
+
 module.exports = {
     promisifySocketEmit,
     noop,
     shuffleArray,
-    readFile
+    readFile,
+    conditionalMap
 }

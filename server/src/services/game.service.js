@@ -1,17 +1,20 @@
 // @ts-check
 
 /** @typedef {import('../models/game').Game} Game */
+/** @typedef {import('../models/game').PublicGame} PublicGame */
+/** @typedef {import('../models/game').SeerPublicGame} SeerPublicGame */
 /** @typedef {import('../models/game-player').GamePlayer} GamePlayer */
 /** @typedef {import('../models/player').Player} Player */
 /** @typedef {import('../models/lobby').LobbyPlayer} LobbyPlayer */
 /** @typedef {import('../services/player.service')} PlayerService */
 
-const { createNewGame, setGamePlayers } = require('../models/game');
+const { EventEmitter } = require('events');
+const { conditionalMap } = require('../util');
+const { createNewGame, setGamePlayers, getPublicGame, getSeerPublicGame } = require('../models/game');
 const { createGamePlayer, createShuffledRoles, updateGamePlayerInList, setGamePlayerSocketId, killPlayer } = require('../models/game-player');
 const { DayPhaseEnum, NightPhaseEnum, getNextGamePhase } = require('../models/game-phase');
+const { werewolfRole, villagerRole, seerRole, getPublicGamePlayer } = require('../models/game-player');
 const { upsertVote } = require('../models/vote');
-
-const { EventEmitter } = require('events');
 
 module.exports = class GameService extends EventEmitter {
     /** event name for when game state is updated. */
@@ -30,8 +33,7 @@ module.exports = class GameService extends EventEmitter {
         this.#playerService = playerService;
     }
     /** update game state and emit updated state.
-     * @param {Game} game 
-     */
+     * @param {Game} game */
     #updateGameState = (game) => {
         this.#gameState = game;
         this.emit(GameService.gameUpdatedEvent, game);
@@ -55,7 +57,7 @@ module.exports = class GameService extends EventEmitter {
             .map((pl, i) =>
                 createGamePlayer({ ...pl, isHost: pl.id === hostId }, roles[i]))
         let newGameState = createNewGame();
-        newGameState = setGamePlayers(gamePlayers, this.#gameState);
+        newGameState = setGamePlayers(gamePlayers, newGameState);
         this.#updateGameState(newGameState);
         return;
     }
@@ -66,6 +68,9 @@ module.exports = class GameService extends EventEmitter {
     joinGame = (socketId, playerId) => {
         if (!(playerId && socketId)) { throw new Error(`playerId cannot be empty`) }
         const game = this.#gameState;
+        if(game.players.findIndex(pl => pl.id === playerId) === -1) {
+            throw new Error(`player is not part of the game`)
+        }
         const players = updateGamePlayerInList(
             pl => pl.id === playerId,
             pl => setGamePlayerSocketId(socketId, pl),
@@ -109,9 +114,9 @@ module.exports = class GameService extends EventEmitter {
         let newGameState = { ...this.#gameState, votes: newVotes };
         // process vote?
         const allAliveVillagersVoted =
-            newGameState.players.filter(x => x.alive).length === newGameState.votes.length;
+            newGameState.players.filter(x => x.isAlive).length === newGameState.votes.length;
         if (!allAliveVillagersVoted) { return newGameState; }
-        const majorityVoteCount = Math.ceil(newGameState.players.filter(x => x.alive).length / 2)
+        const majorityVoteCount = Math.ceil(newGameState.players.filter(x => x.isAlive).length / 2)
         const tally = newGameState.votes.reduce((acc, curr) => {
             const voted = acc.get(curr.votedAliasId);
             if (!voted) { acc.set(curr.votedAliasId, 1); }

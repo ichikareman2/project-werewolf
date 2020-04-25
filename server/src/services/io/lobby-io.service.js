@@ -140,6 +140,8 @@ module.exports = class LobbyIoService {
         async (cb = noop) => {
             try {
                 const players = await this.#lobbyService.getPlayers();
+                const starterIsHost = players.find(x => x.socketId === socket.id).isHost;
+                if(!starterIsHost) { throw new Error('player is not host.') }
                 await this.#gameService.startGame(players);
                 cb(createSuccessResponse());
                 players.forEach(x => this.#lobbyIo.to(x.socketId)

@@ -13,6 +13,7 @@ const PlayerIoService = require('./services/io/player-io.service')
 const LobbyService = require('./services/lobby.service');
 const LobbyIoService = require('./services/io/lobby-io.service')
 const GameService = require('./services/game.service');
+const GameIoService = require('./services/io/game-io.service')
 const CreatePlayerRoute = require('./routes/player.route');
 const CreateRoleRoute = require('./routes/role.route');
 const {
@@ -29,7 +30,6 @@ const PORT = 8000;
 const whitelist = ['http://localhost:4200']
 const corsOptions = {
     origin: function (origin, callback) {
-        console.log(origin)
         if(whitelist.includes(origin)) {
             callback(null, true);
         } else {
@@ -65,6 +65,7 @@ function createApp() {
     /** IO Services */
     const lobbyIoService = new LobbyIoService(io, lobbyService, playerService, gameService);
     const playerIoService = new PlayerIoService(io, playerService);
+    const gameIoService = new GameIoService(io, gameService);
     
     return app;
 }
