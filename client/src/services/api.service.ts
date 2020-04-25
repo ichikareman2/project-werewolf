@@ -15,7 +15,7 @@ export class ApiService {
 
     constructor(private http: HttpClient) { }
 
-    get(path: string, params: any | null) : Observable<any>  {
+    get(path: string, params?: any) : Observable<any>  {
         return this.http
             .get(
                 `${environment.SERVER_ENDPOINT}${path}`,
@@ -28,7 +28,7 @@ export class ApiService {
             );
     }
 
-    post(path: string, params: any | null) : Observable<any>  {
+    post(path: string, params?: any) : Observable<any>  {
         return this.http
             .post(
                 `${environment.SERVER_ENDPOINT}${path}`,
