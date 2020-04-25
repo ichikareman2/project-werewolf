@@ -115,7 +115,7 @@
      }
      #createSeerGameState = (game) => {
          const publicPlayers = conditionalMap(
-             pl => !isSeer && pl.isAlive,
+             pl => !isSeer(pl) && pl.isAlive,
              pl => ({...pl, role: villagerRole}),
              game.players
          ).map(getPublicGamePlayer);
