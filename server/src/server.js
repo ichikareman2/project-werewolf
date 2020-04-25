@@ -26,7 +26,7 @@ const { noop } = require('./util')
  * @type {number} */
 const PORT = 8000;
 
-const whitelist = ['http://localhost:3000', 'http://192.168.0.27:3000']
+const whitelist = ['http://localhost:4200']
 const corsOptions = {
     origin: function (origin, callback) {
         console.log(origin)
