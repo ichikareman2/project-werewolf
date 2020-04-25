@@ -3,21 +3,21 @@ const { readFile } = require('../util');
 const FILEPATH = './data/roles.json';
 let roles = null;
 
-function initData() {
+async function initData() {
     if( ! roles ) {
-        roles = readFile(FILEPATH);
+        roles = await readFile(FILEPATH);
     }
 }
 
 function CreateRoleRoute(app) {
-    app.get('/role', (req, res) => {
-        initData();
+    app.get('/role', async (req, res) => {
+        await initData();
 
         res.status(200).send(roles);
     });
 
-    app.get('/role/:name', (req, res) => {
-        initData();
+    app.get('/role/:name', async (req, res) => {
+        await initData();
 
         const role = roles.filter(x =>
             x.name.toLowerCase() === req.params.name.toLowerCase()

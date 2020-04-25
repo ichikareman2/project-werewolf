@@ -43,7 +43,7 @@ function createApp() {
     /** The Express Application */
     const app = express();
     app.use(bodyParser.json());
-    app.use(cors(corsOptions));
+    // app.use(cors(corsOptions));
     /** The application server */
     const server = createServer(app);
     /** port the server application will listen to */
