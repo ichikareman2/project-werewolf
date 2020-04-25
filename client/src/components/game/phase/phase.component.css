@@ -1,0 +1,24 @@
+.game-phase {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: auto;
+}
+
+.game-phase-icon {
+    color: yellow;
+}
+
+.game-phase-text {
+    max-width: 25%;
+    font-size: 16px;
+    font-style: italic;
+    text-align: right;
+}
+
+@media only screen and (max-width: 480px) {
+    .game-phase-text {
+        max-width: 50%;
+        font-size: 18px;
+    }
+}

@@ -1,6 +1,6 @@
 import { Player } from './player';
 
-export interface Lobby {
+export type Lobby = {
     players: Player[];
     roomCode: string;
 }
