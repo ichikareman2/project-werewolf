@@ -12,6 +12,7 @@ const PlayerService = require('./services/player.service');
 const PlayerIoService = require('./services/io/player-io.service')
 const LobbyService = require('./services/lobby.service');
 const LobbyIoService = require('./services/io/lobby-io.service')
+const GameService = require('./services/game.service');
 const CreatePlayerRoute = require('./routes/player.route');
 const CreateRoleRoute = require('./routes/role.route');
 const {
@@ -55,13 +56,14 @@ function createApp() {
 
     /** Entity Services */
     const playerService = new PlayerService();
-    const lobbyService = new LobbyService()
+    const lobbyService = new LobbyService();
+    const gameService = new GameService(playerService);
 
     app.use('/player/', CreatePlayerRoute(playerService));
     app.use('/role/', CreateRoleRoute());
 
     /** IO Services */
-    const lobbyIoService = new LobbyIoService(io, lobbyService, playerService);
+    const lobbyIoService = new LobbyIoService(io, lobbyService, playerService, gameService);
     const playerIoService = new PlayerIoService(io, playerService);
     
     return app;
