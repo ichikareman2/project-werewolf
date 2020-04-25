@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { GamePhase, RolesEnum, GamePhaseEnum, DayPhaseEnum, Player } from 'src/models';
+import { PlayerService } from 'src/services/player.service';
 
 @Component({
   selector: 'game',
@@ -7,6 +9,7 @@ import { GamePhase, RolesEnum, GamePhaseEnum, DayPhaseEnum, Player } from 'src/m
   styleUrls: ['./game.component.css']
 })
 export class GameComponent implements OnInit {
+  loadPage: boolean = false;
   players: Player[] = [
     {
       id: '1',
@@ -53,7 +56,17 @@ export class GameComponent implements OnInit {
   }
   role: RolesEnum = RolesEnum.VILLAGER;
 
-  constructor() {}
+  constructor(
+    private router: Router,
+    private playerService: PlayerService
+  ) {}
 
-  ngOnInit(): void {}
+  async ngOnInit() {
+    const player = await this.playerService.getPlayer();
+    if( ! player ) {
+      return this.router.navigate(['/']);
+    }
+
+    this.loadPage = true;
+  }
 }
