@@ -1,27 +1,46 @@
 // @ts-check
 /** @typedef {import('./player').Player} Player */
 /** @typedef {import('./player').PublicPlayer} PublicPlayer */
-/** 
+
+/** villager role constant 
+ * @constant
+ * @default
+ * @type {'Villager'}
+*/
+const villagerRole = 'Villager';
+/** werewolf role constant 
+ * @constant
+ * @default
+ * @type {'Werewolf'}
+*/
+const werewolfRole = 'Werewolf';
+/** seer role constant 
+ * @constant
+ * @default
+ * @type {'Seer'}
+*/
+const seerRole = 'Seer';
+
+/** Roles available
+ * @typedef {villagerRole | werewolfRole | seerRole} Role
+ * @readonly
+ */
+/** player properties related to game
  * @typedef {Object} GamePlayerStatus
- * @property {boolean} alive
+ * @property {boolean} isAlive
  * @property {string} causeOfDeath
  * @property {Role} role
  * @property {boolean} isHost
  * @property {string} socketId
  */
-/**
+/** player model
  * @typedef {GamePlayerStatus & Player} GamePlayer
  */
+/** player model with sensitive properties omitted
+ * @typedef {Omit<GamePlayer, 'id' | 'socketId'>} PublicGamePlayer */
+
 const { shuffleArray } = require('../util');
-/**
- * @enum string
- * @readonly
- */
-const Role = {
-    VILLAGER: 'Villager',
-    WEREWOLF: 'Werewolf',
-    SEER: 'Seer',
-}
+
 
 /** create a player for the game
  * @param {Player & {isHost: boolean}} player a player from lobby
@@ -31,7 +50,7 @@ const Role = {
 function createGamePlayer(player, role) {
     return {
         ...player,
-        alive: true,
+        isAlive: true,
         causeOfDeath: '',
         role,
         isHost: player.isHost,
@@ -45,8 +64,8 @@ function createGamePlayer(player, role) {
  */
 function setGamePlayerSocketId(socketId, gamePlayer) {
     return {
-        socketId,
-        ...gamePlayer
+        ...gamePlayer,
+        socketId
     }
 }
 /** change alive status and state reason of death
@@ -57,7 +76,7 @@ function setGamePlayerSocketId(socketId, gamePlayer) {
 function killPlayer(causeOfDeath, player) {
     return {
         ...player,
-        alive: false,
+        isAlive: false,
         causeOfDeath
     }
 }
@@ -66,16 +85,16 @@ function killPlayer(causeOfDeath, player) {
  * @returns {Role[]}
  */
 function createShuffledRoles(count) {
-    const seer = Role.SEER;
+    const seer = seerRole;
     let werewolves;
-    if (count > 15) { werewolves = Array(4).fill(Role.WEREWOLF) }
-    else if (count > 11) { werewolves = Array(3).fill(Role.WEREWOLF) }
-    else if (count > 8) { werewolves = Array(2).fill(Role.WEREWOLF) }
-    else { werewolves = Array(1).fill(Role.WEREWOLF) }
+    if (count > 15) { werewolves = Array(4).fill(werewolfRole) }
+    else if (count > 11) { werewolves = Array(3).fill(werewolfRole) }
+    else if (count > 8) { werewolves = Array(2).fill(werewolfRole) }
+    else { werewolves = Array(1).fill(werewolfRole) }
     /** @type {Role[]} */
     let roles = [seer, ...werewolves];
     /** @type {Role[]} */
-    const villagers = Array(count - roles.length).fill(Role.VILLAGER);
+    const villagers = Array(count - roles.length).fill(villagerRole);
     return shuffleArray([...roles, ...villagers])
 }
 /** update a gamePlayer in a list
@@ -90,11 +109,38 @@ function updateGamePlayerInList(matchFn, updateFn, playerList) {
     newPlayerList[plIndex] = updateFn(playerList[plIndex]);
     return newPlayerList;
 }
+/** get desensitized game player
+ * @param {GamePlayer} player 
+ * @returns {PublicGamePlayer}
+ */
+function getPublicGamePlayer(player) {
+    const {id, socketId, ...rest} = player;
+    return rest;
+}
+/** check if player is werewolf
+ * @param {GamePlayer} gamePlayer player to check
+ * @returns {boolean} */
+function isWereWolf(gamePlayer) { return gamePlayer.role === werewolfRole }
+/** check if player is Seer
+ * @param {GamePlayer} gamePlayer player to check
+ * @returns {boolean} */
+function isSeer(gamePlayer) { return gamePlayer.role === seerRole }
+/** check if player is Villager
+ * @param {GamePlayer} gamePlayer player to check
+ * @returns {boolean} */
+function isVillager(gamePlayer) { return gamePlayer.role === villagerRole }
+
 module.exports = {
-    Role,
+    villagerRole,
+    werewolfRole,
+    seerRole,
     createGamePlayer,
     setGamePlayerSocketId,
     killPlayer,
     createShuffledRoles,
-    updateGamePlayerInList
+    updateGamePlayerInList,
+    getPublicGamePlayer,
+    isWereWolf,
+    isSeer,
+    isVillager
 }

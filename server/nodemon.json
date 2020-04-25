@@ -1,6 +1,7 @@
 {
     "verbose": true,
-    "ignore": [
-        "*/**/*.json"
-    ]
+    "watch": [
+        "src/"
+    ],
+    "ext": "js"
 }
