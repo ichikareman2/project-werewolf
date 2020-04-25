@@ -1,0 +1,20 @@
+[
+    {
+        "name": "Villager",
+        "description": "No special abilities.",
+        "tag": "good",
+        "points": 1
+    },
+    {
+        "name": "Werewolf",
+        "description": "Every night, you and the other werewolves choose a player to kill.",
+        "tag": "bad",
+        "points": 1
+    },
+    {
+        "name": "Seer",
+        "description": "Every night, you're given the opportunity to peek aother player's role. The system will tell if he/she is a werewolf or a villager.",
+        "tag": "good",
+        "points": 1
+    }
+]

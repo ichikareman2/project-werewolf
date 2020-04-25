@@ -13,6 +13,7 @@ const PlayerIoService = require('./services/io/player-io.service')
 const LobbyService = require('./services/lobby.service');
 const LobbyIoService = require('./services/io/lobby-io.service')
 const CreatePlayerRoute = require('./routes/player.route');
+const CreateRoleRoute = require('./routes/role.route');
 const {
     createNewPlayer,
     updatePlayerName,
@@ -51,12 +52,13 @@ function createApp() {
     const io = socketIo(server);
 
     server.listen(port, () => console.log(`Running server on port ${port}`));
-    
+
     /** Entity Services */
     const playerService = new PlayerService();
     const lobbyService = new LobbyService()
 
     app.use('/player/', CreatePlayerRoute(playerService));
+    app.use('/role/', CreateRoleRoute());
 
     /** IO Services */
     const lobbyIoService = new LobbyIoService(io, lobbyService, playerService);

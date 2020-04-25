@@ -3,6 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 import { JoinGameComponent } from 'src/components/join-game/join-game.component';
 import { LobbyComponent } from 'src/components/lobby/lobby.component';
 import { GameComponent } from 'src/components/game/game.component';
+import { RolesComponent } from 'src/components/roles/roles.component';
 
 const routes: Routes = [
   {
@@ -12,6 +13,10 @@ const routes: Routes = [
   {
     path: 'game',
     component: GameComponent
+  },
+  {
+    path: 'roles',
+    component: RolesComponent
   },
   {
     path: '',

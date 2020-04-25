@@ -8,6 +8,7 @@ import { HeaderModule } from 'src/components/header/header.module';
 import { JoinGameModule } from 'src/components/join-game/join-game.module';
 import { GameModule } from 'src/components/game/game.module';
 import { LobbyComponent } from 'src/components/lobby/lobby.component';
+import { RolesComponent } from 'src/components/roles/roles.component';
 import { LobbyService } from 'src/services/lobby.service';
 import { FormValidationService } from 'src/services/form-validation.service';
 import { ApiService } from 'src/services/api.service';
@@ -17,7 +18,8 @@ import { PlayerService } from 'src/services/player.service';
 @NgModule({
   declarations: [
     AppComponent,
-    LobbyComponent
+    LobbyComponent,
+    RolesComponent
   ],
   imports: [
     BrowserModule,
