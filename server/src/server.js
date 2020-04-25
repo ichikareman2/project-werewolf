@@ -53,13 +53,12 @@ function createApp() {
 
     server.listen(port, () => console.log(`Running server on port ${port}`));
 
-    CreateRoleRoute(app);
-
     /** Entity Services */
     const playerService = new PlayerService();
     const lobbyService = new LobbyService()
 
     app.use('/player/', CreatePlayerRoute(playerService));
+    app.use('/role/', CreateRoleRoute());
 
     /** IO Services */
     const lobbyIoService = new LobbyIoService(io, lobbyService, playerService);

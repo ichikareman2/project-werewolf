@@ -1,4 +1,5 @@
 const { readFile } = require('../util');
+const express = require('express');
 
 const FILEPATH = './data/roles.json';
 let roles = null;
@@ -10,13 +11,15 @@ async function initData() {
 }
 
 function CreateRoleRoute(app) {
-    app.get('/role', async (req, res) => {
+    const router = express.Router()
+
+    router.get('/', async (req, res) => {
         await initData();
 
         res.status(200).send(roles);
     });
 
-    app.get('/role/:name', async (req, res) => {
+    router.get('/:name', async (req, res) => {
         await initData();
 
         const role = roles.filter(x =>
@@ -28,6 +31,8 @@ function CreateRoleRoute(app) {
             res.status(200).send(role);
         }
     });
+
+    return router;
 }
 
 module.exports = CreateRoleRoute;
