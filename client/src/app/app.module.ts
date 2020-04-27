@@ -14,6 +14,7 @@ import { FormValidationService } from 'src/services/form-validation.service';
 import { ApiService } from 'src/services/api.service';
 import { LocalStorageService } from 'src/services/local-storage.service';
 import { PlayerService } from 'src/services/player.service';
+import { GameService } from 'src/services/game.service';
 
 @NgModule({
   declarations: [
@@ -34,7 +35,8 @@ import { PlayerService } from 'src/services/player.service';
     ApiService,
     LocalStorageService,
     PlayerService,
-    LobbyService
+    LobbyService,
+    GameService
   ],
   bootstrap: [AppComponent]
 })

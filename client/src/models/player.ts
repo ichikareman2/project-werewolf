@@ -7,8 +7,9 @@ export enum RolesEnum {
 
 export type Player = {
     id: string;
+    aliasId: string;
     name: string;
     isHost: boolean;
     role?: RolesEnum;
-    alive: boolean;
+    alive?: boolean;
 }

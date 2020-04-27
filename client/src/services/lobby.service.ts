@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import * as io from 'socket.io-client';
 import { Observable, fromEvent } from 'rxjs';
-import { Lobby } from 'src/models';
+import { Player } from 'src/models';
 import { environment } from 'src/environments/environment';
 import { PlayerService } from './player.service';
 import { Router } from '@angular/router';
@@ -11,6 +11,8 @@ const SOCKET_EVENTS = {
     LOBBY_PLAYER_LIST: 'playerList',
     LOBBY_JOIN: 'joinLobby',
     LOBBY_LEAVE: 'leaveLobby',
+    LOBBY_GAME_START: 'gameStart',
+    LOBBY_GAME_STARTED: 'gameStarted',
 };
 
 @Injectable({
@@ -19,7 +21,8 @@ const SOCKET_EVENTS = {
 export class LobbyService {
 
     private socket;
-    private lobby: Observable<Lobby>;
+    private lobbyPlayers: Observable<Player[]>;
+    private isGameStart: Observable<boolean>;
 
     constructor(
         private playerService: PlayerService,
@@ -33,10 +36,19 @@ export class LobbyService {
         }
 
         this.socket.emit( SOCKET_EVENTS.LOBBY_JOIN, playerId );
-        this.lobby = fromEvent(this.socket, SOCKET_EVENTS.LOBBY_PLAYER_LIST);
+        this.lobbyPlayers = fromEvent(this.socket, SOCKET_EVENTS.LOBBY_PLAYER_LIST);
+        this.isGameStart = fromEvent(this.socket, SOCKET_EVENTS.LOBBY_GAME_STARTED);
     }
 
-    public getLobby() : Observable<Lobby> {
-        return this.lobby;
+    public getLobbyPlayers() : Observable<Player[]> {
+        return this.lobbyPlayers;
+    }
+
+    public isGameStarted() : Observable<boolean>{
+        return this.isGameStart;
+    }
+
+    public handleStartGame() {
+        this.socket.emit(SOCKET_EVENTS.LOBBY_GAME_START)
     }
 }

@@ -1,4 +1,4 @@
-<div class="container container-sm">
+<div class="container container-sm" *ngIf="loadPage">
     <div class="col justify-content-center game">
         <game-instruction [gamePhase]="gamePhase" [role]="role"></game-instruction>
         <div class="col mt-4 mb-4 p-0">
