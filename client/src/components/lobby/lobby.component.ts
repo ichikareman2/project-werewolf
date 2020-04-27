@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { LobbyService } from 'src/services/lobby.service';
 import { PlayerService } from 'src/services/player.service';
 import { Player } from 'src/models';
@@ -15,7 +16,8 @@ export class LobbyComponent implements OnInit {
 
   constructor(
     private lobbyService: LobbyService,
-    private playerService: PlayerService
+    private playerService: PlayerService,
+    private router: Router
   ) {}
 
   async ngOnInit() {
@@ -28,8 +30,12 @@ export class LobbyComponent implements OnInit {
     });
 
     const gameStartObservable = this.lobbyService.isGameStarted();
-    gameStartObservable.subscribe(response => {
-      console.log(response);
+    gameStartObservable.subscribe(() => {
+      this.router.navigate(['/game']);
     });
+  }
+
+  async handleStartGame() {
+    this.lobbyService.handleStartGame();
   }
 }

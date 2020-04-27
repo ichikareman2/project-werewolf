@@ -15,7 +15,9 @@
 
             <div class="details">
                 <div class="lobby-message">Waiting for other players to join...</div>
-                <a href="#" class="btn btn-danger btn-lg" *ngIf="isHostPlayer">START GAME</a>
+                <button class="btn btn-danger btn-lg" *ngIf="isHostPlayer" (click)="handleStartGame()">
+                    START GAME
+                </button>
             </div>
 
         </div>

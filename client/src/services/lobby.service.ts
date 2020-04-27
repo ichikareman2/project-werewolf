@@ -12,6 +12,7 @@ const SOCKET_EVENTS = {
     LOBBY_JOIN: 'joinLobby',
     LOBBY_LEAVE: 'leaveLobby',
     LOBBY_GAME_START: 'gameStart',
+    LOBBY_GAME_STARTED: 'gameStarted',
 };
 
 @Injectable({
@@ -36,7 +37,7 @@ export class LobbyService {
 
         this.socket.emit( SOCKET_EVENTS.LOBBY_JOIN, playerId );
         this.lobbyPlayers = fromEvent(this.socket, SOCKET_EVENTS.LOBBY_PLAYER_LIST);
-        this.isGameStart = fromEvent(this.socket, SOCKET_EVENTS.LOBBY_GAME_START);
+        this.isGameStart = fromEvent(this.socket, SOCKET_EVENTS.LOBBY_GAME_STARTED);
     }
 
     public getLobbyPlayers() : Observable<Player[]> {
@@ -45,5 +46,9 @@ export class LobbyService {
 
     public isGameStarted() : Observable<boolean>{
         return this.isGameStart;
+    }
+
+    public handleStartGame() {
+        this.socket.emit(SOCKET_EVENTS.LOBBY_GAME_START)
     }
 }
