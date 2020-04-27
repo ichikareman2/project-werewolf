@@ -1,4 +1,4 @@
-import { GamePhaseEnum } from './game-phase';
+import { GamePhaseEnum } from './game';
 import { RolesEnum } from './player';
 
 const INSTRUCTION_MESSAGES = {

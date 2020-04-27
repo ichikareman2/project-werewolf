@@ -18,3 +18,8 @@ export type GamePhase = {
     dayOrNight: GamePhaseEnum;
     roundPhase: DayPhaseEnum | NightPhaseEnum;
 }
+
+export type Game = {
+    phase: GamePhase;
+    round: number;
+}

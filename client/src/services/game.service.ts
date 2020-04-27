@@ -4,11 +4,10 @@ import * as io from 'socket.io-client';
 import { Observable, fromEvent } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { PlayerService } from './player.service';
+import { Game } from 'src/models';
 
 const SOCKET_EVENTS = {
-    GAME_START: 'gameStart',
-    GAME_PAUSE: 'gamePause',
-    GAME_UPDATE: 'gameUpdate'
+    GAME_UPDATE: 'gameUpdated'
 };
 
 @Injectable({
@@ -17,6 +16,7 @@ const SOCKET_EVENTS = {
 export class GameService {
 
     private socket;
+    private game: Observable<Game>;
 
     constructor(
         private playerService: PlayerService,
@@ -28,5 +28,10 @@ export class GameService {
         }
 
         this.socket = io(`${environment.SERVER_ENDPOINT}/game`);
+        this.game = fromEvent(this.socket, SOCKET_EVENTS.GAME_UPDATE);
+    }
+
+    public getGame() : Observable<Game> {
+        return this.game;
     }
 }
