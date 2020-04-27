@@ -13,24 +13,28 @@ export class GameComponent implements OnInit {
   players: Player[] = [
     {
       id: '1',
+      aliasId: '1',
       name: 'Player 1',
       isHost: true,
       alive: true
     },
     {
       id: '2',
+      aliasId: '2',
       name: 'Player 2',
       isHost: false,
       alive: true
     },
     {
       id: '3',
+      aliasId: '3',
       name: 'Player 3',
       isHost: false,
       alive: true,
     },
     {
       id: '4',
+      aliasId: '4',
       name: 'Player 4',
       isHost: false,
       alive: false,
@@ -38,12 +42,14 @@ export class GameComponent implements OnInit {
     },
     {
       id: '5',
+      aliasId: '5',
       name: 'Player 5',
       isHost: false,
       alive: true,
     },
     {
       id: '6',
+      aliasId: '6',
       name: 'Player 6',
       isHost: false,
       alive: false,
