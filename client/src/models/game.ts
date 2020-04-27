@@ -1,3 +1,4 @@
+import { Player } from './player'
 
 export enum GamePhaseEnum {
     DAY = "Day",
@@ -22,4 +23,5 @@ export type GamePhase = {
 export type Game = {
     phase: GamePhase;
     round: number;
+    players: Player[];
 }

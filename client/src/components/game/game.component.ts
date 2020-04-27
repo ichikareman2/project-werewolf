@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { GamePhase, RolesEnum, GamePhaseEnum, DayPhaseEnum, Player } from 'src/models';
 import { PlayerService } from 'src/services/player.service';
+import { GameService } from 'src/services/game.service';
 
 @Component({
   selector: 'game',
@@ -64,7 +65,8 @@ export class GameComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private playerService: PlayerService
+    private playerService: PlayerService,
+    private gameService: GameService
   ) {}
 
   async ngOnInit() {
