@@ -1,6 +1,7 @@
 // @ts-check
 /**
  * phases of the day
+ * @constant
  * @readonly
  */
 const DayPhaseEnum = {
@@ -8,6 +9,7 @@ const DayPhaseEnum = {
 }
 /**
  * phases of the night
+ * @constant
  * @readonly
  */
 const NightPhaseEnum = {

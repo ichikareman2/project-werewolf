@@ -45,6 +45,8 @@ There are also http endpoints available:
       }).then(x => x.json())
   ```
 ---
+
+## API:
 ### `/player` HTTP Endpoint
 #### Flow:
 This is used to manage players. player endpoint is designed to accomodate the following flow:
@@ -75,7 +77,7 @@ This is used to manage players. player endpoint is designed to accomodate the fo
  }
 ```
 ##### Response : [Player](#player)
----
+
 ### `/lobby` namespace
 #### Flow:
 This is used to manage lobby. lobby messages available are designed to accomodate the following flow:
@@ -149,10 +151,11 @@ data | FailedResponse | SuccessResponse<T>
 ---
 
 ## TODO
-1. add start game to lobby
+1. ~~add start game to lobby~~ done
 1. ~~mark host in lobby~~ done
 1. complete readme
 1. provide models referred to in this readme
 1. provde sample code
-1. make game io
-1. make game data service
+1. ~~make game io~~
+1. ~~make game data service~~
+1. game implementation - 80% done

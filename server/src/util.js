@@ -18,8 +18,10 @@ function promisifySocketEmit(emitFn) {
         })
     }
 }
-/** No Operation. stub for optional callbacks. */
-function noop(..._) { }
+/** NO OPeration. stub for optional callbacks.
+ * @param {any[]} _
+ * @returns {any[]} */
+function noop(..._) { return _; }
 
 /** Shuffle array items.
  * @template T
@@ -33,7 +35,7 @@ function shuffleArray(array) {
         acc[j] = acc[i];
         acc[i] = temp;
         return acc;
-    }, [...array])
+    }, array.slice());
 }
 
 async function readFile(filepath) {
@@ -53,11 +55,36 @@ async function readFile(filepath) {
 function conditionalMap(matchFn, mapFn, list) {
     return list.map(item => matchFn(item) ? mapFn(item) : item)
 }
+/** find item in the list and update
+ * @template T
+ * @param {(item: T) => boolean} matchFn if true, map
+ * @param {(item: T) => T} mapFn modify T
+ * @param {T[]} list list of T
+ */
+function findUpdate(matchFn, mapFn, list) {
+    const clone = list.slice();
+    const i = clone.findIndex(matchFn);
+    clone[i] = mapFn(clone[i]);
+    return clone;
+}
+/** if else in function
+ * @template T
+ * @template U
+ * @param {[(value: T) => boolean, (value: T) => U][]} condTransList
+ * @param {T} value
+ * @returns {U}
+ */
+function cond(condTransList, value) {
+    const match = condTransList.find(([matchFn]) => matchFn(value));
+    return match ? match[1](value) : undefined;
+}
 
 module.exports = {
     promisifySocketEmit,
     noop,
     shuffleArray,
     readFile,
-    conditionalMap
+    conditionalMap,
+    findUpdate,
+    cond
 }
