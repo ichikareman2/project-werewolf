@@ -37,7 +37,7 @@ const seerRole = 'Seer';
  * @typedef {GamePlayerStatus & Player} GamePlayer
  */
 /** player model with sensitive properties omitted
- * @typedef {Omit<GamePlayer, 'id' | 'socketId'>} PublicGamePlayer */
+ * @typedef {Omit<GamePlayer, 'id' | 'socketId'> & {isConnected: boolean}} PublicGamePlayer */
 
 const { shuffleArray } = require('../util');
 
@@ -115,7 +115,7 @@ function updateGamePlayerInList(matchFn, updateFn, playerList) {
  */
 function getPublicGamePlayer(player) {
     const {id, socketId, ...rest} = player;
-    return rest;
+    return {...rest, isConnected: socketId !== undefined};
 }
 /** check if player is werewolf
  * @param {GamePlayer} gamePlayer player to check

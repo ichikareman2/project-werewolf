@@ -9,12 +9,12 @@
 /** @typedef {import('../services/player.service')} PlayerService */
 
 const { EventEmitter } = require('events');
-const { conditionalMap } = require('../util');
+const { conditionalMap, cond } = require('../util');
 const { createNewGame, setGamePlayers, getPublicGame, getSeerPublicGame } = require('../models/game');
 const { createGamePlayer, createShuffledRoles, updateGamePlayerInList, setGamePlayerSocketId, killPlayer } = require('../models/game-player');
-const { DayPhaseEnum, NightPhaseEnum, getNextGamePhase } = require('../models/game-phase');
-const { werewolfRole, villagerRole, seerRole, getPublicGamePlayer } = require('../models/game-player');
-const { upsertVote } = require('../models/vote');
+const { DayPhaseEnum, NightPhaseEnum, gamePhases, getNextGamePhase } = require('../models/game-phase');
+const { werewolfRole, villagerRole, seerRole } = require('../models/game-player');
+const { upsertVote, tallyVote } = require('../models/vote');
 
 module.exports = class GameService extends EventEmitter {
     /** event name for when game state is updated. */
@@ -61,14 +61,14 @@ module.exports = class GameService extends EventEmitter {
         this.#updateGameState(newGameState);
         return;
     }
-    /**
+    /** player connects. record socketId
      * @param {string} playerId
      * @param {string} socketId
      */
     joinGame = (socketId, playerId) => {
-        if (!(playerId && socketId)) { throw new Error(`playerId cannot be empty`) }
+        if (!(playerId && socketId)) { throw new Error(`playerId cannot be empty`); }
         const game = this.#gameState;
-        if(game.players.findIndex(pl => pl.id === playerId) === -1) {
+        if (game.players.findIndex(pl => pl.id === playerId) === -1) {
             throw new Error(`player is not part of the game`)
         }
         const players = updateGamePlayerInList(
@@ -78,6 +78,22 @@ module.exports = class GameService extends EventEmitter {
         );
         this.#updateGameState({ ...game, players });
     }
+    /** player disconnects. Remove socketId.
+     * @param {string} socketId
+     */
+    leaveGame = (socketId) => {
+        if (!socketId) { throw new Error(`socketId cannot be empty`); }
+        const playerIndex = this.#gameState.players.findIndex(pl =>
+            pl.socketId === socketId
+        );
+        if (playerIndex === -1) { throw new Error(`player not in game`); }
+        const players = updateGamePlayerInList(
+            pl => pl.socketId === socketId,
+            pl => setGamePlayerSocketId(undefined, pl),
+            this.#gameState.players
+        );
+        this.#updateGameState({ ...this.#gameState, players })
+    }
     /**
      * @param {string} aliasId
      * @param {string} voterPlayerId
@@ -86,78 +102,170 @@ module.exports = class GameService extends EventEmitter {
         if (!(aliasId && voterPlayerId)) {
             throw new Error(`alias cannot be empty`);
         }
-        // get phase
-        const phase = this.#gameState.phase;
         // delegate to specific vote functions. should return new game state
-        if (phase.roundPhase === DayPhaseEnum.VILLAGERSVOTE) {
-            return this.#villagerVote(aliasId, voterPlayerId)
-        } else if (phase.roundPhase === NightPhaseEnum.WEREWOLVESHUNT) {
-            return this.#werewolfVote(aliasId, voterPlayerId)
-        } else if (phase.roundPhase === NightPhaseEnum.WEREWOLVESHUNT) {
-            return this.#seerVote(aliasId, voterPlayerId)
-        }
-        // check if all required voters has voted
-        // if true, process vote, and get a new game state
-        // if false, dont process vote
-        // save game
+        let newGame = this.#gameState;
+        newGame = cond(
+            [[
+                g => g.phase.roundPhase === DayPhaseEnum.VILLAGERSVOTE,
+                g => this.#villagerVote(aliasId, voterPlayerId, g)
+            ],
+            [
+                g => g.phase.roundPhase === NightPhaseEnum.WEREWOLVESHUNT,
+                g => this.#werewolfVote(aliasId, voterPlayerId, g)
+            ],
+            [
+                g => g.phase.roundPhase === NightPhaseEnum.SEERPEEK,
+                g => this.#seerVote(aliasId, voterPlayerId, g)
+            ],
+            [() => true, g => g]
+            ],
+            newGame
+        );
+        newGame = this.#processDayPhase(newGame);
+        newGame = this.#processWerewolfPhase(newGame);
+        // newGame = this.#skipSeerVote(newGame);
+        newGame = this.#processNightPhase(newGame);
+        this.#updateGameState(newGame);
     }
-    #villagerVote = (aliasId, voterPlayerId) => {
-        const state = this.#gameState;
+    /** process villager vote.
+     * @param {string} aliasId
+     * @param {string} voterPlayerId
+     * @param {Game} game
+     * @returns {Game}
+     */
+    #villagerVote = (aliasId, voterPlayerId, game) => {
         // check if villagers vote phase
-        // check if aliasId is alive
-        state.players.find(x => x.aliasId === aliasId);
-        // check if voterPlayerId is alive
-        state.players.find(x => x.id === voterPlayerId);
+        // check if voter and voted is alive
+        const voted = game.players.find(x => x.aliasId === aliasId);
+        const voter = game.players.find(x => x.id === voterPlayerId);
+        if (!(voter && voted && voter.isAlive && voted.isAlive)) { return game; }
 
         // add villager vote
-        const newVotes = upsertVote(voterPlayerId, aliasId, state.votes);
-        let newGameState = { ...this.#gameState, votes: newVotes };
-        // process vote?
-        const allAliveVillagersVoted =
-            newGameState.players.filter(x => x.isAlive).length === newGameState.votes.length;
-        if (!allAliveVillagersVoted) { return newGameState; }
-        const majorityVoteCount = Math.ceil(newGameState.players.filter(x => x.isAlive).length / 2)
-        const tally = newGameState.votes.reduce((acc, curr) => {
-            const voted = acc.get(curr.votedAliasId);
-            if (!voted) { acc.set(curr.votedAliasId, 1); }
-            else { acc.set(curr.votedAliasId, voted + 1); }
-            return acc;
-        }, new Map());
-        let votedOut = undefined;
-        for (let entry of tally) {
-            entry[1] >= majorityVoteCount;
+        const newVotes = upsertVote(voter.aliasId, aliasId, game.votes);
+        return { ...game, votes: newVotes };
+    }
+    /** process villager vote.
+     * @param {string} aliasId
+     * @param {string} voterPlayerId
+     * @param {Game} game
+     * @returns {Game}
+     */
+    #werewolfVote = (aliasId, voterPlayerId, game) => {
+        // check that werewolf vote phase
+        // check that voter and voted is alive
+        // check that voter is werewolf
+        // check that voted is not werewolf
+        const voted = game.players.find(x => x.aliasId === aliasId);
+        const voter = game.players.find(x => x.id === voterPlayerId);
+        if (!(voter && voted && voter.isAlive && voted.isAlive &&
+            voter.role === werewolfRole && voted.role !== werewolfRole)) {
+            return game;
         }
-        let newPlayers = newGameState.players;
+
+        // add werewolfVote
+        return { ...game, werewolfVote: aliasId };
+    }
+    /** process villager vote.
+     * @param {string} aliasId
+     * @param {string} voterPlayerId
+     * @param {Game} game
+     * @returns {Game}
+     */
+    #seerVote = (aliasId, voterPlayerId, game) => {
+        // check if seer vote phase
+        // check if voter is seer
+        // check that voter and voted is alive
+        // check that voter is seer
+        // check that voted is not in seer peeked yet
+        const voted = game.players.find(x => x.aliasId === aliasId);
+        const voter = game.players.find(x => x.id === voterPlayerId);
+        if (!(voter && voted && voter.isAlive && voted.isAlive &&
+            voter.role === seerRole &&
+            game.seerPeekedAliasIds.indexOf(voted.aliasId) === -1)) {
+            return game;
+        }
+
+        // add seer vote
+        return {
+            ...game,
+            seerVote: voted.aliasId
+        };
+    }
+    // /** check skip seer phase if seer is dead.
+    //  * @param {Game} game
+    //  * @returns {Game} game
+    //  */
+    // #skipSeerVote = (game) => {
+    //     if (game.phase.roundPhase !== NightPhaseEnum.SEERPEEK) { return game; }
+    //     const seer = game.players.find(pl => pl.role === seerRole);
+    //     if (seer && seer.isAlive) { return game; }
+
+    //     return {
+    //         ...game, phase: getNextGamePhase(game.phase)
+    //     }
+    // }
+
+    /** process day / villager voting phase
+     * * check if villager phase && vote is complete. else return game.
+     * * tally votes
+     * * if there is majority vote, kill player.
+     * * mark if game complete
+     * * change phase
+     * @param {Game} game
+     * @returns {Game}
+     */
+    #processDayPhase = (game) => {
+        if (game.phase.roundPhase !== DayPhaseEnum.VILLAGERSVOTE) { return game; }
+        const alivePlayers = game.players.filter(x => x.isAlive);
+        const votesComplete = alivePlayers.length === game.votes.length;
+        if (!votesComplete) { return game; }
+        const votedOut = tallyVote(game.votes);
+        let newPlayers = game.players;
         if (votedOut !== undefined) {
             newPlayers = updateGamePlayerInList(
-                pl => pl.aliasId === votedOut[0],
-                pl => killPlayer('', pl),
+                pl => pl.aliasId === votedOut,
+                pl => killPlayer('Killed by villagers.', pl),
                 newPlayers
             );
         }
-        newGameState = {
-            ...newGameState,
-            phase: getNextGamePhase(newGameState.phase),
+        return {
+            ...game,
+            votes: [],
+            phase: getNextGamePhase(game.phase),
             players: newPlayers
         };
-
     }
-    #werewolfVote = (aliasId, voterPlayerId) => {
-        // check if werewolf vote phase
-        // check if voter is alive
-        // check if aliasId is alive
-        // check if voter is werewolf
-
-        // add werewolfVote
-        // process vote?
+    /** process werewolf vote phase
+     * @param {Game} game
+     * @returns {Game} game
+     */
+    #processWerewolfPhase = (game) => {
+        if (game.phase.roundPhase !== NightPhaseEnum.WEREWOLVESHUNT) { return game; }
+        if (game.werewolfVote === undefined) { return game; }
+        return { ...game, phase: getNextGamePhase(game.phase) };
     }
-    #seerVote = (aliasId, voterPlayerId) => {
-        // check if seer vote phase
-        // check if voter is alive
-        // check if aliasId is alive
-        // check if voter is seer
-
-        // add seer vote
-        // process vote?
+    /** process night phase
+     * @param {Game} game
+     * @returns {Game} game
+     */
+    #processNightPhase = (game) => {
+        // game is last phase and last phase is done.
+        const seer = game.players.find(x => x.role === seerRole);
+        if (!(game.phase.roundPhase === NightPhaseEnum.SEERPEEK
+            && (game.seerVote !== undefined || !seer.isAlive))) { return game; }
+        const players = updateGamePlayerInList(
+            pl => pl.aliasId === game.werewolfVote,
+            pl => killPlayer('Killed by werewolves.', pl),
+            game.players
+        )
+        return {
+            ...game,
+            players,
+            seerPeekedAliasIds: [...game.seerPeekedAliasIds, game.seerVote],
+            werewolfVote: undefined,
+            seerVote: undefined,
+            phase: getNextGamePhase(game.phase),
+            round: game.round + 1
+        }
     }
 }
