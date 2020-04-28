@@ -9,14 +9,14 @@ import { PlayerService } from 'src/services/player.service';
   styleUrls: ['./join-game.component.css']
 })
 export class JoinGameComponent implements OnInit {
-  playerName: string = '';
-  loadForm: boolean = false;
+  playerName = '';
+  loadForm = false;
 
   constructor(private playerService: PlayerService, private router: Router) {}
 
   async ngOnInit() {
     const player = await this.playerService.getPlayer();
-    if( player ) {
+    if ( player ) {
       return this.router.navigate(['/lobby']);
     }
 

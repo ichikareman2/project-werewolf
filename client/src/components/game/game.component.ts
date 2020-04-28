@@ -10,7 +10,7 @@ import { GameService } from 'src/services/game.service';
   styleUrls: ['./game.component.css']
 })
 export class GameComponent implements OnInit {
-  loadPage: boolean = false;
+  loadPage = false;
   players: Player[] = [
     {
       id: '1',
@@ -60,7 +60,7 @@ export class GameComponent implements OnInit {
   gamePhase: GamePhase = {
     dayOrNight: GamePhaseEnum.NIGHT,
     roundPhase: DayPhaseEnum.VILLAGERSVOTE
-  }
+  };
   role: RolesEnum = RolesEnum.VILLAGER;
 
   constructor(
@@ -71,7 +71,7 @@ export class GameComponent implements OnInit {
 
   async ngOnInit() {
     const player = await this.playerService.getPlayer();
-    if( ! player ) {
+    if ( ! player ) {
       return this.router.navigate(['/']);
     }
 

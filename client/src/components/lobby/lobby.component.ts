@@ -11,8 +11,8 @@ import { Player } from 'src/models';
 })
 export class LobbyComponent implements OnInit {
   playerList: Player[];
-  roomCode: string = 'CODE';
-  isHostPlayer: boolean = false;
+  roomCode = 'CODE';
+  isHostPlayer = false;
 
   constructor(
     private lobbyService: LobbyService,

@@ -32,10 +32,10 @@ export class PlayerService {
         this.router.navigate(['/lobby']);
     }
 
-    async getPlayer() : Promise<Player> | null {
-        if( ! this.player ) {
+    async getPlayer(): Promise<Player> | null {
+        if ( ! this.player ) {
             const playerId = this.getPlayerId();
-            if( ! playerId ) {
+            if ( ! playerId ) {
                 return null;
             }
             return this.apiService.get(`/player/${playerId}`, {}).toPromise();
@@ -44,7 +44,7 @@ export class PlayerService {
         return Promise.resolve(this.player);
     }
 
-    getPlayerId() : string | null {
+    getPlayerId(): string | null {
         return this.localStorageService.getItem(LOCAL_STORAGE_KEY);
     }
 }

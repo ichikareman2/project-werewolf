@@ -12,4 +12,4 @@ export type Player = {
     isHost: boolean;
     role?: RolesEnum;
     alive?: boolean;
-}
+};
