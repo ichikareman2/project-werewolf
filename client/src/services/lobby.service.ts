@@ -31,7 +31,7 @@ export class LobbyService {
         this.socket = io(`${environment.SERVER_ENDPOINT}/lobby`);
 
         const playerId = this.playerService.getPlayerId();
-        if( !playerId ) {
+        if ( !playerId ) {
             this.router.navigate(['/']);
         }
 
@@ -40,15 +40,15 @@ export class LobbyService {
         this.isGameStart = fromEvent(this.socket, SOCKET_EVENTS.LOBBY_GAME_STARTED);
     }
 
-    public getLobbyPlayers() : Observable<Player[]> {
+    public getLobbyPlayers(): Observable<Player[]> {
         return this.lobbyPlayers;
     }
 
-    public isGameStarted() : Observable<boolean>{
+    public isGameStarted(): Observable<boolean>{
         return this.isGameStart;
     }
 
     public handleStartGame() {
-        this.socket.emit(SOCKET_EVENTS.LOBBY_GAME_START)
+        this.socket.emit(SOCKET_EVENTS.LOBBY_GAME_START);
     }
 }

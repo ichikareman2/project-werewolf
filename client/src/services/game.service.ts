@@ -23,7 +23,7 @@ export class GameService {
         private router: Router
     ) {
         const playerId = this.playerService.getPlayerId();
-        if( !playerId ) {
+        if ( !playerId ) {
             this.router.navigate(['/']);
         }
 
@@ -31,7 +31,7 @@ export class GameService {
         this.game = fromEvent(this.socket, SOCKET_EVENTS.GAME_UPDATE);
     }
 
-    public getGame() : Observable<Game> {
+    public getGame(): Observable<Game> {
         return this.game;
     }
 }
