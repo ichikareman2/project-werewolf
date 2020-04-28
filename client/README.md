@@ -1,27 +1,101 @@
-# Client
+# Werewolf Client
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 9.1.1.
+This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 9.1.1. 
 
-## Development server
+## Scripts
+* `npm run start  /yarn start` - starts the development server
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+* `npm run lint / yarn lint` - runs linting tool across all project files
 
-## Code scaffolding
+## Routes
+* `/`
+  - home page, currently renders the form to join the game asking for user's player name
+  - [TO DO] add option to create room
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+* `/lobby`
+  - contains a list of all players in the game
+  - if host, has the option to start game
 
-## Build
+* `/game`
+  - actual game view
+  - renders all players, current phase and instructions based on player's role
+  - [TO DO] for implementation
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+* `/role`
+  - list of roles currently supported
 
-## Running unit tests
+## Models
+_This needs to be updated as the server models change_
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+### Role
+```
+name: string;
+description: string;
+image: string;
+```
+### Player
+```
+id: string;
+aliasId: string;
+name: string;
+isHost: boolean;
+role?: RolesEnum;
+alive?: boolean;
+```
+### Lobby
+```
+players: Player[];
+roomCode: string;
+```
+### Game
+```
+phase: GamePhase;
+round: number;
+players: Player[];
+```
 
-## Running end-to-end tests
+## Validations
+* Player name
+  - required
+  - 4-8 character length
+  - alphanumeric
+* Lobby, Game
+  - validate session, if exists
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
+## Services
+* Form Validation Services
+  - contains validations methods used in forms
+  - supports checking if string is alphanumeric
+* API service
+  - handles general HTTP client requests
+  - supports `GET` and `POST` requests at the moment
+* Local Storage Service
+  - manages the `LocalStorage`
+* Lobby Service
+  - connects to the lobby socket service in the server
+  - events include joining, starting and leaving game
+* Player Service
+  - handles player-related requests
+* Game Service
+  - handles all game-related methods
+  - [TODO] for implementation
 
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+## Components
+* Header
+  - will act as a navigation bar in the future
+* Join Game
+  - asks for the player name
+  - redirects to `/lobby`
+* Lobby
+  - uses `LobbyService`
+  - list of players
+  - button to start game, if host
+  - redirects to `/game` on game start
+* Game
+  - uses `GameService`
+  - list of players, both active and inactive
+  - current game phase and round
+  - instruction messagges based on game phase and role
+* Roles
+  - retrieves roles config data from server
+  - displays role details
