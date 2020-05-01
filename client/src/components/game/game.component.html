@@ -2,8 +2,10 @@
     <div class="col justify-content-center game">
         <game-instruction [gamePhase]="gamePhase" [role]="role"></game-instruction>
         <div class="col mt-4 mb-4 p-0">
-            <game-player *ngFor="let p of players" [player]="p"></game-player>
+            <game-player *ngFor="let p of players" [player]="p" (click)="handlePlayerClick(p)"></game-player>
         </div>
         <game-phase [mode]="gamePhase.dayOrNight"></game-phase>
     </div>
 </div>
+
+<modal [header]="modalHeader" [message]="modalMessage" [modalId]="modalId"></modal>

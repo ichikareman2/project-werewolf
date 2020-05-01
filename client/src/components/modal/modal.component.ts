@@ -6,6 +6,7 @@ import { Component, Input } from '@angular/core';
   styleUrls: ['./modal.component.css']
 })
 export class ModalComponent {
+    @Input() modalId: string;
     @Input() header: string;
     @Input() message: string;
 }

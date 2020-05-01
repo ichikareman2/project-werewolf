@@ -4,6 +4,10 @@ import { GamePhase, RolesEnum, GamePhaseEnum, DayPhaseEnum, Player } from 'src/m
 import { PlayerService } from 'src/services/player.service';
 import { GameService } from 'src/services/game.service';
 
+declare var $: any;
+
+const MODAL_MESSAGE = 'Are you sure you want to vote this player out?';
+
 @Component({
   selector: 'game',
   templateUrl: './game.component.html',
@@ -18,6 +22,11 @@ export class GameComponent implements OnInit {
   };
   role: RolesEnum = RolesEnum.VILLAGER;
   currentPlayer: Player;
+  votedPlayer: Player;
+
+  modalId: string = 'modal-vote-confirm';
+  modalHeader: string = 'Confirm Vote';
+  modalMessage: string = MODAL_MESSAGE;
 
   constructor(
     private router: Router,
@@ -45,6 +54,12 @@ export class GameComponent implements OnInit {
     });
 
     this.gameService.joinGame();
+  }
+
+  public handlePlayerClick(data) {
+    this.votedPlayer = data;
+    this.modalMessage = MODAL_MESSAGE.replace('this player', this.votedPlayer.name);
+    $(`#${this.modalId}`).modal('show');
   }
 
   // get data specific to the current player
