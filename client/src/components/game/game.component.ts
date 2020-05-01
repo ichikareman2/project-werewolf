@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { GamePhase, RolesEnum, GamePhaseEnum, DayPhaseEnum, Player } from 'src/models';
+import { GamePhase, RolesEnum, GamePhaseEnum, DayPhaseEnum, Player, Game } from 'src/models';
 import { PlayerService } from 'src/services/player.service';
 import { GameService } from 'src/services/game.service';
+import { Observable, of } from 'rxjs';
 
 @Component({
   selector: 'game',
@@ -11,57 +12,13 @@ import { GameService } from 'src/services/game.service';
 })
 export class GameComponent implements OnInit {
   loadPage = false;
-  players: Player[] = [
-    {
-      id: '1',
-      aliasId: '1',
-      name: 'Player 1',
-      isHost: true,
-      alive: true
-    },
-    {
-      id: '2',
-      aliasId: '2',
-      name: 'Player 2',
-      isHost: false,
-      alive: true
-    },
-    {
-      id: '3',
-      aliasId: '3',
-      name: 'Player 3',
-      isHost: false,
-      alive: true,
-    },
-    {
-      id: '4',
-      aliasId: '4',
-      name: 'Player 4',
-      isHost: false,
-      alive: false,
-      role: RolesEnum.SEER,
-    },
-    {
-      id: '5',
-      aliasId: '5',
-      name: 'Player 5',
-      isHost: false,
-      alive: true,
-    },
-    {
-      id: '6',
-      aliasId: '6',
-      name: 'Player 6',
-      isHost: false,
-      alive: false,
-      role: RolesEnum.VILLAGER
-    }
-  ];
+  players: Player[] = [];
   gamePhase: GamePhase = {
     dayOrNight: GamePhaseEnum.NIGHT,
     roundPhase: DayPhaseEnum.VILLAGERSVOTE
   };
   role: RolesEnum = RolesEnum.VILLAGER;
+  currentPlayer: Player;
 
   constructor(
     private router: Router,
@@ -76,5 +33,22 @@ export class GameComponent implements OnInit {
     }
 
     this.loadPage = true;
+
+    const gameObservable = this.gameService.getGame();
+    gameObservable.subscribe(response => {
+      if( ! this.currentPlayer ) {
+        this.getCurrentPlayer(player.aliasId, response.players);
+        this.role = this.currentPlayer.role;
+      }
+
+      this.players = response.players;
+      this.gamePhase = response.phase;
+    });
+
+    this.gameService.joinGame();
+  }
+
+  private getCurrentPlayer(playerAliasId: string, players: Player[]) {
+    this.currentPlayer = players.filter(x => x.aliasId === playerAliasId)[0];
   }
 }

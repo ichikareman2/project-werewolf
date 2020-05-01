@@ -7,6 +7,7 @@ import { PlayerService } from './player.service';
 import { Game } from 'src/models';
 
 const SOCKET_EVENTS = {
+    GAME_JOIN: 'joinGame',
     GAME_UPDATE: 'gameUpdated'
 };
 
@@ -17,6 +18,7 @@ export class GameService {
 
     private socket;
     private game: Observable<Game>;
+    private player: string;
 
     constructor(
         private playerService: PlayerService,
@@ -27,8 +29,13 @@ export class GameService {
             this.router.navigate(['/']);
         }
 
+        this.player = playerId;
         this.socket = io(`${environment.SERVER_ENDPOINT}/game`);
         this.game = fromEvent(this.socket, SOCKET_EVENTS.GAME_UPDATE);
+    }
+
+    public joinGame() {
+        this.socket.emit(SOCKET_EVENTS.GAME_JOIN, this.player);
     }
 
     public getGame(): Observable<Game> {
