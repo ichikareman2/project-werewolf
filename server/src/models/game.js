@@ -9,22 +9,26 @@
 
 const { createNewGamePhase } = require('./game-phase')
 
+const winnerVillager = 'Villager';
+const winnerWerewolves = 'Werewolves';
+
 /** Game Model
  * @typedef {Object} Game
- * @property {(GamePlayer)[]} players - players
+ * @property {GamePlayer[]} players - players
  * @property {GamePhase} phase - current phase of game
  * @property {number} round - round number
  * @property {Vote[]} votes - current votes for the phase
  * @property {string[]} seerPeekedAliasIds - alias ids that the seer has peeked on
  * @property {string} werewolfVote - alias id of player that werewolf hunted
  * @property {string} seerVote - alias id of player that the seer peeked on
+ * @property {winnerVillager | winnerWerewolves} winner - if not empty, game is over
  */
 /** Incomplete Game model with sensitive properties removed.
- *  @typedef {Pick<(Game), 'phase' | 'round' | 'votes'>} GameWithOmission */
+ * @typedef {Pick<(Game), 'phase' | 'round' | 'votes' | 'winner'>} GameWithOmission */
 /** Incomplete Game model same as `gameWithOmissions` but for werewolf
- * @typedef {Pick<(Game), 'phase' | 'round' | 'votes' | 'werewolfVote'>} WerewolfGameWithOmission */
+ * @typedef {Pick<(Game), 'phase' | 'round' | 'votes' | 'winner' | 'werewolfVote'>} WerewolfGameWithOmission */
 /** Incomplete Game model same as `gameWithOmissions` but for seer
- * @typedef {Pick<(Game), 'phase' | 'round' | 'votes' | 'seerVote' | 'seerPeekedAliasIds'>} SeerGameWithOmission */
+ * @typedef {Pick<(Game), 'phase' | 'round' | 'votes' | 'winner' | 'seerVote' | 'seerPeekedAliasIds'>} SeerGameWithOmission */
 
 /** Game model's player property but as public game player
 * @typedef {{players: PublicGamePlayer[]}} WithPublicPlayer */
@@ -51,7 +55,8 @@ function createNewGame() {
         votes: [],
         seerPeekedAliasIds: [],
         werewolfVote: undefined,
-        seerVote: undefined
+        seerVote: undefined,
+        winner: undefined
     }
 }
 /** set game players
@@ -71,8 +76,8 @@ function setGamePlayers(players, game) {
  * @returns {PublicGame}
  * */
 function getPublicGame(publicGamePlayers, game) {
-    const { phase, round, votes } = game;
-    return { phase, round, votes, players: publicGamePlayers };
+    const { phase, round, votes, winner } = game;
+    return { phase, round, votes, winner, players: publicGamePlayers };
 }
 /** get desensitized game state for werewolves
  * @param {PublicGamePlayer[]} publicGamePlayers
@@ -81,8 +86,8 @@ function getPublicGame(publicGamePlayers, game) {
  * @returns {WerewolfPublicGame}
  * */
 function getWerewolfGame(publicGamePlayers, alphaWolf, game) {
-    const { phase, round, votes, werewolfVote } = game;
-    return { phase, round, votes, werewolfVote, alphaWolf, players: publicGamePlayers };
+    const { phase, round, votes, winner, werewolfVote } = game;
+    return { phase, round, votes, winner, werewolfVote, alphaWolf, players: publicGamePlayers };
 }
 /** get desensitized game state for seer
  * @param {PublicGamePlayer[]} publicGamePlayers
@@ -90,15 +95,30 @@ function getWerewolfGame(publicGamePlayers, alphaWolf, game) {
  * @returns {SeerPublicGame}
  * */
 function getSeerPublicGame(publicGamePlayers, game) {
-    const { phase, round, votes, seerVote, seerPeekedAliasIds } = game;
-    return { phase, round, votes, seerVote, seerPeekedAliasIds, players: publicGamePlayers };
+    const { phase, round, votes, winner, seerVote, seerPeekedAliasIds } = game;
+    return { phase, round, votes, winner, seerVote, seerPeekedAliasIds, players: publicGamePlayers };
 }
-
+/** set winner to villagers.
+ * @param {Game} game
+ * @returns {Game} game
+ */
+function setWinnerVillager (game) {
+    return { ...game, winner: winnerVillager };
+}
+/** set winner to werewolves.
+ * @param {Game} game
+ * @returns {Game} game
+ */
+function setWinnerWerewolves (game) {
+    return { ...game, winner: winnerWerewolves };
+}
 
 module.exports = {
     createNewGame,
     setGamePlayers,
     getPublicGame,
     getWerewolfGame,
-    getSeerPublicGame
+    getSeerPublicGame,
+    setWinnerVillager,
+    setWinnerWerewolves
 }
