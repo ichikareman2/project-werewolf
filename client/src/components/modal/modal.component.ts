@@ -9,7 +9,7 @@ export class ModalComponent {
     @Input() modalId: string;
     @Input() header: string;
     @Input() message: string;
-    @Input() primaryButtonLabel: string = 'OK';
+    @Input() primaryButtonLabel = 'OK';
     @Output() primaryActionHandler = new EventEmitter();
     @Output() secondaryActionHandler = new EventEmitter();
 

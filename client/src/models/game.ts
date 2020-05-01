@@ -23,7 +23,7 @@ export type GamePhase = {
 export type Vote = {
     voterAliasId: string;
     votedAliasId: string;
-}
+};
 
 export type Game = {
     phase: GamePhase;

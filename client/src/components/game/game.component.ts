@@ -24,8 +24,8 @@ export class GameComponent implements OnInit {
   currentPlayer: Player;
   votedPlayer: Player;
 
-  modalId: string = 'modal-vote-confirm';
-  modalHeader: string = 'Confirm Vote';
+  modalId = 'modal-vote-confirm';
+  modalHeader = 'Confirm Vote';
   modalMessage: string = MODAL_MESSAGE;
 
   constructor(
@@ -44,7 +44,7 @@ export class GameComponent implements OnInit {
 
     const gameObservable = this.gameService.getGame();
     gameObservable.subscribe(response => {
-      if( ! this.currentPlayer ) {
+      if ( ! this.currentPlayer ) {
         this.getCurrentPlayer(player.aliasId, response.players);
         this.role = this.currentPlayer.role;
       }
@@ -59,7 +59,7 @@ export class GameComponent implements OnInit {
   }
 
   public handlePlayerClick(data) {
-    if( data.aliasId === this.currentPlayer.aliasId || ! data.isAlive || this.votedPlayer ) {
+    if ( data.aliasId === this.currentPlayer.aliasId || ! data.isAlive || this.votedPlayer ) {
       return;
     }
 
@@ -97,7 +97,7 @@ export class GameComponent implements OnInit {
 
   private getVote(votes: Vote[], players: Player[]) {
     const vote = votes.filter(x => x.voterAliasId === this.currentPlayer.aliasId)[0];
-    if( vote ) {
+    if ( vote ) {
       this.votedPlayer = players.filter(x => x.aliasId === vote.votedAliasId)[0];
     }
   }

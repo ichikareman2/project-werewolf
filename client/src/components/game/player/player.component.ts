@@ -8,5 +8,5 @@ import { Player } from 'src/models';
 })
 export class GamePlayerComponent {
   @Input() player: Player;
-  @Input() isVote: boolean = false;
+  @Input() isVote = false;
 }
