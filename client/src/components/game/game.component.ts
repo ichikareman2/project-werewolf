@@ -3,7 +3,6 @@ import { Router } from '@angular/router';
 import { GamePhase, RolesEnum, GamePhaseEnum, DayPhaseEnum, Player, Game } from 'src/models';
 import { PlayerService } from 'src/services/player.service';
 import { GameService } from 'src/services/game.service';
-import { Observable, of } from 'rxjs';
 
 @Component({
   selector: 'game',
@@ -14,7 +13,7 @@ export class GameComponent implements OnInit {
   loadPage = false;
   players: Player[] = [];
   gamePhase: GamePhase = {
-    dayOrNight: GamePhaseEnum.NIGHT,
+    dayOrNight: GamePhaseEnum.DAY,
     roundPhase: DayPhaseEnum.VILLAGERSVOTE
   };
   role: RolesEnum = RolesEnum.VILLAGER;
@@ -41,14 +40,28 @@ export class GameComponent implements OnInit {
         this.role = this.currentPlayer.role;
       }
 
-      this.players = response.players;
+      this.players = this.reorderPlayers(response.players);
       this.gamePhase = response.phase;
     });
 
     this.gameService.joinGame();
   }
 
+  // get data specific to the current player
   private getCurrentPlayer(playerAliasId: string, players: Player[]) {
     this.currentPlayer = players.filter(x => x.aliasId === playerAliasId)[0];
+  }
+
+  // rearrange player list
+  // [ current player, alive players, eliminated players ]
+  private reorderPlayers(players: Player[]) {
+    const eliminatedPlayers = players.filter(x => !x.isAlive && x.aliasId !== this.currentPlayer.aliasId);
+    const alivePlayers = players.filter(x => x.isAlive && x.aliasId !== this.currentPlayer.aliasId);
+
+    return [
+      this.currentPlayer,
+      ...alivePlayers,
+      ...eliminatedPlayers
+    ];
   }
 }
