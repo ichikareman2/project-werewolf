@@ -11,57 +11,13 @@ import { GameService } from 'src/services/game.service';
 })
 export class GameComponent implements OnInit {
   loadPage = false;
-  players: Player[] = [
-    {
-      id: '1',
-      aliasId: '1',
-      name: 'Player 1',
-      isHost: true,
-      alive: true
-    },
-    {
-      id: '2',
-      aliasId: '2',
-      name: 'Player 2',
-      isHost: false,
-      alive: true
-    },
-    {
-      id: '3',
-      aliasId: '3',
-      name: 'Player 3',
-      isHost: false,
-      alive: true,
-    },
-    {
-      id: '4',
-      aliasId: '4',
-      name: 'Player 4',
-      isHost: false,
-      alive: false,
-      role: RolesEnum.SEER,
-    },
-    {
-      id: '5',
-      aliasId: '5',
-      name: 'Player 5',
-      isHost: false,
-      alive: true,
-    },
-    {
-      id: '6',
-      aliasId: '6',
-      name: 'Player 6',
-      isHost: false,
-      alive: false,
-      role: RolesEnum.VILLAGER
-    }
-  ];
+  players: Player[] = [];
   gamePhase: GamePhase = {
-    dayOrNight: GamePhaseEnum.NIGHT,
+    dayOrNight: GamePhaseEnum.DAY,
     roundPhase: DayPhaseEnum.VILLAGERSVOTE
   };
   role: RolesEnum = RolesEnum.VILLAGER;
+  currentPlayer: Player;
 
   constructor(
     private router: Router,
@@ -76,5 +32,36 @@ export class GameComponent implements OnInit {
     }
 
     this.loadPage = true;
+
+    const gameObservable = this.gameService.getGame();
+    gameObservable.subscribe(response => {
+      if( ! this.currentPlayer ) {
+        this.getCurrentPlayer(player.aliasId, response.players);
+        this.role = this.currentPlayer.role;
+      }
+
+      this.players = this.reorderPlayers(response.players);
+      this.gamePhase = response.phase;
+    });
+
+    this.gameService.joinGame();
+  }
+
+  // get data specific to the current player
+  private getCurrentPlayer(playerAliasId: string, players: Player[]) {
+    this.currentPlayer = players.filter(x => x.aliasId === playerAliasId)[0];
+  }
+
+  // rearrange player list
+  // [ current player, alive players, eliminated players ]
+  private reorderPlayers(players: Player[]) {
+    const eliminatedPlayers = players.filter(x => !x.isAlive && x.aliasId !== this.currentPlayer.aliasId);
+    const alivePlayers = players.filter(x => x.isAlive && x.aliasId !== this.currentPlayer.aliasId);
+
+    return [
+      this.currentPlayer,
+      ...alivePlayers,
+      ...eliminatedPlayers
+    ];
   }
 }

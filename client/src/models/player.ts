@@ -1,8 +1,8 @@
 
 export enum RolesEnum {
-    VILLAGER = 'villager',
-    WEREWOLF = 'werewolf',
-    SEER = 'seer'
+    VILLAGER = 'Villager',
+    WEREWOLF = 'Werewolf',
+    SEER = 'Seer'
 }
 
 export type Player = {
@@ -11,5 +11,6 @@ export type Player = {
     name: string;
     isHost: boolean;
     role?: RolesEnum;
-    alive?: boolean;
+    isAlive?: boolean;
+    causeOfDeath: string;
 };

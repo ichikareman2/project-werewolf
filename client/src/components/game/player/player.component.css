@@ -41,3 +41,9 @@
 .text-muted, .text-muted .player-thumbnail {
     border-color: #6c757d !important;
 }
+
+.game-player:hover, .game-player:hover .player-thumbnail {
+    /* border-color: #c82333;
+    color: #c82333; */
+    cursor: pointer;
+}

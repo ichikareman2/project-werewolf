@@ -1,6 +1,6 @@
-<div class="row text-center game-player" [ngClass]="[!player.alive ? 'text-muted' : '']">
+<div class="row text-center game-player" [ngClass]="[!player.isAlive ? 'text-muted' : '']">
     <div class="player-details">
-        <h5>{{ player.name}}</h5>
+        <h5>{{ player.name }}</h5>
         <div class="player-details-role">{{ player.role || '' }}</div>
     </div>
     <div class="player-thumbnail">

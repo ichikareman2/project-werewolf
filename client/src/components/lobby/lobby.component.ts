@@ -13,6 +13,7 @@ export class LobbyComponent implements OnInit {
   playerList: Player[];
   roomCode = 'CODE';
   isHostPlayer = false;
+  canStartGame = false;
 
   constructor(
     private lobbyService: LobbyService,
@@ -26,6 +27,7 @@ export class LobbyComponent implements OnInit {
     const lobbyObservable = this.lobbyService.getLobbyPlayers();
     lobbyObservable.subscribe(response => {
       this.playerList = response;
+      this.canStartGame = this.playerList.length >= 5;
       this.isHostPlayer = (response.filter(x => x.aliasId === player.aliasId))[0].isHost;
     });
 
