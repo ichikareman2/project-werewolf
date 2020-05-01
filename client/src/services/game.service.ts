@@ -8,7 +8,8 @@ import { Game } from 'src/models';
 
 const SOCKET_EVENTS = {
     GAME_JOIN: 'joinGame',
-    GAME_UPDATE: 'gameUpdated'
+    GAME_UPDATE: 'gameUpdated',
+    GAME_VOTE: 'vote',
 };
 
 @Injectable({
@@ -18,7 +19,7 @@ export class GameService {
 
     private socket;
     private game: Observable<Game>;
-    private player: string;
+    private playerId: string;
 
     constructor(
         private playerService: PlayerService,
@@ -29,16 +30,20 @@ export class GameService {
             this.router.navigate(['/']);
         }
 
-        this.player = playerId;
+        this.playerId = playerId;
         this.socket = io(`${environment.SERVER_ENDPOINT}/game`);
         this.game = fromEvent(this.socket, SOCKET_EVENTS.GAME_UPDATE);
     }
 
     public joinGame() {
-        this.socket.emit(SOCKET_EVENTS.GAME_JOIN, this.player);
+        this.socket.emit(SOCKET_EVENTS.GAME_JOIN, this.playerId);
     }
 
     public getGame(): Observable<Game> {
         return this.game;
+    }
+
+    public sendVote(vote: string) {
+        this.socket.emit(vote, this.playerId);
     }
 }
