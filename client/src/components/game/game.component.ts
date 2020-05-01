@@ -57,9 +57,17 @@ export class GameComponent implements OnInit {
   }
 
   public handlePlayerClick(data) {
+    if( data.aliasId === this.currentPlayer.aliasId || ! data.isAlive ) {
+      return;
+    }
+
     this.votedPlayer = data;
     this.modalMessage = MODAL_MESSAGE.replace('this player', this.votedPlayer.name);
     $(`#${this.modalId}`).modal('show');
+  }
+
+  public submitVote() {
+    this.gameService.sendVote(this.votedPlayer.aliasId);
   }
 
   // get data specific to the current player
