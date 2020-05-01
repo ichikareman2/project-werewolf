@@ -47,7 +47,7 @@
              socket.on(this.#joinGameEvent, this.onJoinGame(socket));
              socket.on(this.#voteEvent, this.vote)
              socket.on(this.#leaveGameEvent, this.onLeaveGame(socket));
-             socket.on('disconnect', this.onLeaveGame(socket));
+             socket.on('disconnect', this.onLeaveGame(socket)); 
          })
      }
      /** 

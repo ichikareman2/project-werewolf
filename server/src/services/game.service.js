@@ -9,8 +9,8 @@
 /** @typedef {import('../services/player.service')} PlayerService */
 
 const { EventEmitter } = require('events');
-const { conditionalMap, cond } = require('../util');
-const { createNewGame, setGamePlayers, getPublicGame, getSeerPublicGame } = require('../models/game');
+const { cond } = require('../util');
+const { createNewGame, setGamePlayers, getPublicGame, getSeerPublicGame,setWinnerVillager, setWinnerWerewolves } = require('../models/game');
 const { createGamePlayer, createShuffledRoles, updateGamePlayerInList, setGamePlayerSocketId, killPlayer } = require('../models/game-player');
 const { DayPhaseEnum, NightPhaseEnum, gamePhases, getNextGamePhase } = require('../models/game-phase');
 const { werewolfRole, villagerRole, seerRole } = require('../models/game-player');
@@ -38,12 +38,12 @@ module.exports = class GameService extends EventEmitter {
         this.#gameState = game;
         this.emit(GameService.gameUpdatedEvent, game);
     }
-    /** 
-     * @param {LobbyPlayer[]} lobbyPlayers 
+    /** create an instance of the game.
+     * @param {Omit<LobbyPlayer, 'socketId'>[]} lobbyPlayers 
      */
     startGame = async (lobbyPlayers) => {
         if (!(Array.isArray(lobbyPlayers) && lobbyPlayers.length > 0)) {
-            throw new Error(`players cannot be null`);
+            throw new Error(`players cannot be empty`);
         }
         if (lobbyPlayers.length < 5) {
             throw new Error(`players must be at least 5 to start.`);
@@ -59,7 +59,6 @@ module.exports = class GameService extends EventEmitter {
         let newGameState = createNewGame();
         newGameState = setGamePlayers(gamePlayers, newGameState);
         this.#updateGameState(newGameState);
-        return;
     }
     /** player connects. record socketId
      * @param {string} playerId
@@ -99,8 +98,12 @@ module.exports = class GameService extends EventEmitter {
      * @param {string} voterPlayerId
      */
     vote = (aliasId, voterPlayerId) => {
+
         if (!(aliasId && voterPlayerId)) {
             throw new Error(`alias cannot be empty`);
+        }
+        if(this.#gameState.winner === undefined) {
+            throw new Error(`Game is completed.`);
         }
         // delegate to specific vote functions. should return new game state
         let newGame = this.#gameState;
@@ -125,6 +128,7 @@ module.exports = class GameService extends EventEmitter {
         newGame = this.#processWerewolfPhase(newGame);
         // newGame = this.#skipSeerVote(newGame);
         newGame = this.#processNightPhase(newGame);
+        newGame = this.#finishGame(newGame);
         this.#updateGameState(newGame);
     }
     /** process villager vote.
@@ -138,7 +142,10 @@ module.exports = class GameService extends EventEmitter {
         // check if voter and voted is alive
         const voted = game.players.find(x => x.aliasId === aliasId);
         const voter = game.players.find(x => x.id === voterPlayerId);
-        if (!(voter && voted && voter.isAlive && voted.isAlive)) { return game; }
+        if (!(voter && voted)) { throw new Error(`Player does not exist.`); }
+        if (!(voter.isAlive && voted.isAlive)) {
+            throw new Error(`Player is dead.`);
+        }
 
         // add villager vote
         const newVotes = upsertVote(voter.aliasId, aliasId, game.votes);
@@ -157,9 +164,13 @@ module.exports = class GameService extends EventEmitter {
         // check that voted is not werewolf
         const voted = game.players.find(x => x.aliasId === aliasId);
         const voter = game.players.find(x => x.id === voterPlayerId);
-        if (!(voter && voted && voter.isAlive && voted.isAlive &&
-            voter.role === werewolfRole && voted.role !== werewolfRole)) {
-            return game;
+        if (!(voter && voted)) { throw new Error(`Player does not exist.`); }
+        if(!(voter.isAlive && voted.isAlive)) {throw new Error(`Player is dead.`)}
+        if (!(voter.role === werewolfRole)) {
+            throw new Error(`Player is not a werewolf.`)
+        }
+        if(!(voted.role !== werewolfRole)) {
+            throw new Error(`Voted player should not be a werewolf.`);
         }
 
         // add werewolfVote
@@ -179,10 +190,13 @@ module.exports = class GameService extends EventEmitter {
         // check that voted is not in seer peeked yet
         const voted = game.players.find(x => x.aliasId === aliasId);
         const voter = game.players.find(x => x.id === voterPlayerId);
-        if (!(voter && voted && voter.isAlive && voted.isAlive &&
-            voter.role === seerRole &&
-            game.seerPeekedAliasIds.indexOf(voted.aliasId) === -1)) {
-            return game;
+        if (!(voter && voted)) { throw new Error(`Player does not exist.`); }
+        if(!(voter.isAlive && voted.isAlive)) {throw new Error(`Player is dead.`)}
+        if (!(voter.role === seerRole)) {
+            throw new Error(`Player is not a seer.`);
+        }
+        if(!(game.seerPeekedAliasIds.indexOf(voted.aliasId) === -1)) {
+            throw new Error(`player has already been peeked on.`);
         }
 
         // add seer vote
@@ -267,5 +281,30 @@ module.exports = class GameService extends EventEmitter {
             phase: getNextGamePhase(game.phase),
             round: game.round + 1
         }
+    }
+    /** check if game is over and update game if so.
+     * @param {Game} game 
+     * @returns {Game}
+     */
+    #finishGame = (game) => {
+        const aliveWerewolves = game.players.filter(pl => pl.isAlive && pl.role === werewolfRole);
+        const aliveVillagers = game.players.filter(pl =>
+            pl.isAlive && (pl.role === seerRole || pl.role == villagerRole)
+        );
+        if (aliveWerewolves.length === 0) { return setWinnerVillager(game); }
+        if (aliveVillagers.length <= aliveWerewolves.length) {
+            return setWinnerWerewolves(game);
+        }
+        return game;
+    }
+    /** calls `startGame` with the current game players.
+     */
+    restartGame = () => {
+        const players = this.#gameState.players.map(pl => ({
+            playerId: pl.id,
+            aliasId: pl.aliasId,
+            isHost: pl.isHost
+        }));
+        return this.startGame(players);
     }
 }

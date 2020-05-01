@@ -95,7 +95,7 @@ function createShuffledRoles(count) {
     let roles = [seer, ...werewolves];
     /** @type {Role[]} */
     const villagers = Array(count - roles.length).fill(villagerRole);
-    return shuffleArray([...roles, ...villagers])
+    return shuffleArray(shuffleArray([...roles, ...villagers]));
 }
 /** update a gamePlayer in a list
  * @param {(pl: GamePlayer) => boolean} matchFn 

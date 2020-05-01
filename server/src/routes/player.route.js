@@ -3,7 +3,7 @@
 /** @typedef {import('../services/player.service')} PlayerService */
 /** @typedef {import('../models/player').Player} Player */
 
-const { createNewPlayer } = require('../models/player');
+const { createNewPlayer, updatePlayerName } = require('../models/player');
 const express = require('express');
 
 /** Initialize Player Socket IO service
@@ -32,6 +32,21 @@ function CreatePlayerRoute(playerService) {
             res.status(500).send(err)
         }
     });
+    router.put('/', async (req, res, next) => {
+        try {
+            const id = req.body.id;
+            const newName = req.body.name;
+            const player = await playerService.getPlayerById(id);
+            const newPlayer = playerService.updatePlayer(
+                id,
+                updatePlayerName(newName, player)
+            );
+            res.status(200).send(newPlayer);
+        } catch (err) {
+            console.error(err);
+            res.status(500).send(err)
+        }
+    })
     return router;
 }
 
