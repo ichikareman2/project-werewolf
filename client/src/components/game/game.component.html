@@ -8,4 +8,11 @@
     </div>
 </div>
 
-<modal [header]="modalHeader" [message]="modalMessage" [modalId]="modalId"></modal>
+<modal
+    [message]="modalMessage"
+    [modalId]="modalId"
+    (primaryActionHandler)="submitVote()"
+    header="Confirm Vote"
+    primaryButtonLabel="Confirm"
+>
+</modal>

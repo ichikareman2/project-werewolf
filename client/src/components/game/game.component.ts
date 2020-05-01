@@ -66,8 +66,9 @@ export class GameComponent implements OnInit {
     $(`#${this.modalId}`).modal('show');
   }
 
-  public submitVote() {
+  public submitVote(): void {
     this.gameService.sendVote(this.votedPlayer.aliasId);
+    $(`#${this.modalId}`).modal('hide');
   }
 
   // get data specific to the current player

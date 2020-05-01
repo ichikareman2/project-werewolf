@@ -44,6 +44,6 @@ export class GameService {
     }
 
     public sendVote(vote: string) {
-        this.socket.emit(vote, this.playerId);
+        this.socket.emit(SOCKET_EVENTS.GAME_VOTE, vote, this.playerId);
     }
 }

@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'modal',
@@ -9,4 +9,10 @@ export class ModalComponent {
     @Input() modalId: string;
     @Input() header: string;
     @Input() message: string;
+    @Input() primaryButtonLabel: string = 'OK';
+    @Output() primaryActionHandler = new EventEmitter<void>();
+
+    public handlePrimaryButtonClick() {
+      this.primaryActionHandler.emit();
+    }
 }
