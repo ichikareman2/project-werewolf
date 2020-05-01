@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { GamePhase, RolesEnum, GamePhaseEnum, DayPhaseEnum, Player } from 'src/models';
+import { GamePhase, RolesEnum, GamePhaseEnum, DayPhaseEnum, Player, Vote } from 'src/models';
 import { PlayerService } from 'src/services/player.service';
 import { GameService } from 'src/services/game.service';
 
@@ -49,6 +49,8 @@ export class GameComponent implements OnInit {
         this.role = this.currentPlayer.role;
       }
 
+      this.getVote(response.votes, response.players);
+
       this.players = this.reorderPlayers(response.players);
       this.gamePhase = response.phase;
     });
@@ -57,7 +59,7 @@ export class GameComponent implements OnInit {
   }
 
   public handlePlayerClick(data) {
-    if( data.aliasId === this.currentPlayer.aliasId || ! data.isAlive ) {
+    if( data.aliasId === this.currentPlayer.aliasId || ! data.isAlive || this.votedPlayer ) {
       return;
     }
 
@@ -66,7 +68,11 @@ export class GameComponent implements OnInit {
     $(`#${this.modalId}`).modal('show');
   }
 
-  public submitVote(): void {
+  public resetVote() {
+    this.votedPlayer = null;
+  }
+
+  public submitVote() {
     this.gameService.sendVote(this.votedPlayer.aliasId);
     $(`#${this.modalId}`).modal('hide');
   }
@@ -87,5 +93,12 @@ export class GameComponent implements OnInit {
       ...alivePlayers,
       ...eliminatedPlayers
     ];
+  }
+
+  private getVote(votes: Vote[], players: Player[]) {
+    const vote = votes.filter(x => x.voterAliasId === this.currentPlayer.aliasId)[0];
+    if( vote ) {
+      this.votedPlayer = players.filter(x => x.aliasId === vote.votedAliasId)[0];
+    }
   }
 }

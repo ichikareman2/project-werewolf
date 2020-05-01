@@ -20,8 +20,14 @@ export type GamePhase = {
     roundPhase: DayPhaseEnum | NightPhaseEnum;
 };
 
+export type Vote = {
+    voterAliasId: string;
+    votedAliasId: string;
+}
+
 export type Game = {
     phase: GamePhase;
     round: number;
     players: Player[];
+    votes: Vote[];
 };

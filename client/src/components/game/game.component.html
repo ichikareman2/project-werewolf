@@ -2,7 +2,13 @@
     <div class="col justify-content-center game">
         <game-instruction [gamePhase]="gamePhase" [role]="role"></game-instruction>
         <div class="col mt-4 mb-4 p-0">
-            <game-player *ngFor="let p of players" [player]="p" (click)="handlePlayerClick(p)"></game-player>
+            <game-player
+                *ngFor="let p of players"
+                [player]="p"
+                [isVote]="p.aliasId === votedPlayer.aliasId"
+                (click)="handlePlayerClick(p)"
+            >
+            </game-player>
         </div>
         <game-phase [mode]="gamePhase.dayOrNight"></game-phase>
     </div>
@@ -12,6 +18,7 @@
     [message]="modalMessage"
     [modalId]="modalId"
     (primaryActionHandler)="submitVote()"
+    (secondaryActionHandler)="resetVote()"
     header="Confirm Vote"
     primaryButtonLabel="Confirm"
 >

@@ -10,9 +10,14 @@ export class ModalComponent {
     @Input() header: string;
     @Input() message: string;
     @Input() primaryButtonLabel: string = 'OK';
-    @Output() primaryActionHandler = new EventEmitter<void>();
+    @Output() primaryActionHandler = new EventEmitter();
+    @Output() secondaryActionHandler = new EventEmitter();
 
     public handlePrimaryButtonClick() {
       this.primaryActionHandler.emit();
+    }
+
+    public handleSecondaryButtonClick() {
+      this.secondaryActionHandler.emit();
     }
 }
