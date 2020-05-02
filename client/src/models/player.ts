@@ -5,6 +5,11 @@ export enum RolesEnum {
     SEER = 'Seer'
 }
 
+export const NightPlayers = [
+    RolesEnum.SEER,
+    RolesEnum.WEREWOLF
+];
+
 export type Player = {
     id: string;
     aliasId: string;

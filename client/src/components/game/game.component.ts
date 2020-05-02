@@ -1,12 +1,19 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { GamePhase, RolesEnum, GamePhaseEnum, DayPhaseEnum, Player, Vote } from 'src/models';
+import {
+  GamePhase,
+  RolesEnum,
+  GamePhaseEnum,
+  DayPhaseEnum,
+  Player,
+  Vote,
+  NightPlayers,
+  getConfirmationMessage
+} from 'src/models';
 import { PlayerService } from 'src/services/player.service';
 import { GameService } from 'src/services/game.service';
 
 declare var $: any;
-
-const MODAL_MESSAGE = 'Are you sure you want to vote this player out?';
 
 @Component({
   selector: 'game',
@@ -23,10 +30,11 @@ export class GameComponent implements OnInit {
   role: RolesEnum = RolesEnum.VILLAGER;
   currentPlayer: Player;
   votedPlayer: Player;
+  isAlphaWolf = false;
 
   modalId = 'modal-vote-confirm';
   modalHeader = 'Confirm Vote';
-  modalMessage: string = MODAL_MESSAGE;
+  modalMessage: string = '';
 
   constructor(
     private router: Router,
@@ -44,13 +52,15 @@ export class GameComponent implements OnInit {
 
     const gameObservable = this.gameService.getGame();
     gameObservable.subscribe(response => {
+      console.log(response);
       if ( ! this.currentPlayer ) {
         this.getCurrentPlayer(player.aliasId, response.players);
         this.role = this.currentPlayer.role;
       }
 
-      this.getVote(response.votes, response.players);
+      this.getVote(response.players, response.votes, response.werewolfVote);
 
+      this.isAlphaWolf = this.role === RolesEnum.WEREWOLF && response.alphaWolf === this.currentPlayer.aliasId;
       this.players = this.reorderPlayers(response.players);
       this.gamePhase = response.phase;
     });
@@ -59,12 +69,12 @@ export class GameComponent implements OnInit {
   }
 
   public handlePlayerClick(data) {
-    if ( data.aliasId === this.currentPlayer.aliasId || ! data.isAlive || this.votedPlayer ) {
+    if ( this.votedPlayer || ! this.canVote() || ! this.canBeVoted(data) ) {
       return;
     }
 
     this.votedPlayer = data;
-    this.modalMessage = MODAL_MESSAGE.replace('this player', this.votedPlayer.name);
+    this.modalMessage = getConfirmationMessage(this.role, this.votedPlayer.name);
     $(`#${this.modalId}`).modal('show');
   }
 
@@ -75,6 +85,34 @@ export class GameComponent implements OnInit {
   public submitVote() {
     this.gameService.sendVote(this.votedPlayer.aliasId);
     $(`#${this.modalId}`).modal('hide');
+  }
+
+  // checks if voting is enabled depending on phase and role
+  private canVote() {
+    if ( ! this.currentPlayer.isAlive ) {
+      return false;
+    }
+
+    if ( this.gamePhase.dayOrNight === GamePhaseEnum.DAY
+      && this.gamePhase.roundPhase === DayPhaseEnum.VILLAGERSVOTE
+    ) {
+      return true;
+    }
+
+    if ( this.gamePhase.dayOrNight === GamePhaseEnum.NIGHT
+      && NightPlayers.includes( this.role )
+    ) {
+      return this.role === RolesEnum.WEREWOLF
+        ? this.isAlphaWolf
+        : true;
+    }
+
+    return false;
+  }
+
+  // checks if clicked player can be selected
+  private canBeVoted(data) {
+    return data.aliasId !== this.currentPlayer.aliasId && data.isAlive;
   }
 
   // get data specific to the current player
@@ -95,7 +133,15 @@ export class GameComponent implements OnInit {
     ];
   }
 
-  private getVote(votes: Vote[], players: Player[]) {
+  private getVote(players: Player[], votes: Vote[], werewolfVote?: string) {
+    if ( votes.length === 0 ) {
+      this.votedPlayer = null;
+    }
+
+    if ( werewolfVote ) {
+      this.votedPlayer = players.filter(x => x.aliasId === werewolfVote)[0];
+    }
+
     const vote = votes.filter(x => x.voterAliasId === this.currentPlayer.aliasId)[0];
     if ( vote ) {
       this.votedPlayer = players.filter(x => x.aliasId === vote.votedAliasId)[0];

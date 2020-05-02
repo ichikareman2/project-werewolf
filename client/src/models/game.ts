@@ -30,4 +30,8 @@ export type Game = {
     round: number;
     players: Player[];
     votes: Vote[];
+    alphaWolf?: string;
+    werewolfVote?: string;
+    seerPeekedAliasIds?: string[];
+    winner?: string;
 };
