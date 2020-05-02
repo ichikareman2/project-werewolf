@@ -102,7 +102,7 @@ module.exports = class GameService extends EventEmitter {
         if (!(aliasId && voterPlayerId)) {
             throw new Error(`alias cannot be empty`);
         }
-        if(this.#gameState.winner === undefined) {
+        if(this.#gameState.winner) {
             throw new Error(`Game is completed.`);
         }
         // delegate to specific vote functions. should return new game state
