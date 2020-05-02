@@ -131,6 +131,10 @@ export class GameComponent implements OnInit {
   }
 
   private getVote(votes: Vote[], players: Player[]) {
+    if( votes.length === 0 ) {
+      this.votedPlayer = null;
+    }
+
     const vote = votes.filter(x => x.voterAliasId === this.currentPlayer.aliasId)[0];
     if ( vote ) {
       this.votedPlayer = players.filter(x => x.aliasId === vote.votedAliasId)[0];
