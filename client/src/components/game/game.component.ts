@@ -81,7 +81,7 @@ export class GameComponent implements OnInit {
     this.modalHeader = 'Game Over';
     this.modalMessage = getGameOverMessage(this.game.winner);
     this.modalPrimaryButton = 'New Game';
-    this.modalSecondaryButton = 'Close';
+    this.modalSecondaryButton = 'Leave Game';
     $(`#${this.modalId}`).modal('show');
   }
 
@@ -97,6 +97,11 @@ export class GameComponent implements OnInit {
 
   public reset() {
     this.votedPlayer = null;
+
+    if(this.game.winner) {
+      this.playerService.clearPlayer();
+      return this.router.navigate(['/']);
+    }
   }
 
   public submit() {

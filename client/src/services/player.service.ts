@@ -47,4 +47,8 @@ export class PlayerService {
     getPlayerId(): string | null {
         return this.localStorageService.getItem(LOCAL_STORAGE_KEY);
     }
+
+    clearPlayer() {
+        return this.localStorageService.removeItem(LOCAL_STORAGE_KEY);
+    }
 }
