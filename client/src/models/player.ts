@@ -19,4 +19,5 @@ export type Player = {
     isAlive?: boolean;
     causeOfDeath: string;
     vote: Player;
+    voteCount: number;
 };

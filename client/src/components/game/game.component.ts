@@ -140,6 +140,7 @@ export class GameComponent implements OnInit {
       return {
         ...p,
         vote: this.getVote(p.aliasId),
+        voteCount: this.getVoteCount(p.aliasId),
       };
     });
   }
@@ -161,5 +162,12 @@ export class GameComponent implements OnInit {
     }
 
     return null;
+  }
+
+  private getVoteCount(playerAliasId: string) : number {
+    const { votes } = this.game;
+    const playerVotes = votes.filter(x => x.votedAliasId === playerAliasId);
+
+    return playerVotes.length;
   }
 }
