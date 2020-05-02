@@ -27,6 +27,7 @@ export class GameComponent implements OnInit {
     dayOrNight: GamePhaseEnum.DAY,
     roundPhase: DayPhaseEnum.VILLAGERSVOTE
   };
+  round: number = 0;
   role: RolesEnum = RolesEnum.VILLAGER;
   currentPlayer: Player;
   votedPlayer: Player;
@@ -63,6 +64,7 @@ export class GameComponent implements OnInit {
       this.isAlphaWolf = this.role === RolesEnum.WEREWOLF && response.alphaWolf === this.currentPlayer.aliasId;
       this.players = this.reorderPlayers(response.players);
       this.gamePhase = response.phase;
+      this.round = response.round;
     });
 
     this.gameService.joinGame();

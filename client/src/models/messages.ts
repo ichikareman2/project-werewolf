@@ -15,8 +15,8 @@ const INSTRUCTION_MESSAGES = {
 };
 
 const PHASE_MESSAGES = {
-    [GamePhaseEnum.DAY]: 'Day in the Village',
-    [GamePhaseEnum.NIGHT]: 'Night in the Village'
+    [GamePhaseEnum.DAY]: 'Day # in the Village',
+    [GamePhaseEnum.NIGHT]: 'Night # in the Village'
 };
 
 const GAME_CONFIRMATION_MESSAGES = {
@@ -29,8 +29,8 @@ export const getInstructionMessage = ( mode: GamePhaseEnum, role: RolesEnum ) =>
     return INSTRUCTION_MESSAGES[mode][role];
 };
 
-export const getPhaseMessage = ( mode: GamePhaseEnum ) => {
-    return PHASE_MESSAGES[mode];
+export const getPhaseMessage = ( mode: GamePhaseEnum, round: number ) => {
+    return PHASE_MESSAGES[mode].replace('#', round.toString());
 };
 
 export const getConfirmationMessage = ( role: RolesEnum, playerName: string ) => {
