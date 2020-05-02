@@ -18,4 +18,5 @@ export type Player = {
     role?: RolesEnum;
     isAlive?: boolean;
     causeOfDeath: string;
+    vote: Player;
 };

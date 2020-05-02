@@ -27,6 +27,7 @@ export class GameComponent implements OnInit {
   role: RolesEnum = RolesEnum.VILLAGER;
   currentPlayer: Player;
   votedPlayer: Player;
+  showVote: boolean;
   isAlphaWolf = false;
 
   modalId = 'modal-vote-confirm';
@@ -51,6 +52,8 @@ export class GameComponent implements OnInit {
     const gameObservable = this.gameService.getGame();
     gameObservable.subscribe(response => {
       console.log(response);
+      this.game = response;
+
       if ( ! this.currentPlayer ) {
         this.getCurrentPlayer(player.aliasId, response.players);
         this.role = this.currentPlayer.role;
@@ -58,9 +61,9 @@ export class GameComponent implements OnInit {
 
       this.getVote(response.players, response.votes, response.werewolfVote);
 
+      this.showVote = this.canVote();
       this.isAlphaWolf = this.role === RolesEnum.WEREWOLF && response.alphaWolf === this.currentPlayer.aliasId;
       this.players = this.reorderPlayers(response.players);
-      this.game = response;
     });
 
     this.gameService.joinGame();
