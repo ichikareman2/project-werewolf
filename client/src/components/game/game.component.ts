@@ -1,14 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import {
-  GamePhase,
   RolesEnum,
   GamePhaseEnum,
   DayPhaseEnum,
   Player,
   Vote,
   NightPlayers,
-  getConfirmationMessage
+  getConfirmationMessage,
+  Game
 } from 'src/models';
 import { PlayerService } from 'src/services/player.service';
 import { GameService } from 'src/services/game.service';
@@ -22,12 +22,8 @@ declare var $: any;
 })
 export class GameComponent implements OnInit {
   loadPage = false;
+  game: Game;
   players: Player[] = [];
-  gamePhase: GamePhase = {
-    dayOrNight: GamePhaseEnum.DAY,
-    roundPhase: DayPhaseEnum.VILLAGERSVOTE
-  };
-  round = 0;
   role: RolesEnum = RolesEnum.VILLAGER;
   currentPlayer: Player;
   votedPlayer: Player;
@@ -52,8 +48,6 @@ export class GameComponent implements OnInit {
       return this.router.navigate(['/']);
     }
 
-    this.loadPage = true;
-
     const gameObservable = this.gameService.getGame();
     gameObservable.subscribe(response => {
       console.log(response);
@@ -66,11 +60,12 @@ export class GameComponent implements OnInit {
 
       this.isAlphaWolf = this.role === RolesEnum.WEREWOLF && response.alphaWolf === this.currentPlayer.aliasId;
       this.players = this.reorderPlayers(response.players);
-      this.gamePhase = response.phase;
-      this.round = response.round;
+      this.game = response;
     });
 
     this.gameService.joinGame();
+
+    this.loadPage = true;
   }
 
   public handlePlayerClick(data) {
@@ -98,13 +93,13 @@ export class GameComponent implements OnInit {
       return false;
     }
 
-    if ( this.gamePhase.dayOrNight === GamePhaseEnum.DAY
-      && this.gamePhase.roundPhase === DayPhaseEnum.VILLAGERSVOTE
+    if ( this.game.phase.dayOrNight === GamePhaseEnum.DAY
+      && this.game.phase.roundPhase === DayPhaseEnum.VILLAGERSVOTE
     ) {
       return true;
     }
 
-    if ( this.gamePhase.dayOrNight === GamePhaseEnum.NIGHT
+    if ( this.game.phase.dayOrNight === GamePhaseEnum.NIGHT
       && NightPlayers.includes( this.role )
     ) {
       return this.role === RolesEnum.WEREWOLF
