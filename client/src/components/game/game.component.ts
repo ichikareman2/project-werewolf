@@ -8,6 +8,7 @@ import {
   Vote,
   NightPlayers,
   getConfirmationMessage,
+  getGameOverMessage,
   Game
 } from 'src/models';
 import { PlayerService } from 'src/services/player.service';
@@ -78,7 +79,7 @@ export class GameComponent implements OnInit {
 
   public showWinner() {
     this.modalHeader = 'Game Over';
-    this.modalMessage = `${this.game.winner} won!`;
+    this.modalMessage = getGameOverMessage(this.game.winner);
     this.modalPrimaryButton = 'New Game';
     this.modalSecondaryButton = 'Close';
     $(`#${this.modalId}`).modal('show');
