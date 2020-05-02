@@ -31,6 +31,7 @@ export class GameComponent implements OnInit {
   role: RolesEnum = RolesEnum.VILLAGER;
   currentPlayer: Player;
   votedPlayer: Player;
+  isAlphaWolf: boolean = false;
 
   modalId = 'modal-vote-confirm';
   modalHeader = 'Confirm Vote';
@@ -58,8 +59,9 @@ export class GameComponent implements OnInit {
         this.role = this.currentPlayer.role;
       }
 
-      this.getVote(response.votes, response.players);
+      this.getVote(response.players, response.votes, response.werewolfVote);
 
+      this.isAlphaWolf = this.role === RolesEnum.WEREWOLF && response.alphaWolf === this.currentPlayer.aliasId;
       this.players = this.reorderPlayers(response.players);
       this.gamePhase = response.phase;
     });
@@ -99,7 +101,8 @@ export class GameComponent implements OnInit {
     }
 
     if( this.gamePhase.dayOrNight === GamePhaseEnum.NIGHT
-      &&  NightPlayers.includes( this.role )
+      && NightPlayers.includes( this.role )
+      && (this.role === RolesEnum.WEREWOLF && this.isAlphaWolf)
     ) {
       return true;
     }
@@ -130,9 +133,13 @@ export class GameComponent implements OnInit {
     ];
   }
 
-  private getVote(votes: Vote[], players: Player[]) {
+  private getVote(players: Player[], votes: Vote[], werewolfVote?: string) {
     if( votes.length === 0 ) {
       this.votedPlayer = null;
+    }
+
+    if( werewolfVote ) {
+      this.votedPlayer = players.filter(x => x.aliasId === werewolfVote)[0];
     }
 
     const vote = votes.filter(x => x.voterAliasId === this.currentPlayer.aliasId)[0];
