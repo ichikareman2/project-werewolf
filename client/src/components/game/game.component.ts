@@ -37,6 +37,9 @@ export class GameComponent implements OnInit {
   modalHeader = 'Confirm Vote';
   modalMessage: string = '';
 
+  alertMessage = '';
+  showAlert = false;
+
   constructor(
     private router: Router,
     private playerService: PlayerService,
