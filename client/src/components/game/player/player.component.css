@@ -42,7 +42,7 @@
     border-color: #6c757d !important;
 }
 
-.game-player:hover, .game-player:hover .player-thumbnail {
+.game-player:hover:not(.text-muted), .game-player:hover:not(.text-muted) .player-thumbnail {
     /* border-color: #c82333;
     color: #c82333; */
     cursor: pointer;
