@@ -100,6 +100,7 @@ export class GameComponent implements OnInit {
 
     if(this.game.winner) {
       this.playerService.clearPlayer();
+      this.gameService.leaveGame();
       return this.router.navigate(['/']);
     }
   }

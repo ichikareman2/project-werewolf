@@ -10,6 +10,7 @@ const SOCKET_EVENTS = {
     GAME_JOIN: 'joinGame',
     GAME_UPDATE: 'gameUpdated',
     GAME_VOTE: 'vote',
+    GAME_LEAVE: 'leaveGame',
 };
 
 @Injectable({
@@ -45,5 +46,9 @@ export class GameService {
 
     public sendVote(vote: string) {
         this.socket.emit(SOCKET_EVENTS.GAME_VOTE, vote, this.playerId);
+    }
+
+    public leaveGame() {
+        this.socket.emit(SOCKET_EVENTS.GAME_LEAVE);
     }
 }
