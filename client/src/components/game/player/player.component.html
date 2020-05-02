@@ -1,6 +1,7 @@
 <div class="row text-center game-player" [ngClass]="[!player.isAlive ? 'text-muted' : '']">
     <div class="player-details">
         <h5>
+            <i class="fa fa-podcast" *ngIf="player.isHost"></i>
             {{ player.name }}
             <i class="fa fa-hand-o-left" *ngIf="isVote"></i>
             <small class="player-death" *ngIf="!player.isAlive">({{ player.causeOfDeath }})</small>
