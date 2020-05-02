@@ -5,7 +5,7 @@
             <game-player
                 *ngFor="let p of players"
                 [player]="p"
-                [isVote]="p.aliasId === votedPlayer.aliasId"
+                [isVote]="votedPlayer && p.aliasId === votedPlayer.aliasId"
                 (click)="handlePlayerClick(p)"
             >
             </game-player>

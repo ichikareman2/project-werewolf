@@ -1,6 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { GamePhase, RolesEnum, GamePhaseEnum, DayPhaseEnum, Player, Vote } from 'src/models';
+import {
+  GamePhase,
+  RolesEnum,
+  GamePhaseEnum,
+  DayPhaseEnum,
+  Player,
+  Vote,
+  NightPlayers
+} from 'src/models';
 import { PlayerService } from 'src/services/player.service';
 import { GameService } from 'src/services/game.service';
 
@@ -44,6 +52,7 @@ export class GameComponent implements OnInit {
 
     const gameObservable = this.gameService.getGame();
     gameObservable.subscribe(response => {
+      console.log(response);
       if ( ! this.currentPlayer ) {
         this.getCurrentPlayer(player.aliasId, response.players);
         this.role = this.currentPlayer.role;
@@ -59,7 +68,7 @@ export class GameComponent implements OnInit {
   }
 
   public handlePlayerClick(data) {
-    if ( data.aliasId === this.currentPlayer.aliasId || ! data.isAlive || this.votedPlayer ) {
+    if ( this.votedPlayer || ! this.canVote() || ! this.canBeVoted(data) ) {
       return;
     }
 
@@ -75,6 +84,32 @@ export class GameComponent implements OnInit {
   public submitVote() {
     this.gameService.sendVote(this.votedPlayer.aliasId);
     $(`#${this.modalId}`).modal('hide');
+  }
+
+  // checks if voting is enabled depending on phase and role
+  private canVote() {
+    if( ! this.currentPlayer.isAlive ) {
+      return false;
+    }
+
+    if( this.gamePhase.dayOrNight === GamePhaseEnum.DAY
+      && this.gamePhase.roundPhase === DayPhaseEnum.VILLAGERSVOTE
+    ) {
+      return true;
+    }
+
+    if( this.gamePhase.dayOrNight === GamePhaseEnum.NIGHT
+      &&  NightPlayers.includes( this.role )
+    ) {
+      return true;
+    }
+
+    return false;
+  }
+
+  // checks if clicked player can be selected
+  private canBeVoted(data) {
+    return data.aliasId !== this.currentPlayer.aliasId && data.isAlive;
   }
 
   // get data specific to the current player
