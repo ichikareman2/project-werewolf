@@ -10,6 +10,7 @@ export class ModalComponent {
     @Input() header: string;
     @Input() message: string;
     @Input() primaryButtonLabel = 'OK';
+    @Input() secondaryButtonLabel = 'Cancel';
     @Output() primaryActionHandler = new EventEmitter();
     @Output() secondaryActionHandler = new EventEmitter();
 
