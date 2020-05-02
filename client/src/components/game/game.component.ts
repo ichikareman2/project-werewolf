@@ -27,7 +27,7 @@ export class GameComponent implements OnInit {
     dayOrNight: GamePhaseEnum.DAY,
     roundPhase: DayPhaseEnum.VILLAGERSVOTE
   };
-  round: number = 0;
+  round = 0;
   role: RolesEnum = RolesEnum.VILLAGER;
   currentPlayer: Player;
   votedPlayer: Player;
