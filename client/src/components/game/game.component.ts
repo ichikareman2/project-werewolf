@@ -7,7 +7,8 @@ import {
   DayPhaseEnum,
   Player,
   Vote,
-  NightPlayers
+  NightPlayers,
+  getConfirmationMessage
 } from 'src/models';
 import { PlayerService } from 'src/services/player.service';
 import { GameService } from 'src/services/game.service';
@@ -75,7 +76,7 @@ export class GameComponent implements OnInit {
     }
 
     this.votedPlayer = data;
-    this.modalMessage = MODAL_MESSAGE.replace('this player', this.votedPlayer.name);
+    this.modalMessage = getConfirmationMessage(this.role, this.votedPlayer.name);
     $(`#${this.modalId}`).modal('show');
   }
 
@@ -102,9 +103,10 @@ export class GameComponent implements OnInit {
 
     if ( this.gamePhase.dayOrNight === GamePhaseEnum.NIGHT
       && NightPlayers.includes( this.role )
-      && (this.role === RolesEnum.WEREWOLF && this.isAlphaWolf)
     ) {
-      return true;
+      return this.role === RolesEnum.WEREWOLF
+        ? this.isAlphaWolf
+        : true;
     }
 
     return false;
