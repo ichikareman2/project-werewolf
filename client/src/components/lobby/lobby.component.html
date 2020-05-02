@@ -9,6 +9,7 @@
 
             <div class="details" *ngFor="let player of playerList">
                 <div class="player">
+                    <i class="fa fa-podcast player-host" *ngIf="player.isHost"></i>
                     <span>{{ player.name }}</span>
                 </div>
             </div>
