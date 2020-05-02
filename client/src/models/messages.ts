@@ -22,7 +22,7 @@ const PHASE_MESSAGES = {
 const GAME_CONFIRMATION_MESSAGES = {
     [RolesEnum.VILLAGER]: 'Are you sure you want to vote this player out?',
     [RolesEnum.WEREWOLF]: 'Are you sure you want to eliminate this player?',
-    [RolesEnum.SEER]: "Are you sure you want to peeks this player's role?",
+    [RolesEnum.SEER]: 'Are you sure you want to peek this player\'s role?',
 };
 
 const GAME_OVER_MESSAGES = {
