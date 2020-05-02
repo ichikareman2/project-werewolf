@@ -5,10 +5,10 @@
     </div>
     <ul class="nav nav-pills justify-content-end">
         <li class="nav-item">
-            <a class="nav-link" href="/">Play Game</a>
+            <a class="nav-link" [ngClass]="[['/', '/lobby', '/game'].includes(currentUrl) ? 'active' : '']" href="/">Play Game</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="/roles">Roles</a>
+            <a class="nav-link" [ngClass]="[currentUrl === '/roles' ? 'active' : '']" href="/roles">Roles</a>
         </li>
         <li class="nav-item">
             <a class="nav-link" href="#">Game Rules</a>

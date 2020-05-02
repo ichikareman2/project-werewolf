@@ -24,6 +24,10 @@
     color: white;
 }
 
+.header a.active {
+    background-color: #dc3545;
+}
+
 @media only screen and (max-width: 768px) {
     .header-image {
         width: 40px;

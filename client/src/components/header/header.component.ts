@@ -1,8 +1,23 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { Router, NavigationEnd, RouterEvent } from '@angular/router';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css']
 })
-export class HeaderComponent {}
+export class HeaderComponent implements OnInit {
+  currentUrl = '/';
+
+  constructor(private router: Router) {}
+
+  ngOnInit(): void {
+    this.router.events
+      .pipe(filter(e => e instanceof RouterEvent))
+      .pipe(filter(e => e instanceof NavigationEnd))
+      .subscribe((navigation: NavigationEnd) => {
+        this.currentUrl = navigation.url;
+      });
+  }
+}
