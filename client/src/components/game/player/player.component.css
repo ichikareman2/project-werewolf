@@ -47,3 +47,8 @@
     color: #c82333; */
     cursor: pointer;
 }
+
+.player-death {
+    font-size: small;
+    font-style: italic;
+}
