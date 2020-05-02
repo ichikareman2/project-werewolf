@@ -9,6 +9,7 @@ import { JoinGameModule } from 'src/components/join-game/join-game.module';
 import { GameModule } from 'src/components/game/game.module';
 import { LobbyComponent } from 'src/components/lobby/lobby.component';
 import { RolesComponent } from 'src/components/roles/roles.component';
+import { GameRulesComponent } from 'src/components/game-rules/game-rules.component';
 import { LobbyService } from 'src/services/lobby.service';
 import { FormValidationService } from 'src/services/form-validation.service';
 import { ApiService } from 'src/services/api.service';
@@ -20,7 +21,8 @@ import { GameService } from 'src/services/game.service';
   declarations: [
     AppComponent,
     LobbyComponent,
-    RolesComponent
+    RolesComponent,
+    GameRulesComponent
   ],
   imports: [
     BrowserModule,
