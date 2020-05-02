@@ -15,8 +15,6 @@ import { GameService } from 'src/services/game.service';
 
 declare var $: any;
 
-const MODAL_MESSAGE = 'Are you sure you want to vote this player out?';
-
 @Component({
   selector: 'game',
   templateUrl: './game.component.html',
@@ -36,7 +34,7 @@ export class GameComponent implements OnInit {
 
   modalId = 'modal-vote-confirm';
   modalHeader = 'Confirm Vote';
-  modalMessage: string = MODAL_MESSAGE;
+  modalMessage: string = '';
 
   constructor(
     private router: Router,

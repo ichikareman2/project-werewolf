@@ -33,4 +33,5 @@ export type Game = {
     alphaWolf?: string;
     werewolfVote?: string;
     seerPeekedAliasIds?: string[];
+    winner?: string;
 };
