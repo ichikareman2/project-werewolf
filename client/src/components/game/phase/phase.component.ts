@@ -8,9 +8,10 @@ import { getPhaseMessage, GamePhaseEnum } from 'src/models';
 })
 export class GamePhaseComponent implements OnChanges {
   @Input() mode: GamePhaseEnum = GamePhaseEnum.NIGHT;
+  @Input() round: number;
   phaseMessage = '';
 
   ngOnChanges() {
-    this.phaseMessage = getPhaseMessage(this.mode);
+    this.phaseMessage = getPhaseMessage(this.mode, this.round);
   }
 }

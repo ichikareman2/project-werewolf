@@ -1,16 +1,17 @@
-<div class="container container-sm" *ngIf="loadPage">
+<alert [message]="alertMessage" *ngIf="showAlert"></alert>
+
+<div class="container container-sm" *ngIf="loadPage && game">
     <div class="col justify-content-center game">
-        <game-instruction [gamePhase]="gamePhase" [role]="role"></game-instruction>
+        <game-instruction [gamePhase]="game.phase" [role]="role"></game-instruction>
         <div class="col mt-4 mb-4 p-0">
             <game-player
                 *ngFor="let p of players"
                 [player]="p"
-                [isVote]="votedPlayer && p.aliasId === votedPlayer.aliasId"
                 (click)="handlePlayerClick(p)"
             >
             </game-player>
         </div>
-        <game-phase [mode]="gamePhase.dayOrNight"></game-phase>
+        <game-phase [mode]="game.phase.dayOrNight" [round]="game.round"></game-phase>
     </div>
 </div>
 
