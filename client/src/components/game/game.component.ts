@@ -31,7 +31,7 @@ export class GameComponent implements OnInit {
   role: RolesEnum = RolesEnum.VILLAGER;
   currentPlayer: Player;
   votedPlayer: Player;
-  isAlphaWolf: boolean = false;
+  isAlphaWolf = false;
 
   modalId = 'modal-vote-confirm';
   modalHeader = 'Confirm Vote';
@@ -90,17 +90,17 @@ export class GameComponent implements OnInit {
 
   // checks if voting is enabled depending on phase and role
   private canVote() {
-    if( ! this.currentPlayer.isAlive ) {
+    if ( ! this.currentPlayer.isAlive ) {
       return false;
     }
 
-    if( this.gamePhase.dayOrNight === GamePhaseEnum.DAY
+    if ( this.gamePhase.dayOrNight === GamePhaseEnum.DAY
       && this.gamePhase.roundPhase === DayPhaseEnum.VILLAGERSVOTE
     ) {
       return true;
     }
 
-    if( this.gamePhase.dayOrNight === GamePhaseEnum.NIGHT
+    if ( this.gamePhase.dayOrNight === GamePhaseEnum.NIGHT
       && NightPlayers.includes( this.role )
       && (this.role === RolesEnum.WEREWOLF && this.isAlphaWolf)
     ) {
@@ -134,11 +134,11 @@ export class GameComponent implements OnInit {
   }
 
   private getVote(players: Player[], votes: Vote[], werewolfVote?: string) {
-    if( votes.length === 0 ) {
+    if ( votes.length === 0 ) {
       this.votedPlayer = null;
     }
 
-    if( werewolfVote ) {
+    if ( werewolfVote ) {
       this.votedPlayer = players.filter(x => x.aliasId === werewolfVote)[0];
     }
 
