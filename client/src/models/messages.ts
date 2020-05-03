@@ -14,11 +14,6 @@ const INSTRUCTION_MESSAGES = {
     }
 };
 
-const PHASE_MESSAGES = {
-    [GamePhaseEnum.DAY]: 'Day # in the Village',
-    [GamePhaseEnum.NIGHT]: 'Night # in the Village'
-};
-
 const GAME_CONFIRMATION_MESSAGES = {
     [RolesEnum.VILLAGER]: 'Are you sure you want to vote this player out?',
     [RolesEnum.WEREWOLF]: 'Are you sure you want to eliminate this player?',
@@ -32,10 +27,6 @@ const GAME_OVER_MESSAGES = {
 
 export const getInstructionMessage = ( mode: GamePhaseEnum, role: RolesEnum ) => {
     return INSTRUCTION_MESSAGES[mode][role];
-};
-
-export const getPhaseMessage = ( mode: GamePhaseEnum, round: number ) => {
-    return PHASE_MESSAGES[mode].replace('#', round.toString());
 };
 
 export const getConfirmationMessage = ( role: RolesEnum, playerName: string ) => {

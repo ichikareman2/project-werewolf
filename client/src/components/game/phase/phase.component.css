@@ -1,7 +1,7 @@
 .game-phase {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-end;
     margin: auto;
 }
 
@@ -11,7 +11,8 @@
 
 .game-phase-text {
     max-width: 25%;
-    font-size: 16px;
+    margin-right: 12px;
+    font-size: 18px;
     font-style: italic;
     text-align: right;
 }

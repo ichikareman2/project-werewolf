@@ -1,5 +1,5 @@
 import { Component, Input, OnChanges } from '@angular/core';
-import { getPhaseMessage, GamePhaseEnum } from 'src/models';
+import { GamePhaseEnum } from 'src/models';
 
 @Component({
   selector: 'game-phase',
@@ -12,6 +12,6 @@ export class GamePhaseComponent implements OnChanges {
   phaseMessage = '';
 
   ngOnChanges() {
-    this.phaseMessage = getPhaseMessage(this.mode, this.round);
+    this.phaseMessage = `${this.mode} ${this.round}`;
   }
 }
