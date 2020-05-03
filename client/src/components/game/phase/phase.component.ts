@@ -9,6 +9,7 @@ import { GamePhaseEnum } from 'src/models';
 export class GamePhaseComponent implements OnChanges {
   @Input() mode: GamePhaseEnum = GamePhaseEnum.NIGHT;
   @Input() round: number;
+  @Input() isHost: boolean = false;
   phaseMessage = '';
 
   ngOnChanges() {
