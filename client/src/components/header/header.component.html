@@ -1,4 +1,20 @@
-<div class="jumbotron jumbotron-fluid">
+<div class="header">
     <img src="assets/images/Werewolf.png" class="header-image" />
-    <span class="header-tagline">Nobody's safe in the village..</span>
+    <ul class="nav nav-pills justify-content-end header-nav">
+        <li class="nav-item">
+            <a class="nav-link" [ngClass]="[['/', '/lobby', '/game'].includes(currentUrl) ? 'active' : '']" [routerLink]="['/']">
+                Play Game
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" [ngClass]="[currentUrl === '/roles' ? 'active' : '']" [routerLink]="['/roles']">
+                Roles
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" [routerLink]="['/']">
+                Game Rules
+            </a>
+        </li>
+    </ul>
 </div>

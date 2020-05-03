@@ -12,10 +12,10 @@ export class GamePlayerComponent implements OnChanges {
   voteText: string;
 
   ngOnChanges() {
-    if( this.showVote ) {
+    if ( this.showVote ) {
       this.voteText = this.player.vote
         ? `Voted ${this.player.vote.name}`
-        : "Hasn't voted yet";
+        : 'Hasn\'t voted yet';
     }
   }
 }
