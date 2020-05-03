@@ -35,7 +35,7 @@ export class GameComponent implements OnInit {
   modalHeader = 'Confirm Vote';
   modalPrimaryButton = 'Confirm';
   modalSecondaryButton = 'Cancel';
-  modalMessage: string = '';
+  modalMessage = '';
 
   alertMessage = '';
   showAlert = false;
@@ -66,8 +66,8 @@ export class GameComponent implements OnInit {
       this.isAlphaWolf = this.role === RolesEnum.WEREWOLF && response.alphaWolf === this.currentPlayer.aliasId;
       this.players = this.assignPlayerVote(this.reorderPlayers(response.players));
       this.game = response;
-      
-      if( response.winner ) {
+
+      if ( response.winner ) {
         this.showWinner();
       }
     });
@@ -98,7 +98,7 @@ export class GameComponent implements OnInit {
   public reset() {
     this.votedPlayer = null;
 
-    if(this.game.winner) {
+    if (this.game.winner) {
       this.playerService.clearPlayer();
       this.gameService.leaveGame();
       return this.router.navigate(['/']);
@@ -106,7 +106,7 @@ export class GameComponent implements OnInit {
   }
 
   public submit() {
-    if(this.game.winner) {
+    if (this.game.winner) {
       $(`#${this.modalId}`).modal('hide');
       return this.router.navigate(['/lobby']);
     }
@@ -172,7 +172,7 @@ export class GameComponent implements OnInit {
     });
   }
 
-  private getVote(playerAliasId: string) : Player|null {
+  private getVote(playerAliasId: string): Player|null {
     const { players, votes, werewolfVote } = this.game;
 
     if ( votes.length === 0 ) {
@@ -191,7 +191,7 @@ export class GameComponent implements OnInit {
     return null;
   }
 
-  private getVoteCount(playerAliasId: string) : number {
+  private getVoteCount(playerAliasId: string): number {
     const { votes } = this.game;
     const playerVotes = votes.filter(x => x.votedAliasId === playerAliasId);
 
