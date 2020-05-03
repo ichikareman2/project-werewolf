@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, NavigationEnd, RouterEvent } from '@angular/router';
+import { Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
 
 @Component({
@@ -14,7 +14,6 @@ export class HeaderComponent implements OnInit {
 
   ngOnInit(): void {
     this.router.events
-      .pipe(filter(e => e instanceof RouterEvent))
       .pipe(filter(e => e instanceof NavigationEnd))
       .subscribe((navigation: NavigationEnd) => {
         this.currentUrl = navigation.url;
