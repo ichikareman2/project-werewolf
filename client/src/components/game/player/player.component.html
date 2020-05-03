@@ -6,10 +6,16 @@
             <small class="player-death" *ngIf="!player.isAlive">({{ player.causeOfDeath }})</small>
         </h5>
         <div class="player-details-role">{{ player.role || '' }}</div>
+        <div class="player-details-vote" *ngIf="showVote">
+            {{ voteText }}
+        </div>
     </div>
     <div class="player-thumbnail">
         <div class="player-thumbnail-container ">
             {{ player.name.charAt(0) }}
         </div>
+        <span class="badge badge-danger player-thumbnail-badge" *ngIf="showVote && player.voteCount > 0">
+            {{ player.voteCount }}
+        </span>
     </div>
 </div>

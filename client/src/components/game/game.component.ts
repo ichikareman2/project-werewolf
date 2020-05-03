@@ -27,6 +27,7 @@ export class GameComponent implements OnInit {
   role: RolesEnum = RolesEnum.VILLAGER;
   currentPlayer: Player;
   votedPlayer: Player;
+  showVote: boolean;
   isAlphaWolf = false;
 
   modalId = 'modal-vote-confirm';
@@ -51,16 +52,16 @@ export class GameComponent implements OnInit {
     const gameObservable = this.gameService.getGame();
     gameObservable.subscribe(response => {
       console.log(response);
+      this.game = response;
+
       if ( ! this.currentPlayer ) {
         this.getCurrentPlayer(player.aliasId, response.players);
         this.role = this.currentPlayer.role;
       }
 
-      this.getVote(response.players, response.votes, response.werewolfVote);
-
+      this.showVote = this.canVote();
       this.isAlphaWolf = this.role === RolesEnum.WEREWOLF && response.alphaWolf === this.currentPlayer.aliasId;
-      this.players = this.reorderPlayers(response.players);
-      this.game = response;
+      this.players = this.assignPlayerVote(this.reorderPlayers(response.players));
     });
 
     this.gameService.joinGame();
@@ -133,18 +134,40 @@ export class GameComponent implements OnInit {
     ];
   }
 
-  private getVote(players: Player[], votes: Vote[], werewolfVote?: string) {
+  // set player's vote
+  private assignPlayerVote(players: Player[]) {
+    return players.map((p) => {
+      return {
+        ...p,
+        vote: this.getVote(p.aliasId),
+        voteCount: this.getVoteCount(p.aliasId),
+      };
+    });
+  }
+
+  private getVote(playerAliasId: string) : Player|null {
+    const { players, votes, werewolfVote } = this.game;
+
     if ( votes.length === 0 ) {
-      this.votedPlayer = null;
+      return null;
     }
 
     if ( werewolfVote ) {
-      this.votedPlayer = players.filter(x => x.aliasId === werewolfVote)[0];
+      return players.filter(x => x.aliasId === werewolfVote)[0];
     }
 
-    const vote = votes.filter(x => x.voterAliasId === this.currentPlayer.aliasId)[0];
+    const vote = votes.filter(x => x.voterAliasId === playerAliasId)[0];
     if ( vote ) {
-      this.votedPlayer = players.filter(x => x.aliasId === vote.votedAliasId)[0];
+      return players.filter(x => x.aliasId === vote.votedAliasId)[0];
     }
+
+    return null;
+  }
+
+  private getVoteCount(playerAliasId: string) : number {
+    const { votes } = this.game;
+    const playerVotes = votes.filter(x => x.votedAliasId === playerAliasId);
+
+    return playerVotes.length;
   }
 }
