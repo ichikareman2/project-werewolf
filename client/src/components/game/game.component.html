@@ -19,9 +19,10 @@
 <modal
     [message]="modalMessage"
     [modalId]="modalId"
-    (primaryActionHandler)="submitVote()"
-    (secondaryActionHandler)="resetVote()"
-    header="Confirm Vote"
-    primaryButtonLabel="Confirm"
+    [header]="modalHeader"
+    (primaryActionHandler)="submit()"
+    (secondaryActionHandler)="reset()"
+    [primaryButtonLabel]="modalPrimaryButton"
+    [secondaryButtonLabel]="modalSecondaryButton"
 >
 </modal>

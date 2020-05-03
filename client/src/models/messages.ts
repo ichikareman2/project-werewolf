@@ -25,6 +25,11 @@ const GAME_CONFIRMATION_MESSAGES = {
     [RolesEnum.SEER]: "Are you sure you want to peeks this player's role?",
 };
 
+const GAME_OVER_MESSAGES = {
+    'Villager': 'The villagers won! Hooray!',
+    'Werwolves': 'Oh no! Werewolves have taken over the village!'
+};
+
 export const getInstructionMessage = ( mode: GamePhaseEnum, role: RolesEnum ) => {
     return INSTRUCTION_MESSAGES[mode][role];
 };
@@ -35,4 +40,8 @@ export const getPhaseMessage = ( mode: GamePhaseEnum, round: number ) => {
 
 export const getConfirmationMessage = ( role: RolesEnum, playerName: string ) => {
     return GAME_CONFIRMATION_MESSAGES[role].replace('this player', playerName);
+}
+
+export const getGameOverMessage = ( winner: string ) => {
+    return GAME_OVER_MESSAGES[winner];
 }
