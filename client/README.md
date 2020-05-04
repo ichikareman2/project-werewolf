@@ -40,6 +40,9 @@ name: string;
 isHost: boolean;
 role?: RolesEnum;
 alive?: boolean;
+causeOfDeath: string;
+vote: Player;
+voteCount: number;
 ```
 ### Lobby
 ```
@@ -51,6 +54,16 @@ roomCode: string;
 phase: GamePhase;
 round: number;
 players: Player[];
+votes: Vote[]
+alphaWolf?: string;
+werewolfVote?: string;
+seerPeekedAliasIds?: string[];
+winner?: string;
+```
+### Vote
+```
+voterAliasId: string;
+votedAliasId: string;
 ```
 
 ## Validations
