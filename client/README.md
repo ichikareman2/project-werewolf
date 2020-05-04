@@ -3,14 +3,14 @@
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 9.1.1. 
 
 ## Scripts
-* `npm run start  /yarn start` - starts the development server
+* `npm run start / yarn start` - starts the development server
 
 * `npm run lint / yarn lint` - runs linting tool across all project files
 
 ## Routes
 * `/`
   - home page, currently renders the form to join the game asking for user's player name
-  - [TO DO] add option to create room
+  - [next release] add option to create room
 
 * `/lobby`
   - contains a list of all players in the game
@@ -19,9 +19,8 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 * `/game`
   - actual game view
   - renders all players, current phase and instructions based on player's role
-  - [TO DO] for implementation
 
-* `/role`
+* `/roles`
   - list of roles currently supported
 
 ## Models
@@ -41,6 +40,9 @@ name: string;
 isHost: boolean;
 role?: RolesEnum;
 alive?: boolean;
+causeOfDeath: string;
+vote: Player;
+voteCount: number;
 ```
 ### Lobby
 ```
@@ -52,6 +54,16 @@ roomCode: string;
 phase: GamePhase;
 round: number;
 players: Player[];
+votes: Vote[]
+alphaWolf?: string;
+werewolfVote?: string;
+seerPeekedAliasIds?: string[];
+winner?: string;
+```
+### Vote
+```
+voterAliasId: string;
+votedAliasId: string;
 ```
 
 ## Validations
@@ -78,11 +90,10 @@ players: Player[];
   - handles player-related requests
 * Game Service
   - handles all game-related methods
-  - [TODO] for implementation
 
 ## Components
 * Header
-  - will act as a navigation bar in the future
+  - contains navigation links
 * Join Game
   - asks for the player name
   - redirects to `/lobby`
