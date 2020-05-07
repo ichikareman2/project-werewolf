@@ -51,7 +51,7 @@ function createNewGame() {
     return {
         players: [],
         phase: createNewGamePhase(),
-        round: 0,
+        round: 1,
         votes: [],
         seerPeekedAliasIds: [],
         werewolfVote: undefined,
