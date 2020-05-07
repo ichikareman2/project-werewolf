@@ -4,4 +4,10 @@ import { Component } from '@angular/core';
   templateUrl: './game-rules.component.html',
   styleUrls: ['./game-rules.component.css']
 })
-export class GameRulesComponent {}
+export class GameRulesComponent {
+  activeContent: string = 'game-setup';
+
+  handleChangeActiveContent(newContent) {
+    this.activeContent = newContent;
+  }
+}

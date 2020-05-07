@@ -14,17 +14,34 @@
 
 .rules-content {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
 }
 
-@media only screen and (max-width: 990px) {
-    .rules-content {
-        align-items: flex-start;
-    }
+.rules-content-text {
+    margin-top: 32px;
+    margin-right: 16px;
+}
 
-    .rules-image {
-        margin-top: 12px;
-    }
+.rules-content-text li {
+    margin-bottom: 8px;
+}
+
+.rules-tab-container {
+    margin-top: 40px;
+}
+
+.rules-tab-header-container {
+    width: 100%;
+}
+
+.rules-tab-header a {
+    cursor: pointer;
+    font-size: large;
+}
+
+.rules-tab-header a.active {
+    color: white;
+    background-color: #dc3545;
 }
 
 @media only screen and (max-width: 480px) {
@@ -39,5 +56,9 @@
 
     .rules-image {
         margin: auto;
+    }
+
+    .rules-tab-header a {
+        font-size: medium;
     }
 }
