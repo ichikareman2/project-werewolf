@@ -19,10 +19,11 @@
 
 .rules-content-text {
     margin-top: 32px;
-    margin-right: 16px;
+    margin-left: 16px;
 }
 
-.rules-content-text li {
+.rules-content-text li,
+.rules-content-text span {
     margin-bottom: 8px;
 }
 
@@ -44,6 +45,10 @@
     background-color: #dc3545;
 }
 
+.rules-content-image {
+    text-align: center;;
+}
+
 @media only screen and (max-width: 480px) {
     .rules-container {
         padding-left: 24px;
@@ -54,11 +59,16 @@
         display: block;
     }
 
-    .rules-image {
-        margin: auto;
-    }
-
     .rules-tab-header a {
         font-size: medium;
+    }
+
+    .rules-content-text {
+        margin-top: 24px;
+        margin-left: 0;
+    }
+
+    .rules-content-text span {
+        margin-left: 16px;
     }
 }

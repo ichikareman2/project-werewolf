@@ -22,7 +22,7 @@
                 </li>
             </ul>
             <div class="rules-content" *ngIf="activeContent === 'game-setup'">
-                <div>
+                <div class="rules-content-image">
                     <img src="assets/images/rules/1.png" class="rules-image" />
                 </div>
                 <div class="rules-content-text">
@@ -35,7 +35,7 @@
                 </div>
             </div>
             <div class="rules-content" *ngIf="activeContent === 'how-to-play'">
-                <div>
+                <div class="rules-content-image">
                     <img src="assets/images/rules/2.png" class="rules-image" />
                 </div>
                 <div class="rules-content-text">
@@ -49,12 +49,12 @@
                 </div>
             </div>
             <div class="rules-content" *ngIf="activeContent === 'game-end'">
-                <div>
+                <div class="rules-content-image">
                     <img src="assets/images/rules/3.png" class="rules-image" />
                 </div>
                 <div class="rules-content-text">
-                    <div class="row" style="margin-bottom: 8px;">
-                        The game ends if one of the following conditions is met:
+                    <div class="row">
+                        <span>The game ends if one of the following conditions is met:</span>
                     </div>
                     <div class="row">
                         <ul>
