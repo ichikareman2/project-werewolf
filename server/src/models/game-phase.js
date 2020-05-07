@@ -28,7 +28,7 @@ const dayOrNightEnum = {
 /**
  * @typedef {Object} GamePhase
  * @property {string} dayOrNight
- * @property {string} roundPhase
+ * @property {string} [roundPhase]
  */
 
 /**
@@ -37,17 +37,23 @@ const dayOrNightEnum = {
  */
 const gamePhases = [
     {
-        dayOrNight: dayOrNightEnum.DAY,
-        roundPhase: DayPhaseEnum.VILLAGERSVOTE
+        dayOrNight: dayOrNightEnum.DAY
     },
     {
-        dayOrNight: dayOrNightEnum.NIGHT,
-        roundPhase: NightPhaseEnum.WEREWOLVESHUNT
-    },
-    {
-        dayOrNight: dayOrNightEnum.NIGHT,
-        roundPhase: NightPhaseEnum.SEERPEEK
-    },
+        dayOrNight: dayOrNightEnum.NIGHT
+    }
+    // {
+    //     dayOrNight: dayOrNightEnum.DAY,
+    //     roundPhase: DayPhaseEnum.VILLAGERSVOTE
+    // },
+    // {
+    //     dayOrNight: dayOrNightEnum.NIGHT,
+    //     roundPhase: NightPhaseEnum.WEREWOLVESHUNT
+    // },
+    // {
+    //     dayOrNight: dayOrNightEnum.NIGHT,
+    //     roundPhase: NightPhaseEnum.SEERPEEK
+    // },
 ]
 /**
  * create a game phase for new game
