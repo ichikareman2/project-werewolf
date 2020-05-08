@@ -1,0 +1,69 @@
+<div class="container container-sm rules-container">
+    <div class="col">
+        <div class="row">
+            Werewolf is a game of deception and deduction you can play with all your friends! Goal is pretty simple - if you're on the good side, find out who the werewolves are while if you're on the bad side, eliminate as much good people as you could without leaving a clue.
+        </div>
+        <div class="row rules-tab-container">
+            <ul class="nav nav-tabs rules-tab-header-container">
+                <li class="nav-item rules-tab-header">
+                    <a class="nav-link" [ngClass]="[activeContent === 'game-setup' ? 'active' : '']" (click)="handleChangeActiveContent('game-setup')">
+                        Game Setup
+                    </a>
+                </li>
+                <li class="nav-item rules-tab-header">
+                    <a class="nav-link" [ngClass]="[activeContent === 'how-to-play' ? 'active' : '']" (click)="handleChangeActiveContent('how-to-play')">
+                        How to Play
+                    </a>
+                </li>
+                <li class="nav-item rules-tab-header">
+                    <a class="nav-link" [ngClass]="[activeContent === 'game-end' ? 'active' : '']" (click)="handleChangeActiveContent('game-end')">
+                        Game End
+                    </a>
+                </li>
+            </ul>
+            <div class="rules-content" *ngIf="activeContent === 'game-setup'">
+                <div class="rules-content-image">
+                    <img src="assets/images/rules/1.png" class="rules-image" />
+                </div>
+                <div class="rules-content-text">
+                    <ul>
+                        <li>Call at least 5 friends.</li>
+                        <li>From the join game form, type player name to use.</li>
+                        <li>If you're the host, you can click on `Start Game` as soon as everyone's in.</li>
+                        <li>On start, a role will be automatically assigned to you.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="rules-content" *ngIf="activeContent === 'how-to-play'">
+                <div class="rules-content-image">
+                    <img src="assets/images/rules/2.png" class="rules-image" />
+                </div>
+                <div class="rules-content-text">
+                    <ul>
+                        <li>Each round has 2 phases - day and night.</li>
+                        <li>The game starts on a day all players trying to convince everyone that they're on the good side - especially the werewolves.</li>
+                        <li>Everyone votes who they think is a werewolf and will be eliminated in the game.</li>
+                        <li>As night comes, werewolves (if more than one) go for a hunt and talk among themselves who they will eliminate then the alpha wolf will be the one to cast in their vote. At the same time, the Seer uses his/her power of peeking another player's role.</li>
+                        <li>At the beginning of each day, the player chosen by the werewolves will be eliminated then the remaining villagers will discuss and figure out again who the bad guys are.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="rules-content" *ngIf="activeContent === 'game-end'">
+                <div class="rules-content-image">
+                    <img src="assets/images/rules/3.png" class="rules-image" />
+                </div>
+                <div class="rules-content-text">
+                    <div class="row">
+                        <span>The game ends if one of the following conditions is met:</span>
+                    </div>
+                    <div class="row">
+                        <ul>
+                            <li>the number of the remaining werewolves is equal to the number of remaining villagers;</li>
+                            <li>all the werewolves have been killed.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

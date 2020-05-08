@@ -4,6 +4,7 @@ import { JoinGameComponent } from 'src/components/join-game/join-game.component'
 import { LobbyComponent } from 'src/components/lobby/lobby.component';
 import { GameComponent } from 'src/components/game/game.component';
 import { RolesComponent } from 'src/components/roles/roles.component';
+import { GameRulesComponent } from 'src/components/game-rules/game-rules.component';
 
 const routes: Routes = [
   {
@@ -17,6 +18,10 @@ const routes: Routes = [
   {
     path: 'roles',
     component: RolesComponent
+  },
+  {
+    path: 'game-rules',
+    component: GameRulesComponent,
   },
   {
     path: '',
