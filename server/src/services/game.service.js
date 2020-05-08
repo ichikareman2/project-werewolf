@@ -10,9 +10,9 @@
 
 const { EventEmitter } = require('events');
 const { cond } = require('../util');
-const { createNewGame, setGamePlayers, getPublicGame, getSeerPublicGame,setWinnerVillager, setWinnerWerewolves } = require('../models/game');
+const { createNewGame, setGamePlayers, setWinnerVillager, setWinnerWerewolves } = require('../models/game');
 const { createGamePlayer, createShuffledRoles, updateGamePlayerInList, setGamePlayerSocketId, killPlayer } = require('../models/game-player');
-const { DayPhaseEnum, NightPhaseEnum, gamePhases, getNextGamePhase } = require('../models/game-phase');
+const { getNextGamePhase, dayOrNightEnum } = require('../models/game-phase');
 const { werewolfRole, villagerRole, seerRole } = require('../models/game-player');
 const { upsertVote, tallyVote } = require('../models/vote');
 
@@ -109,23 +109,23 @@ module.exports = class GameService extends EventEmitter {
         let newGame = this.#gameState;
         newGame = cond(
             [[
-                g => g.phase.roundPhase === DayPhaseEnum.VILLAGERSVOTE,
+                g => g.phase.dayOrNight === dayOrNightEnum.DAY,
                 g => this.#villagerVote(aliasId, voterPlayerId, g)
             ],
             [
-                g => g.phase.roundPhase === NightPhaseEnum.WEREWOLVESHUNT,
+                g => g.phase.dayOrNight === dayOrNightEnum.NIGHT && this.#getPlayerRole(voterPlayerId,g) === werewolfRole,
                 g => this.#werewolfVote(aliasId, voterPlayerId, g)
             ],
             [
-                g => g.phase.roundPhase === NightPhaseEnum.SEERPEEK,
+                g => g.phase.dayOrNight === dayOrNightEnum.NIGHT && this.#getPlayerRole(voterPlayerId,g) === seerRole,
                 g => this.#seerVote(aliasId, voterPlayerId, g)
             ],
-            [() => true, g => g]
+            [() => true, g => {throw new Error('Not a valid vote')}]
             ],
             newGame
         );
         newGame = this.#processDayPhase(newGame);
-        newGame = this.#processWerewolfPhase(newGame);
+        // newGame = this.#processWerewolfPhase(newGame);
         // newGame = this.#skipSeerVote(newGame);
         newGame = this.#processNightPhase(newGame);
         newGame = this.#finishGame(newGame);
@@ -229,7 +229,7 @@ module.exports = class GameService extends EventEmitter {
      * @returns {Game}
      */
     #processDayPhase = (game) => {
-        if (game.phase.roundPhase !== DayPhaseEnum.VILLAGERSVOTE) { return game; }
+        if (game.phase.dayOrNight !== dayOrNightEnum.DAY) { return game; }
         const alivePlayers = game.players.filter(x => x.isAlive);
         const votesComplete = alivePlayers.length === game.votes.length;
         if (!votesComplete) { return game; }
@@ -249,24 +249,32 @@ module.exports = class GameService extends EventEmitter {
             players: newPlayers
         };
     }
-    /** process werewolf vote phase
-     * @param {Game} game
-     * @returns {Game} game
-     */
-    #processWerewolfPhase = (game) => {
-        if (game.phase.roundPhase !== NightPhaseEnum.WEREWOLVESHUNT) { return game; }
-        if (game.werewolfVote === undefined) { return game; }
-        return { ...game, phase: getNextGamePhase(game.phase) };
-    }
+    // /** process werewolf vote phase
+    //  * @param {Game} game
+    //  * @returns {Game} game
+    //  */
+    // #processWerewolfPhase = (game) => {
+    //     if (game.phase.roundPhase !== NightPhaseEnum.WEREWOLVESHUNT) { return game; }
+    //     if (game.werewolfVote === undefined) { return game; }
+    //     return { ...game, phase: getNextGamePhase(game.phase) };
+    // }
     /** process night phase
      * @param {Game} game
      * @returns {Game} game
      */
     #processNightPhase = (game) => {
-        // game is last phase and last phase is done.
+        // night phase
+        // all necessary vote is done
+        if(game.phase.dayOrNight !== dayOrNightEnum.NIGHT) { return game; }
         const seer = game.players.find(x => x.role === seerRole);
-        if (!(game.phase.roundPhase === NightPhaseEnum.SEERPEEK
-            && (game.seerVote !== undefined || !seer.isAlive))) { return game; }
+        if(seer.isAlive && game.seerVote === undefined) {
+            return game;
+        }
+        if(game.werewolfVote === undefined) {
+            return game;
+        }
+        // if (!(game.phase.roundPhase === NightPhaseEnum.SEERPEEK
+        //     && (game.seerVote !== undefined || !seer.isAlive))) { return game; }
         const players = updateGamePlayerInList(
             pl => pl.aliasId === game.werewolfVote,
             pl => killPlayer('Killed by werewolves.', pl),
@@ -306,5 +314,16 @@ module.exports = class GameService extends EventEmitter {
             isHost: pl.isHost
         }));
         return this.startGame(players);
+    }
+
+    /** Get player's role
+     * @param {string} playerId player's id
+     * @param {Game} game 
+     * @returns {werewolfRole | villagerRole | seerRole}
+     */
+    #getPlayerRole = (playerId, game) => {
+        const player = game.players.find(pl => pl.id === playerId);
+        if(!player) { throw new Error('Player not found!'); }
+        return player.role;
     }
 }

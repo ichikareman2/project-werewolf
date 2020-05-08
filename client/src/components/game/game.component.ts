@@ -8,6 +8,7 @@ import {
   Vote,
   NightPlayers,
   getConfirmationMessage,
+  getGameOverMessage,
   Game
 } from 'src/models';
 import { PlayerService } from 'src/services/player.service';
@@ -32,7 +33,9 @@ export class GameComponent implements OnInit {
 
   modalId = 'modal-vote-confirm';
   modalHeader = 'Confirm Vote';
-  modalMessage: string = '';
+  modalPrimaryButton = 'Confirm';
+  modalSecondaryButton = 'Cancel';
+  modalMessage = '';
 
   alertMessage = '';
   showAlert = false;
@@ -62,11 +65,23 @@ export class GameComponent implements OnInit {
       this.showVote = this.canVote();
       this.isAlphaWolf = this.role === RolesEnum.WEREWOLF && response.alphaWolf === this.currentPlayer.aliasId;
       this.players = this.assignPlayerVote(this.reorderPlayers(response.players));
+
+      if ( response.winner ) {
+        this.showWinner();
+      }
     });
 
     this.gameService.joinGame();
 
     this.loadPage = true;
+  }
+
+  public showWinner() {
+    this.modalHeader = 'Game Over';
+    this.modalMessage = getGameOverMessage(this.game.winner);
+    this.modalPrimaryButton = 'New Game';
+    this.modalSecondaryButton = 'Leave Game';
+    $(`#${this.modalId}`).modal('show');
   }
 
   public handlePlayerClick(data) {
@@ -79,18 +94,29 @@ export class GameComponent implements OnInit {
     $(`#${this.modalId}`).modal('show');
   }
 
-  public resetVote() {
+  public reset() {
     this.votedPlayer = null;
+
+    if (this.game.winner) {
+      this.playerService.clearPlayer();
+      this.gameService.leaveGame();
+      return this.router.navigate(['/']);
+    }
   }
 
-  public submitVote() {
+  public submit() {
+    if (this.game.winner) {
+      $(`#${this.modalId}`).modal('hide');
+      return this.router.navigate(['/lobby']);
+    }
+
     this.gameService.sendVote(this.votedPlayer.aliasId);
     $(`#${this.modalId}`).modal('hide');
   }
 
   // checks if voting is enabled depending on phase and role
   private canVote() {
-    if ( ! this.currentPlayer.isAlive ) {
+    if ( ! this.currentPlayer.isAlive || this.game.winner ) {
       return false;
     }
 
@@ -145,7 +171,7 @@ export class GameComponent implements OnInit {
     });
   }
 
-  private getVote(playerAliasId: string) : Player|null {
+  private getVote(playerAliasId: string): Player|null {
     const { players, votes, werewolfVote } = this.game;
 
     if ( votes.length === 0 ) {
@@ -164,7 +190,7 @@ export class GameComponent implements OnInit {
     return null;
   }
 
-  private getVoteCount(playerAliasId: string) : number {
+  private getVoteCount(playerAliasId: string): number {
     const { votes } = this.game;
     const playerVotes = votes.filter(x => x.votedAliasId === playerAliasId);
 
