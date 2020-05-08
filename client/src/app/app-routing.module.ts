@@ -5,6 +5,7 @@ import { LobbyComponent } from 'src/components/lobby/lobby.component';
 import { GameComponent } from 'src/components/game/game.component';
 import { RolesComponent } from 'src/components/roles/roles.component';
 import { GameRulesComponent } from 'src/components/game-rules/game-rules.component';
+import { Page404Component } from 'src/components/page404/page404.component';
 
 const routes: Routes = [
   {
@@ -26,6 +27,10 @@ const routes: Routes = [
   {
     path: '',
     component: JoinGameComponent
+  },
+  {
+    path: '**',
+    component: Page404Component
   }
 ];
 
