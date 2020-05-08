@@ -85,7 +85,7 @@ export class GameComponent implements OnInit {
   }
 
   public handlePlayerClick(data) {
-    if ( this.votedPlayer || ! this.canVote() || ! this.canBeVoted(data) ) {
+    if ( !!this.votedPlayer || ! this.canVote() || ! this.canBeVoted(data) ) {
       return;
     }
 
@@ -121,7 +121,6 @@ export class GameComponent implements OnInit {
     }
 
     if ( this.game.phase.dayOrNight === GamePhaseEnum.DAY
-      && this.game.phase.roundPhase === DayPhaseEnum.VILLAGERSVOTE
     ) {
       return true;
     }
@@ -163,9 +162,15 @@ export class GameComponent implements OnInit {
   // set player's vote
   private assignPlayerVote(players: Player[]) {
     return players.map((p) => {
+      const vote = this.getVote(p.aliasId);
+
+      if(p.aliasId === this.currentPlayer.aliasId) {
+        this.votedPlayer = vote;
+      }
+      
       return {
         ...p,
-        vote: this.getVote(p.aliasId),
+        vote,
         voteCount: this.getVoteCount(p.aliasId),
       };
     });
