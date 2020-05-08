@@ -14,7 +14,10 @@
         <div class="player-thumbnail-container ">
             {{ player.name.charAt(0) }}
         </div>
-        <span class="badge badge-danger player-thumbnail-badge" *ngIf="showVote && player.voteCount > 0">
+        <span
+            class="badge badge-danger player-thumbnail-badge"
+            *ngIf="showVote && player.voteCount && player.voteCount > 0"
+        >
             {{ player.voteCount }}
         </span>
     </div>

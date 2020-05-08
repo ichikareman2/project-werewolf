@@ -13,7 +13,7 @@
             >
             </game-player>
         </div>
-        <game-phase [mode]="game.phase.dayOrNight" [round]="game.round"></game-phase>
+        <game-phase [mode]="game.phase.dayOrNight" [round]="game.round" [isHost]="currentPlayer.isHost"></game-phase>
     </div>
 </div>
 
