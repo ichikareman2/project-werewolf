@@ -38,6 +38,7 @@ export class GameComponent implements OnInit {
   modalMessage = '';
 
   alertMessage = '';
+  alertType = 'alert-info';
   showAlert = false;
 
   constructor(
@@ -66,6 +67,10 @@ export class GameComponent implements OnInit {
       this.isAlphaWolf = this.role === RolesEnum.WEREWOLF && response.alphaWolf === this.currentPlayer.aliasId;
       this.players = this.assignPlayerVote(this.reorderPlayers(response.players));
 
+      if( this.isAlphaWolf ) {
+        this.showAlphaWolfAlert();
+      }
+
       if ( response.winner ) {
         this.showWinner();
       }
@@ -74,6 +79,11 @@ export class GameComponent implements OnInit {
     this.gameService.joinGame();
 
     this.loadPage = true;
+  }
+
+  public showAlphaWolfAlert() {
+    this.alertMessage = 'You\'re the alpha wolf tonight.';
+    this.showAlert = true;
   }
 
   public showWinner() {
