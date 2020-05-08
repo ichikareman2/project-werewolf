@@ -10,10 +10,6 @@
     margin-right: 8px;
 }
 
-.game-phase-controls-btn {
-    width: 50%;
-}
-
 .game-phase-text-container {
     flex: 0.25;
     display: flex;
