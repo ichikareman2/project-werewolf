@@ -28,6 +28,7 @@ export class GameComponent implements OnInit {
   role: RolesEnum = RolesEnum.VILLAGER;
   currentPlayer: Player;
   votedPlayer: Player;
+  killedPlayer: Player;
   showVote: boolean;
   isAlphaWolf = false;
 
@@ -38,8 +39,8 @@ export class GameComponent implements OnInit {
   modalMessage = '';
 
   alertMessage = '';
-  alertType = 'alert-info';
-  showAlert = false;
+  showKilledPlayer = false;
+  showAlphaWolf = false;
 
   constructor(
     private router: Router,
@@ -56,6 +57,8 @@ export class GameComponent implements OnInit {
     const gameObservable = this.gameService.getGame();
     gameObservable.subscribe(response => {
       console.log(response);
+      this.getKilledPlayer(response);
+
       this.game = response;
 
       if ( ! this.currentPlayer ) {
@@ -67,9 +70,8 @@ export class GameComponent implements OnInit {
       this.isAlphaWolf = this.role === RolesEnum.WEREWOLF && response.alphaWolf === this.currentPlayer.aliasId;
       this.players = this.assignPlayerVote(this.reorderPlayers(response.players));
 
-      if( this.isAlphaWolf ) {
-        this.showAlphaWolfAlert();
-      }
+      this.showAlphaWolfAlert();
+      this.showKilledPlayerAlert();
 
       if ( response.winner ) {
         this.showWinner();
@@ -82,8 +84,23 @@ export class GameComponent implements OnInit {
   }
 
   public showAlphaWolfAlert() {
+    if( ! this.isAlphaWolf || this.game.phase.dayOrNight === GamePhaseEnum.DAY ) {
+      this.showAlphaWolf = false;
+      return;
+    }
+
     this.alertMessage = 'You\'re the alpha wolf tonight.';
-    this.showAlert = true;
+    this.showAlphaWolf = true;
+  }
+
+  public showKilledPlayerAlert() {
+    if( ! this.killedPlayer ) {
+      this.showKilledPlayer = false;
+      return;
+    }
+
+    this.alertMessage = `(gasp) ${this.killedPlayer.name} has been ${this.killedPlayer.causeOfDeath.toLowerCase()}`;
+    this.showKilledPlayer = true;
   }
 
   public showWinner() {
@@ -210,5 +227,18 @@ export class GameComponent implements OnInit {
     const playerVotes = votes.filter(x => x.votedAliasId === playerAliasId);
 
     return playerVotes.length;
+  }
+
+  private getKilledPlayer(newGameState: Game) {
+    if( this.game && this.game.phase.dayOrNight !== newGameState.phase.dayOrNight ) {
+      const prevEliminatedPlayers = this.game.players.filter(x => !x.isAlive);
+      const newEliminatedPlayers = newGameState.players.filter(x => !x.isAlive);
+
+      this.killedPlayer = newEliminatedPlayers.filter(x =>
+        prevEliminatedPlayers.findIndex(y => y.id === x.id) === -1
+      )[0];
+    } else {
+      this.killedPlayer = null;
+    }
   }
 }

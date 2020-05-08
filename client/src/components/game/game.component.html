@@ -1,4 +1,5 @@
-<alert [message]="alertMessage" [type]="alertType" *ngIf="showAlert"></alert>
+<alert message="You're the alpha wolf tonight." type="alert-info" *ngIf="showAlphaWolf"></alert>
+<alert [message]="alertMessage" type="alert-danger" *ngIf="showKilledPlayer"></alert>
 
 <div class="container container-sm" *ngIf="loadPage && game">
     <div class="col justify-content-center game">
