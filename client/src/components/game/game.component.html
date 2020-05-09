@@ -1,7 +1,7 @@
 <alert message="You're the alpha wolf tonight." type="alert-info" *ngIf="showAlphaWolf"></alert>
 <alert [message]="alertMessage" type="alert-danger" *ngIf="showKilledPlayer"></alert>
 
-<div class="container container-sm" *ngIf="loadPage && game">
+<div class="container container-sm mb-5" *ngIf="loadPage && game">
     <div class="col justify-content-center game">
         <game-instruction [gamePhase]="game.phase" [role]="role"></game-instruction>
         <div class="col mt-4 mb-4 p-0">
@@ -10,10 +10,14 @@
                 [player]="p"
                 [showVote]="showVote"
                 (click)="handlePlayerClick(p)"
-            >
-            </game-player>
+            ></game-player>
         </div>
-        <game-phase [mode]="game.phase.dayOrNight" [round]="game.round" [isHost]="currentPlayer.isHost"></game-phase>
+        <game-phase
+            [mode]="game.phase.dayOrNight"
+            [round]="game.round"
+            [isHost]="currentPlayer.isHost"
+            (restartActionHandler)="handleRestartGame()"
+        ></game-phase>
     </div>
 </div>
 

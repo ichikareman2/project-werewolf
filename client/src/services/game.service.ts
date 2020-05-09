@@ -11,6 +11,8 @@ const SOCKET_EVENTS = {
     GAME_UPDATE: 'gameUpdated',
     GAME_VOTE: 'vote',
     GAME_LEAVE: 'leaveGame',
+    GAME_RESTART: 'restartGame',
+    GAME_RESTARTED: 'gameRestarted',
 };
 
 @Injectable({
@@ -21,6 +23,7 @@ export class GameService {
     private socket;
     private game: Observable<Game>;
     private playerId: string;
+    private isGameRestarted: Observable<boolean>;
 
     constructor(
         private playerService: PlayerService,
@@ -34,6 +37,7 @@ export class GameService {
         this.playerId = playerId;
         this.socket = io(`${environment.SERVER_ENDPOINT}/game`);
         this.game = fromEvent(this.socket, SOCKET_EVENTS.GAME_UPDATE);
+        this.isGameRestarted = fromEvent(this.socket, SOCKET_EVENTS.GAME_RESTARTED);
     }
 
     public joinGame() {
@@ -50,5 +54,13 @@ export class GameService {
 
     public leaveGame() {
         this.socket.emit(SOCKET_EVENTS.GAME_LEAVE);
+    }
+
+    public restartGame() {
+        this.socket.emit(SOCKET_EVENTS.GAME_RESTART, this.playerId);
+    }
+
+    public isGameRestart() {
+        return this.isGameRestarted;
     }
 }

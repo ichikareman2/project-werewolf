@@ -54,6 +54,13 @@ export class GameComponent implements OnInit {
       return this.router.navigate(['/']);
     }
 
+    const restartGameObservable = this.gameService.isGameRestart();
+    restartGameObservable.subscribe(response => {
+      this.loadPage = false;
+      this.gameService.joinGame();
+      this.loadPage = true;
+    })
+
     const gameObservable = this.gameService.getGame();
     gameObservable.subscribe(response => {
       console.log(response);
@@ -119,6 +126,15 @@ export class GameComponent implements OnInit {
     this.votedPlayer = data;
     this.modalMessage = getConfirmationMessage(this.role, this.votedPlayer.name);
     $(`#${this.modalId}`).modal('show');
+  }
+
+
+  public handleRestartGame() {
+    if( ! this.currentPlayer.isHost ) {
+      return;
+    }
+
+    this.gameService.restartGame();
   }
 
   public reset() {
