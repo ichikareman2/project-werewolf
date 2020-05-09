@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ModalModule } from 'src/components/modal/modal.module';
 import { GamePhaseComponent } from './phase.component';
 
 @NgModule({
@@ -10,7 +11,8 @@ import { GamePhaseComponent } from './phase.component';
     GamePhaseComponent
   ],
   imports: [
-    CommonModule
+    CommonModule,
+    ModalModule
   ],
 })
 export class GamePhaseModule { }

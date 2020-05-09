@@ -1,6 +1,6 @@
 <div class="row game-phase">
     <div class="game-phase-controls" *ngIf="isHost">
-        <button class="btn btn-info btn-block" (click)="handleRestartGame()">
+        <button class="btn btn-info btn-block" (click)="confirmRestartGame()">
             RESTART GAME
         </button>
     </div>
@@ -11,3 +11,12 @@
         <i class="fa fa-2x game-phase-icon" [ngClass]="[mode === 'Night' ? 'fa-moon-o' : 'fa-sun-o']"></i>
     </div>
 </div>
+
+<modal
+    [modalId]="modalId"
+    message="Are you sure you want to restart this game?"
+    header="Confirm Restart"
+    primaryButtonLabel="OK"
+    (primaryActionHandler)="handleRestartGame()"
+>
+</modal>
