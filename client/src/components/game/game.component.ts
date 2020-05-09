@@ -41,6 +41,8 @@ export class GameComponent implements OnInit {
   alertMessage = '';
   showKilledPlayer = false;
   showAlphaWolf = false;
+  showAlert = false;
+  hasGameRestarted = false;
 
   constructor(
     private router: Router,
@@ -55,10 +57,12 @@ export class GameComponent implements OnInit {
     }
 
     const restartGameObservable = this.gameService.isGameRestart();
-    restartGameObservable.subscribe(response => {
+    restartGameObservable.subscribe(() => {
+      this.hasGameRestarted = true;
       this.loadPage = false;
       this.gameService.joinGame();
       this.loadPage = true;
+      this.showGameRestartedModal();
     })
 
     const gameObservable = this.gameService.getGame();
@@ -110,6 +114,14 @@ export class GameComponent implements OnInit {
     this.showKilledPlayer = true;
   }
 
+  public showGameRestartedModal() {
+    this.modalHeader = 'Attention'
+    this.modalMessage = 'The host restarted the game.';
+    this.modalPrimaryButton = 'Got it';
+    this.modalSecondaryButton = 'Close';
+    $(`#${this.modalId}`).modal('show');
+  }
+
   public showWinner() {
     this.modalHeader = 'Game Over';
     this.modalMessage = getGameOverMessage(this.game.winner);
@@ -127,7 +139,6 @@ export class GameComponent implements OnInit {
     this.modalMessage = getConfirmationMessage(this.role, this.votedPlayer.name);
     $(`#${this.modalId}`).modal('show');
   }
-
 
   public handleRestartGame() {
     if( ! this.currentPlayer.isHost ) {
@@ -148,6 +159,11 @@ export class GameComponent implements OnInit {
   }
 
   public submit() {
+    if(this.hasGameRestarted) {
+      $(`#${this.modalId}`).modal('hide');
+      return;
+    }
+
     if (this.game.winner) {
       $(`#${this.modalId}`).modal('hide');
       return this.router.navigate(['/lobby']);
