@@ -141,10 +141,16 @@ This is used to manage the ongoing game. game messages available are designed to
 * payload#3: [`CallbackFn<void>`](#callbackfn<t>) - optional. Use it to know if the operation is successful.
 ##### `leaveGame`
 * emit this to leave the game. The game will still continue except when the player's vote is required.
+##### `restartGame`
+* emit this to restart game with same players. The server will then emit [`gameRestarted`](#`gameRestarted`). Only host can do this.
+* payload#1: id - id of the player that wants to vote. T
+* payload#3: [`CallbackFn<void>`](#callbackfn<t>) - optional. Use it to know if the operation is successful.
 #### `/game` emitters
 ##### `gameUpdated`
 * Emitted everytime the game state changes.
 * type : [`Game`](#Game)
+##### `gameRestarted`
+* Emitted when game is restarted.
 
 ---
 ## Type Definitions

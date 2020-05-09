@@ -198,10 +198,12 @@ module.exports = class GameService extends EventEmitter {
         if(!(game.seerPeekedAliasIds.indexOf(voted.aliasId) === -1)) {
             throw new Error(`player has already been peeked on.`);
         }
+        if(game.seerVote !== undefined) { throw new Error(`seer has already chosen.`); }
 
         // add seer vote
         return {
             ...game,
+            seerPeekedAliasIds: [...game.seerPeekedAliasIds, voted.aliasId],
             seerVote: voted.aliasId
         };
     }
@@ -283,7 +285,6 @@ module.exports = class GameService extends EventEmitter {
         return {
             ...game,
             players,
-            seerPeekedAliasIds: [...game.seerPeekedAliasIds, game.seerVote],
             werewolfVote: undefined,
             seerVote: undefined,
             phase: getNextGamePhase(game.phase),
@@ -307,13 +308,17 @@ module.exports = class GameService extends EventEmitter {
     }
     /** calls `startGame` with the current game players.
      */
-    restartGame = () => {
+    restartGame = async (playerId) => {
+        const requestor = this.#gameState.players.find(pl => pl.id === playerId);
+        if(!(requestor && requestor.isHost)) { throw new Error(`Only host can restart game.`); }
+        const prevGamePlayers = this.#gameState.players;
         const players = this.#gameState.players.map(pl => ({
             playerId: pl.id,
             aliasId: pl.aliasId,
             isHost: pl.isHost
         }));
-        return this.startGame(players);
+        await this.startGame(players);
+        prevGamePlayers.forEach(pl => this.joinGame(pl.socketId, pl.id));
     }
 
     /** Get player's role
