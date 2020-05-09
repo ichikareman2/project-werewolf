@@ -19,8 +19,10 @@
      #joinGameEvent = 'joinGame';
      #voteEvent = 'vote';
      #leaveGameEvent = 'leaveGame';
+     #restartGameEvent = 'restartGame';
  
-     #gameUpdatedEmit = 'gameUpdated'
+     #gameUpdatedEmit = 'gameUpdated';
+     #gameRestartedEmit = 'gameRestarted';
  
      /** @type {SocketIO.Server} */
      #io;
@@ -47,7 +49,8 @@
              socket.on(this.#joinGameEvent, this.onJoinGame(socket));
              socket.on(this.#voteEvent, this.vote)
              socket.on(this.#leaveGameEvent, this.onLeaveGame(socket));
-             socket.on('disconnect', this.onLeaveGame(socket)); 
+             socket.on('disconnect', this.onLeaveGame(socket));
+             socket.on(this.#restartGameEvent, this.restartGame)
          })
      }
      /** 
@@ -130,6 +133,25 @@
              cb(createFailedResponse(errorMessage));
          }
      }
+ 
+     /** restart game with current players.
+      * @param {string} playerId
+      * @param {CallbackFn<undefined>} cb
+      */
+     restartGame = (playerId, cb = noop) => {
+         try {
+             this.#gameService.restartGame(playerId);
+             cb(createSuccessResponse());
+             this.#gameIo.emit(this.#gameRestartedEmit);
+         } catch (err) {
+             const errorMessage = err && err.message
+                 ? err.message
+                 : `Unclear error occured. Contact dev.`
+             console.error('error', errorMessage);
+             cb(createFailedResponse(errorMessage));
+         }
+     }
+ 
      /** create state for werewolf players
       * @param {Game} game
       * @returns {PublicGame} */
