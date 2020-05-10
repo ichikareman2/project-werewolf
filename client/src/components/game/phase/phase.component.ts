@@ -11,7 +11,7 @@ declare var $: any;
 export class GamePhaseComponent implements OnChanges {
   @Input() mode: GamePhaseEnum = GamePhaseEnum.NIGHT;
   @Input() round: number;
-  @Input() isHost: boolean = false;
+  @Input() isHost = false;
   @Output() restartActionHandler = new EventEmitter();
   phaseMessage = '';
   modalId = 'modal-restart-confirm';

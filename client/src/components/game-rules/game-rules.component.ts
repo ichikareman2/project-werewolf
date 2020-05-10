@@ -5,7 +5,7 @@ import { Component } from '@angular/core';
   styleUrls: ['./game-rules.component.css']
 })
 export class GameRulesComponent {
-  activeContent: string = 'game-setup';
+  activeContent = 'game-setup';
 
   handleChangeActiveContent(newContent) {
     this.activeContent = newContent;

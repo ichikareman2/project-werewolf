@@ -62,7 +62,7 @@ export class GameComponent implements OnInit {
       this.gameService.joinGame();
       this.loadPage = true;
       this.showGameRestartedModal();
-    })
+    });
 
     const gameObservable = this.gameService.getGame();
     gameObservable.subscribe(response => {
@@ -94,7 +94,7 @@ export class GameComponent implements OnInit {
   }
 
   public showAlphaWolfAlert() {
-    if( ! this.isAlphaWolf || this.game.phase.dayOrNight === GamePhaseEnum.DAY ) {
+    if ( ! this.isAlphaWolf || this.game.phase.dayOrNight === GamePhaseEnum.DAY ) {
       this.showAlphaWolf = false;
       return;
     }
@@ -104,7 +104,7 @@ export class GameComponent implements OnInit {
   }
 
   public showKilledPlayerAlert() {
-    if( ! this.killedPlayer ) {
+    if ( ! this.killedPlayer ) {
       this.showKilledPlayer = false;
       return;
     }
@@ -114,7 +114,7 @@ export class GameComponent implements OnInit {
   }
 
   public showGameRestartedModal() {
-    this.modalHeader = 'Attention'
+    this.modalHeader = 'Attention';
     this.modalMessage = 'The host restarted the game.';
     this.modalPrimaryButton = 'Got it';
     this.modalSecondaryButton = 'Close';
@@ -140,7 +140,7 @@ export class GameComponent implements OnInit {
   }
 
   public handleRestartGame() {
-    if( ! this.currentPlayer.isHost ) {
+    if ( ! this.currentPlayer.isHost ) {
       return;
     }
 
@@ -158,7 +158,7 @@ export class GameComponent implements OnInit {
   }
 
   public submit() {
-    if(this.hasGameRestarted) {
+    if (this.hasGameRestarted) {
       $(`#${this.modalId}`).modal('hide');
       return;
     }
@@ -222,10 +222,10 @@ export class GameComponent implements OnInit {
     return players.map((p) => {
       const vote = this.getVote(p.aliasId);
 
-      if(p.aliasId === this.currentPlayer.aliasId) {
+      if (p.aliasId === this.currentPlayer.aliasId) {
         this.votedPlayer = vote;
       }
-      
+
       return {
         ...p,
         vote,
@@ -261,7 +261,7 @@ export class GameComponent implements OnInit {
   }
 
   private getKilledPlayer(newGameState: Game) {
-    if( this.game && this.game.phase.dayOrNight !== newGameState.phase.dayOrNight ) {
+    if ( this.game && this.game.phase.dayOrNight !== newGameState.phase.dayOrNight ) {
       const prevEliminatedPlayers = this.game.players.filter(x => !x.isAlive);
       const newEliminatedPlayers = newGameState.players.filter(x => !x.isAlive);
 
