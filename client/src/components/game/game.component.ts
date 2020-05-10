@@ -59,8 +59,6 @@ export class GameComponent implements OnInit {
     restartGameObservable.subscribe(() => {
       this.hasGameRestarted = true;
       this.loadPage = false;
-      this.gameService.joinGame();
-      this.loadPage = true;
       this.showGameRestartedModal();
     });
 
@@ -160,6 +158,8 @@ export class GameComponent implements OnInit {
   public submit() {
     if (this.hasGameRestarted) {
       $(`#${this.modalId}`).modal('hide');
+      this.gameService.joinGame();
+      this.loadPage = true;
       return;
     }
 
