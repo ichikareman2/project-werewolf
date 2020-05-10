@@ -41,7 +41,6 @@ export class GameComponent implements OnInit {
   alertMessage = '';
   showKilledPlayer = false;
   showAlphaWolf = false;
-  showAlert = false;
   hasGameRestarted = false;
 
   constructor(
