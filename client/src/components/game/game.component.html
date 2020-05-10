@@ -1,6 +1,3 @@
-<alert message="You're the alpha wolf tonight." type="alert-info" *ngIf="showAlphaWolf"></alert>
-<alert [message]="alertMessage" type="alert-danger" *ngIf="showKilledPlayer"></alert>
-
 <div class="container container-sm mb-5" *ngIf="loadPage && game">
     <div class="col justify-content-center game">
         <game-instruction [gamePhase]="game.phase" [role]="role"></game-instruction>

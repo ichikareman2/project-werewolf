@@ -38,6 +38,8 @@ export class GameComponent implements OnInit {
   modalSecondaryButton = 'Cancel';
   modalMessage = '';
 
+  notifications = [];
+
   alertMessage = '';
   showKilledPlayer = false;
   showAlphaWolf = false;
@@ -64,29 +66,20 @@ export class GameComponent implements OnInit {
 
     const gameObservable = this.gameService.getGame();
     gameObservable.subscribe(response => {
-      this.getKilledPlayer(response);
-
-      this.game = response;
-
       const { players, alphaWolf, winner, seerPeekedAliasIds } = response;
 
-      if ( ! this.currentPlayer ) {
-        this.getCurrentPlayer(player.aliasId, players);
-        this.role = this.currentPlayer.role;
-      }
+      this.getCurrentPlayer(player.aliasId, players, alphaWolf);
+      this.getUpdates(response);
 
+      this.game = response;
       this.showVote = this.canVote();
-      this.isAlphaWolf = this.role === RolesEnum.WEREWOLF && alphaWolf === this.currentPlayer.aliasId;
       this.players = this.assignPlayerVote(this.reorderPlayers(players));
 
       if(this.role === RolesEnum.SEER) {
         this.markPeekedPlayers(seerPeekedAliasIds);
       }
 
-      this.showAlphaWolfAlert();
-      this.showKilledPlayerAlert();
-
-      if ( winner ) {
+      if (winner) {
         this.showWinner();
       }
     });
@@ -94,26 +87,6 @@ export class GameComponent implements OnInit {
     this.gameService.joinGame();
 
     this.loadPage = true;
-  }
-
-  public showAlphaWolfAlert() {
-    if ( ! this.isAlphaWolf || this.game.phase.dayOrNight === GamePhaseEnum.DAY ) {
-      this.showAlphaWolf = false;
-      return;
-    }
-
-    this.alertMessage = 'You\'re the alpha wolf tonight.';
-    this.showAlphaWolf = true;
-  }
-
-  public showKilledPlayerAlert() {
-    if ( ! this.killedPlayer ) {
-      this.showKilledPlayer = false;
-      return;
-    }
-
-    this.alertMessage = `(gasp) ${this.killedPlayer.name} has been ${this.killedPlayer.causeOfDeath.toLowerCase()}`;
-    this.showKilledPlayer = true;
   }
 
   public showGameRestartedModal() {
@@ -206,8 +179,10 @@ export class GameComponent implements OnInit {
   }
 
   // get data specific to the current player
-  private getCurrentPlayer(playerAliasId: string, players: Player[]) {
+  private getCurrentPlayer(playerAliasId: string, players: Player[], alphaWolf: string) {
     this.currentPlayer = players.filter(x => x.aliasId === playerAliasId)[0];
+    this.role = this.currentPlayer.role;
+    this.isAlphaWolf = this.currentPlayer.role === RolesEnum.WEREWOLF && alphaWolf === this.currentPlayer.aliasId;
   }
 
   // rearrange player list
@@ -266,16 +241,34 @@ export class GameComponent implements OnInit {
     return playerVotes.length;
   }
 
-  private getKilledPlayer(newGameState: Game) {
+  private getKilledPlayer(newGameState: Game): Player|null {
     if ( this.game && this.game.phase.dayOrNight !== newGameState.phase.dayOrNight ) {
       const prevEliminatedPlayers = this.game.players.filter(x => !x.isAlive);
       const newEliminatedPlayers = newGameState.players.filter(x => !x.isAlive);
 
-      this.killedPlayer = newEliminatedPlayers.filter(x =>
+      return newEliminatedPlayers.filter(x =>
         prevEliminatedPlayers.findIndex(y => y.id === x.id) === -1
       )[0];
-    } else {
-      this.killedPlayer = null;
+    }
+    
+    return null;
+  }
+
+  private getUpdates(response: Game) {
+    const killedPlayer = this.getKilledPlayer(response);
+
+    if(killedPlayer) {
+      this.notifications.unshift({
+        header: 'Someone\'s been killed!',
+        messaage: `(gasp) ${this.killedPlayer.name} has been ${this.killedPlayer.causeOfDeath.toLowerCase()}`
+      });
+    }
+
+    if(this.isAlphaWolf && response.phase.dayOrNight === GamePhaseEnum.NIGHT) {
+      this.notifications.unshift({
+        header: 'Hunting time!',
+        messaage: 'You\'re the alpha wolf tonight.'
+      });
     }
   }
 
