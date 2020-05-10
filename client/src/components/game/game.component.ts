@@ -97,6 +97,10 @@ export class GameComponent implements OnInit {
     this.modalMessage = 'The host restarted the game.';
     this.modalPrimaryButton = 'Got it';
     this.modalSecondaryButton = 'Close';
+
+    $(`#${this.modalId}`).on('hidden.bs.modal', () => {
+      this.hasGameRestarted = false;
+    });
     $(`#${this.modalId}`).modal('show');
   }
 
@@ -105,6 +109,12 @@ export class GameComponent implements OnInit {
     this.modalMessage = getGameOverMessage(this.game.winner);
     this.modalPrimaryButton = 'New Game';
     this.modalSecondaryButton = 'Leave Game';
+
+    $(`#${this.modalId}`).on('hidden.bs.modal', () => {
+      this.playerService.clearPlayer();
+      this.gameService.leaveGame();
+      return this.router.navigate(['/']);
+    });
     $(`#${this.modalId}`).modal('show');
   }
 
@@ -131,8 +141,9 @@ export class GameComponent implements OnInit {
 
   public reset() {
     this.votedPlayer = null;
+    this.hasGameRestarted = false;
 
-    if (this.game.winner) {
+    if (this.game && this.game.winner) {
       this.playerService.clearPlayer();
       this.gameService.leaveGame();
       return this.router.navigate(['/']);
@@ -151,8 +162,10 @@ export class GameComponent implements OnInit {
       return this.router.navigate(['/lobby']);
     }
 
-    this.gameService.sendVote(this.votedPlayer.aliasId);
-    $(`#${this.modalId}`).modal('hide');
+    if (this.votedPlayer) {
+      this.gameService.sendVote(this.votedPlayer.aliasId);
+      $(`#${this.modalId}`).modal('hide');
+    }
   }
 
   // checks if voting is enabled depending on phase and role
