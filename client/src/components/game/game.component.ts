@@ -68,7 +68,7 @@ export class GameComponent implements OnInit {
 
       this.game = response;
 
-      const { players, alphaWolf, winner } = response;
+      const { players, alphaWolf, winner, seerPeekedAliasIds } = response;
 
       if ( ! this.currentPlayer ) {
         this.getCurrentPlayer(player.aliasId, players);
@@ -78,6 +78,10 @@ export class GameComponent implements OnInit {
       this.showVote = this.canVote();
       this.isAlphaWolf = this.role === RolesEnum.WEREWOLF && alphaWolf === this.currentPlayer.aliasId;
       this.players = this.assignPlayerVote(this.reorderPlayers(players));
+
+      if(this.role === RolesEnum.SEER) {
+        this.markPeekedPlayers(seerPeekedAliasIds);
+      }
 
       this.showAlphaWolfAlert();
       this.showKilledPlayerAlert();
@@ -134,6 +138,9 @@ export class GameComponent implements OnInit {
     }
 
     this.votedPlayer = data;
+    this.modalHeader = 'Confirm Vote';
+    this.modalPrimaryButton = 'Confirm';
+    this.modalSecondaryButton = 'Cancel';
     this.modalMessage = getConfirmationMessage(this.role, this.votedPlayer.name);
     $(`#${this.modalId}`).modal('show');
   }
@@ -270,5 +277,11 @@ export class GameComponent implements OnInit {
     } else {
       this.killedPlayer = null;
     }
+  }
+
+  private markPeekedPlayers(seerPeekedAliasIds: string[]) {
+    this.players.forEach(p => {
+      p.peeked = seerPeekedAliasIds.includes(p.aliasId);
+    });
   }
 }

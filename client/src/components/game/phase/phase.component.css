@@ -2,11 +2,11 @@
     display: flex;
     align-items: center;
     justify-content: flex-end;
+    margin: 0;
 }
 
 .game-phase-controls {
     flex: 0.75;
-    margin-left: 8px;
     margin-right: 8px;
 }
 

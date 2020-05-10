@@ -62,3 +62,9 @@
     top: -4px;
     right: -4px;
 }
+
+.player-thumbnail-peek {
+    position: absolute;
+    bottom: -4px;
+    right: -4px;
+}

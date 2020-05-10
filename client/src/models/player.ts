@@ -20,4 +20,5 @@ export type Player = {
     causeOfDeath?: string;
     vote?: Player;
     voteCount?: number;
+    peeked?: boolean;
 };
