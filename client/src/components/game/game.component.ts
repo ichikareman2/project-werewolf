@@ -39,6 +39,7 @@ export class GameComponent implements OnInit {
 
   notifications = [];
   hasGameRestarted = false;
+  hasWinner = false;
 
   constructor(
     private router: Router,
@@ -67,7 +68,13 @@ export class GameComponent implements OnInit {
 
     const gameObservable = this.gameService.getGame();
     gameObservable.subscribe(response => {
+      console.log(response);
       const { players, alphaWolf, winner, seerPeekedAliasIds } = response;
+
+      if (winner) {
+        this.hasWinner = true;
+        return this.showWinner(winner);
+      }
 
       this.getCurrentPlayer(player.aliasId, players, alphaWolf);
       this.getUpdates(response);
@@ -81,10 +88,6 @@ export class GameComponent implements OnInit {
       }
 
       $('.toast').toast('show');
-
-      if (winner) {
-        this.showWinner();
-      }
     });
 
     this.gameService.joinGame();
@@ -104,17 +107,13 @@ export class GameComponent implements OnInit {
     $(`#${this.modalId}`).modal('show');
   }
 
-  public showWinner() {
+  public showWinner(winner) {
+    console.log('game oveeeeer!');
     this.modalHeader = 'Game Over';
-    this.modalMessage = getGameOverMessage(this.game.winner);
+    this.modalMessage = getGameOverMessage(winner);
     this.modalPrimaryButton = 'New Game';
     this.modalSecondaryButton = 'Leave Game';
 
-    $(`#${this.modalId}`).on('hidden.bs.modal', () => {
-      this.playerService.clearPlayer();
-      this.gameService.leaveGame();
-      return this.router.navigate(['/']);
-    });
     $(`#${this.modalId}`).modal('show');
   }
 
@@ -143,7 +142,8 @@ export class GameComponent implements OnInit {
     this.votedPlayer = null;
     this.hasGameRestarted = false;
 
-    if (this.game && this.game.winner) {
+    if (this.hasWinner) {
+      this.hasWinner = false;
       this.playerService.clearPlayer();
       this.gameService.leaveGame();
       return this.router.navigate(['/']);
@@ -151,20 +151,20 @@ export class GameComponent implements OnInit {
   }
 
   public submit() {
-    if (this.hasGameRestarted) {
-      this.hasGameRestarted = false;
-      $(`#${this.modalId}`).modal('hide');
-      return;
-    }
+    $(`#${this.modalId}`).modal('hide');
 
-    if (this.game.winner) {
-      $(`#${this.modalId}`).modal('hide');
+    if (this.hasWinner) {
+      this.hasWinner = false;
       return this.router.navigate(['/lobby']);
     }
 
+    if (this.hasGameRestarted) {
+      this.hasGameRestarted = false;
+      return;
+    }
+
     if (this.votedPlayer) {
-      this.gameService.sendVote(this.votedPlayer.aliasId);
-      $(`#${this.modalId}`).modal('hide');
+      setTimeout(() => this.gameService.sendVote(this.votedPlayer.aliasId), 500);
     }
   }
 
