@@ -138,6 +138,9 @@ export class GameComponent implements OnInit {
     }
 
     this.votedPlayer = data;
+    this.modalHeader = 'Confirm Vote';
+    this.modalPrimaryButton = 'Confirm';
+    this.modalSecondaryButton = 'Cancel';
     this.modalMessage = getConfirmationMessage(this.role, this.votedPlayer.name);
     $(`#${this.modalId}`).modal('show');
   }
