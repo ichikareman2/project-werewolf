@@ -16,7 +16,7 @@ export class ToastComponent implements AfterContentInit {
   /** queue gateway(?) for toast */
   private toast$ = new Subject<ToastModel>();
   /** view's model of toasts */
-  protected toasts: ToastModel[] = [];
+  toasts: ToastModel[] = [];
 
   ngAfterContentInit() {
     this.toast$.pipe(
@@ -36,7 +36,7 @@ export class ToastComponent implements AfterContentInit {
   }
 
   /** trackby for toast items. list optimization */
-  protected trackByFn(_: number, toast: ToastModel) {
+  trackByFn(_: number, toast: ToastModel) {
     return toast.id;
   }
 }
