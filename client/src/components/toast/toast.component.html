@@ -1,11 +1,11 @@
-<div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-    <div class="toast-header">
-      <strong class="mr-auto">{{ header }}</strong>
-      <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-      </button>
-    </div>
-    <div class="toast-body">
-      {{ message }}
-    </div>
+<div class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-autohide="false"
+  *ngFor="let t of toasts; trackBy: trackByFn;" [id]="t.id">
+  <div class="toast-header border-dark bg-dark text-light">
+    <strong class="mr-auto" [innerHTML]="t.title"></strong>
+    <button type="button" class="ml-2 mb-1 close text-light" data-dismiss="toast" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
   </div>
+  <div class="toast-body bg-dark text-light" [innerHTML]="t.message">
+  </div>
+</div>

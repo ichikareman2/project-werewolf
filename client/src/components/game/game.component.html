@@ -3,7 +3,7 @@
         <game-instruction [gamePhase]="game.phase" [role]="role"></game-instruction>
         <div class="col mt-4 mb-4 p-0">
             <game-player
-                *ngFor="let p of players"
+                *ngFor="let p of players; trackBy: playersTrackByFn"
                 [player]="p"
                 [showVote]="showVote"
                 (click)="handlePlayerClick(p)"
@@ -19,13 +19,7 @@
 </div>
 
 
-<div class="game-notifications">
-    <toast
-        *ngFor="let n of notifications"
-        [header]="n.header"
-        [message]="n.message"
-    ></toast>
-</div>
+<toast #toast></toast>
 
 <modal
     [message]="modalMessage"
