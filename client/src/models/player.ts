@@ -17,7 +17,7 @@ export type Player = {
     isHost: boolean;
     role?: RolesEnum;
     isAlive?: boolean;
-    causeOfDeath: string;
-    vote: Player;
-    voteCount: number;
+    causeOfDeath?: string;
+    vote?: Player;
+    voteCount?: number;
 };

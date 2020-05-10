@@ -41,6 +41,7 @@ export class GameComponent implements OnInit {
   alertMessage = '';
   showKilledPlayer = false;
   showAlphaWolf = false;
+  hasGameRestarted = false;
 
   constructor(
     private router: Router,
@@ -54,26 +55,34 @@ export class GameComponent implements OnInit {
       return this.router.navigate(['/']);
     }
 
+    const restartGameObservable = this.gameService.isGameRestart();
+    restartGameObservable.subscribe(() => {
+      this.hasGameRestarted = true;
+      this.currentPlayer = null;
+      this.showGameRestartedModal();
+    });
+
     const gameObservable = this.gameService.getGame();
     gameObservable.subscribe(response => {
-      console.log(response);
       this.getKilledPlayer(response);
 
       this.game = response;
 
+      const { players, alphaWolf, winner } = response;
+
       if ( ! this.currentPlayer ) {
-        this.getCurrentPlayer(player.aliasId, response.players);
+        this.getCurrentPlayer(player.aliasId, players);
         this.role = this.currentPlayer.role;
       }
 
       this.showVote = this.canVote();
-      this.isAlphaWolf = this.role === RolesEnum.WEREWOLF && response.alphaWolf === this.currentPlayer.aliasId;
-      this.players = this.assignPlayerVote(this.reorderPlayers(response.players));
+      this.isAlphaWolf = this.role === RolesEnum.WEREWOLF && alphaWolf === this.currentPlayer.aliasId;
+      this.players = this.assignPlayerVote(this.reorderPlayers(players));
 
       this.showAlphaWolfAlert();
       this.showKilledPlayerAlert();
 
-      if ( response.winner ) {
+      if ( winner ) {
         this.showWinner();
       }
     });
@@ -84,7 +93,7 @@ export class GameComponent implements OnInit {
   }
 
   public showAlphaWolfAlert() {
-    if( ! this.isAlphaWolf || this.game.phase.dayOrNight === GamePhaseEnum.DAY ) {
+    if ( ! this.isAlphaWolf || this.game.phase.dayOrNight === GamePhaseEnum.DAY ) {
       this.showAlphaWolf = false;
       return;
     }
@@ -94,13 +103,21 @@ export class GameComponent implements OnInit {
   }
 
   public showKilledPlayerAlert() {
-    if( ! this.killedPlayer ) {
+    if ( ! this.killedPlayer ) {
       this.showKilledPlayer = false;
       return;
     }
 
     this.alertMessage = `(gasp) ${this.killedPlayer.name} has been ${this.killedPlayer.causeOfDeath.toLowerCase()}`;
     this.showKilledPlayer = true;
+  }
+
+  public showGameRestartedModal() {
+    this.modalHeader = 'Attention';
+    this.modalMessage = 'The host restarted the game.';
+    this.modalPrimaryButton = 'Got it';
+    this.modalSecondaryButton = 'Close';
+    $(`#${this.modalId}`).modal('show');
   }
 
   public showWinner() {
@@ -121,6 +138,14 @@ export class GameComponent implements OnInit {
     $(`#${this.modalId}`).modal('show');
   }
 
+  public handleRestartGame() {
+    if ( ! this.currentPlayer.isHost ) {
+      return;
+    }
+
+    this.gameService.restartGame();
+  }
+
   public reset() {
     this.votedPlayer = null;
 
@@ -132,6 +157,11 @@ export class GameComponent implements OnInit {
   }
 
   public submit() {
+    if (this.hasGameRestarted) {
+      $(`#${this.modalId}`).modal('hide');
+      return;
+    }
+
     if (this.game.winner) {
       $(`#${this.modalId}`).modal('hide');
       return this.router.navigate(['/lobby']);
@@ -191,10 +221,10 @@ export class GameComponent implements OnInit {
     return players.map((p) => {
       const vote = this.getVote(p.aliasId);
 
-      if(p.aliasId === this.currentPlayer.aliasId) {
+      if (p.aliasId === this.currentPlayer.aliasId) {
         this.votedPlayer = vote;
       }
-      
+
       return {
         ...p,
         vote,
@@ -230,7 +260,7 @@ export class GameComponent implements OnInit {
   }
 
   private getKilledPlayer(newGameState: Game) {
-    if( this.game && this.game.phase.dayOrNight !== newGameState.phase.dayOrNight ) {
+    if ( this.game && this.game.phase.dayOrNight !== newGameState.phase.dayOrNight ) {
       const prevEliminatedPlayers = this.game.players.filter(x => !x.isAlive);
       const newEliminatedPlayers = newGameState.players.filter(x => !x.isAlive);
 

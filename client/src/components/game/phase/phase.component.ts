@@ -1,5 +1,7 @@
-import { Component, Input, OnChanges } from '@angular/core';
-import { getPhaseMessage, GamePhaseEnum } from 'src/models';
+import { Component, Input, OnChanges, Output, EventEmitter } from '@angular/core';
+import { GamePhaseEnum } from 'src/models';
+
+declare var $: any;
 
 @Component({
   selector: 'game-phase',
@@ -9,9 +11,21 @@ import { getPhaseMessage, GamePhaseEnum } from 'src/models';
 export class GamePhaseComponent implements OnChanges {
   @Input() mode: GamePhaseEnum = GamePhaseEnum.NIGHT;
   @Input() round: number;
+  @Input() isHost = false;
+  @Output() restartActionHandler = new EventEmitter();
   phaseMessage = '';
+  modalId = 'modal-restart-confirm';
 
   ngOnChanges() {
-    this.phaseMessage = getPhaseMessage(this.mode, this.round);
+    this.phaseMessage = `${this.mode} ${this.round}`;
+  }
+
+  public confirmRestartGame() {
+    $(`#${this.modalId}`).modal('show');
+  }
+
+  public handleRestartGame() {
+    $(`#${this.modalId}`).modal('hide');
+    this.restartActionHandler.emit();
   }
 }
