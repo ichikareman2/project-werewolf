@@ -58,30 +58,31 @@ export class GameComponent implements OnInit {
     const restartGameObservable = this.gameService.isGameRestart();
     restartGameObservable.subscribe(() => {
       this.hasGameRestarted = true;
-      this.loadPage = false;
+      this.currentPlayer = null;
       this.showGameRestartedModal();
     });
 
     const gameObservable = this.gameService.getGame();
     gameObservable.subscribe(response => {
-      console.log(response);
       this.getKilledPlayer(response);
 
       this.game = response;
 
+      const { players, alphaWolf, winner } = response;
+
       if ( ! this.currentPlayer ) {
-        this.getCurrentPlayer(player.aliasId, response.players);
+        this.getCurrentPlayer(player.aliasId, players);
         this.role = this.currentPlayer.role;
       }
 
       this.showVote = this.canVote();
-      this.isAlphaWolf = this.role === RolesEnum.WEREWOLF && response.alphaWolf === this.currentPlayer.aliasId;
-      this.players = this.assignPlayerVote(this.reorderPlayers(response.players));
+      this.isAlphaWolf = this.role === RolesEnum.WEREWOLF && alphaWolf === this.currentPlayer.aliasId;
+      this.players = this.assignPlayerVote(this.reorderPlayers(players));
 
       this.showAlphaWolfAlert();
       this.showKilledPlayerAlert();
 
-      if ( response.winner ) {
+      if ( winner ) {
         this.showWinner();
       }
     });
@@ -158,8 +159,6 @@ export class GameComponent implements OnInit {
   public submit() {
     if (this.hasGameRestarted) {
       $(`#${this.modalId}`).modal('hide');
-      this.gameService.joinGame();
-      this.loadPage = true;
       return;
     }
 

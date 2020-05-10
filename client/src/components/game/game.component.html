@@ -15,7 +15,7 @@
         <game-phase
             [mode]="game.phase.dayOrNight"
             [round]="game.round"
-            [isHost]="currentPlayer.isHost"
+            [isHost]="currentPlayer && currentPlayer.isHost"
             (restartActionHandler)="handleRestartGame()"
         ></game-phase>
     </div>
