@@ -28,7 +28,6 @@ export class GameComponent implements OnInit {
   role: RolesEnum = RolesEnum.VILLAGER;
   currentPlayer: Player;
   votedPlayer: Player;
-  killedPlayer: Player;
   showVote: boolean;
   isAlphaWolf = false;
 
@@ -39,17 +38,19 @@ export class GameComponent implements OnInit {
   modalMessage = '';
 
   notifications = [];
-
-  alertMessage = '';
-  showKilledPlayer = false;
-  showAlphaWolf = false;
   hasGameRestarted = false;
 
   constructor(
     private router: Router,
     private playerService: PlayerService,
     private gameService: GameService
-  ) {}
+  ) {
+    $('.toast').toast({
+      animation: true,
+      autohide: true,
+      delay: 2000,
+    });
+  }
 
   async ngOnInit() {
     const player = await this.playerService.getPlayer();
@@ -78,6 +79,8 @@ export class GameComponent implements OnInit {
       if(this.role === RolesEnum.SEER) {
         this.markPeekedPlayers(seerPeekedAliasIds);
       }
+
+      $('.toast').toast('show');
 
       if (winner) {
         this.showWinner();
@@ -138,6 +141,7 @@ export class GameComponent implements OnInit {
 
   public submit() {
     if (this.hasGameRestarted) {
+      this.hasGameRestarted = false;
       $(`#${this.modalId}`).modal('hide');
       return;
     }
@@ -242,34 +246,37 @@ export class GameComponent implements OnInit {
   }
 
   private getKilledPlayer(newGameState: Game): Player|null {
-    if ( this.game && this.game.phase.dayOrNight !== newGameState.phase.dayOrNight ) {
-      const prevEliminatedPlayers = this.game.players.filter(x => !x.isAlive);
+    const prevEliminatedPlayers = this.game.players.filter(x => !x.isAlive);
       const newEliminatedPlayers = newGameState.players.filter(x => !x.isAlive);
 
       return newEliminatedPlayers.filter(x =>
         prevEliminatedPlayers.findIndex(y => y.id === x.id) === -1
       )[0];
-    }
-    
-    return null;
   }
 
   private getUpdates(response: Game) {
-    const killedPlayer = this.getKilledPlayer(response);
+    this.notifications = [];
 
+    if( ! this.game || this.game.phase.dayOrNight === response.phase.dayOrNight ) {
+      return;
+    }
+
+    const killedPlayer = this.getKilledPlayer(response);
     if(killedPlayer) {
       this.notifications.unshift({
         header: 'Someone\'s been killed!',
-        messaage: `(gasp) ${this.killedPlayer.name} has been ${this.killedPlayer.causeOfDeath.toLowerCase()}`
+        message: `(gasp) ${killedPlayer.name} has been ${killedPlayer.causeOfDeath.toLowerCase()}`
       });
     }
 
     if(this.isAlphaWolf && response.phase.dayOrNight === GamePhaseEnum.NIGHT) {
       this.notifications.unshift({
         header: 'Hunting time!',
-        messaage: 'You\'re the alpha wolf tonight.'
+        message: 'You\'re the alpha wolf tonight.'
       });
     }
+
+    console.log(this.notifications);
   }
 
   private markPeekedPlayers(seerPeekedAliasIds: string[]) {

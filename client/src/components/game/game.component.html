@@ -18,6 +18,15 @@
     </div>
 </div>
 
+
+<div class="game-notifications">
+    <toast
+        *ngFor="let n of notifications"
+        [header]="n.header"
+        [message]="n.message"
+    ></toast>
+</div>
+
 <modal
     [message]="modalMessage"
     [modalId]="modalId"

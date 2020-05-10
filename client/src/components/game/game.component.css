@@ -2,3 +2,9 @@
     max-width: 480px;
     margin: auto;
 }
+
+.game-notifications {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+}
