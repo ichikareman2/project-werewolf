@@ -27,7 +27,7 @@ const GAME_CONFIRMATION_MESSAGES = {
 
 const GAME_OVER_MESSAGES = {
     Villager: 'The villagers won! Hooray!',
-    Werwolves: 'Oh no! Werewolves have taken over the village!'
+    Werewolves: 'Oh no! Werewolves have taken over the village!'
 };
 
 export const getInstructionMessage = ( mode: GamePhaseEnum, role: RolesEnum ) => {

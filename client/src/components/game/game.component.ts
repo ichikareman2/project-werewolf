@@ -28,6 +28,7 @@ export class GameComponent implements OnInit {
   role: RolesEnum = RolesEnum.VILLAGER;
   currentPlayer: Player;
   votedPlayer: Player;
+  killedPlayer: Player;
   showVote: boolean;
   isAlphaWolf = false;
 
@@ -38,7 +39,8 @@ export class GameComponent implements OnInit {
   modalMessage = '';
 
   alertMessage = '';
-  showAlert = false;
+  showKilledPlayer = false;
+  showAlphaWolf = false;
 
   constructor(
     private router: Router,
@@ -55,6 +57,8 @@ export class GameComponent implements OnInit {
     const gameObservable = this.gameService.getGame();
     gameObservable.subscribe(response => {
       console.log(response);
+      this.getKilledPlayer(response);
+
       this.game = response;
 
       if ( ! this.currentPlayer ) {
@@ -65,7 +69,9 @@ export class GameComponent implements OnInit {
       this.showVote = this.canVote();
       this.isAlphaWolf = this.role === RolesEnum.WEREWOLF && response.alphaWolf === this.currentPlayer.aliasId;
       this.players = this.assignPlayerVote(this.reorderPlayers(response.players));
-      this.game = response;
+
+      this.showAlphaWolfAlert();
+      this.showKilledPlayerAlert();
 
       if ( response.winner ) {
         this.showWinner();
@@ -77,6 +83,26 @@ export class GameComponent implements OnInit {
     this.loadPage = true;
   }
 
+  public showAlphaWolfAlert() {
+    if( ! this.isAlphaWolf || this.game.phase.dayOrNight === GamePhaseEnum.DAY ) {
+      this.showAlphaWolf = false;
+      return;
+    }
+
+    this.alertMessage = 'You\'re the alpha wolf tonight.';
+    this.showAlphaWolf = true;
+  }
+
+  public showKilledPlayerAlert() {
+    if( ! this.killedPlayer ) {
+      this.showKilledPlayer = false;
+      return;
+    }
+
+    this.alertMessage = `(gasp) ${this.killedPlayer.name} has been ${this.killedPlayer.causeOfDeath.toLowerCase()}`;
+    this.showKilledPlayer = true;
+  }
+
   public showWinner() {
     this.modalHeader = 'Game Over';
     this.modalMessage = getGameOverMessage(this.game.winner);
@@ -86,7 +112,7 @@ export class GameComponent implements OnInit {
   }
 
   public handlePlayerClick(data) {
-    if ( this.votedPlayer || ! this.canVote() || ! this.canBeVoted(data) ) {
+    if ( !!this.votedPlayer || ! this.canVote() || ! this.canBeVoted(data) ) {
       return;
     }
 
@@ -122,7 +148,6 @@ export class GameComponent implements OnInit {
     }
 
     if ( this.game.phase.dayOrNight === GamePhaseEnum.DAY
-      && this.game.phase.roundPhase === DayPhaseEnum.VILLAGERSVOTE
     ) {
       return true;
     }
@@ -164,9 +189,15 @@ export class GameComponent implements OnInit {
   // set player's vote
   private assignPlayerVote(players: Player[]) {
     return players.map((p) => {
+      const vote = this.getVote(p.aliasId);
+
+      if(p.aliasId === this.currentPlayer.aliasId) {
+        this.votedPlayer = vote;
+      }
+      
       return {
         ...p,
-        vote: this.getVote(p.aliasId),
+        vote,
         voteCount: this.getVoteCount(p.aliasId),
       };
     });
@@ -196,5 +227,18 @@ export class GameComponent implements OnInit {
     const playerVotes = votes.filter(x => x.votedAliasId === playerAliasId);
 
     return playerVotes.length;
+  }
+
+  private getKilledPlayer(newGameState: Game) {
+    if( this.game && this.game.phase.dayOrNight !== newGameState.phase.dayOrNight ) {
+      const prevEliminatedPlayers = this.game.players.filter(x => !x.isAlive);
+      const newEliminatedPlayers = newGameState.players.filter(x => !x.isAlive);
+
+      this.killedPlayer = newEliminatedPlayers.filter(x =>
+        prevEliminatedPlayers.findIndex(y => y.id === x.id) === -1
+      )[0];
+    } else {
+      this.killedPlayer = null;
+    }
   }
 }
