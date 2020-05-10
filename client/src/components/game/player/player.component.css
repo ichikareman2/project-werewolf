@@ -11,13 +11,13 @@
 }
 
 .player-thumbnail {
-    border-radius: 100px;
+    /* border-radius: 100px;
     text-transform: uppercase;
     font-size: larger;
-    font-weight: bold;
+    font-weight: bold; */
     width: 56px;
     height: 56px;
-    border: 1px solid white;
+    /* border: 1px solid white; */
     position: relative;
 }
 
@@ -68,4 +68,11 @@
     position: absolute;
     bottom: -4px;
     right: -4px;
+}
+
+.player-thumbnail-role {
+    object-fit: cover;
+    object-position: center;
+    width: 104px;
+    height: 104px;
 }

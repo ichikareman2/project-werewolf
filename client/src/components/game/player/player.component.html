@@ -20,10 +20,10 @@
     </div>
     <div class="player-thumbnail">
         <div class="player-thumbnail-container ">
-            {{ player.name.charAt(0) }}
+            <img [src]="roleImage" class="player-thumbnail-role" />
         </div>
         <span
-            class="badge badge-danger player-thumbnail-badge"
+            class="badge badge-warning player-thumbnail-badge"
             *ngIf="showVote && player.voteCount && player.voteCount > 0"
         >
             {{ player.voteCount }}
