@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges } from '@angular/core';
+import { Component, Input, OnChanges, OnInit } from '@angular/core';
 import { Player } from 'src/models';
 
 @Component({
@@ -6,10 +6,15 @@ import { Player } from 'src/models';
   templateUrl: './player.component.html',
   styleUrls: ['./player.component.css']
 })
-export class GamePlayerComponent implements OnChanges {
+export class GamePlayerComponent implements OnInit, OnChanges {
   @Input() player: Player;
   @Input() showVote: boolean;
+  roleImage: string;
   voteText: string;
+
+  ngOnInit() {
+    this.roleImage = `assets/images/roles/${this.player.role.toLowerCase()}.png`;
+  }
 
   ngOnChanges() {
     if ( this.showVote ) {
