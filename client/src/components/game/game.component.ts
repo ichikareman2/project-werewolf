@@ -3,13 +3,12 @@ import { Router } from '@angular/router';
 import {
   RolesEnum,
   GamePhaseEnum,
-  DayPhaseEnum,
   Player,
-  Vote,
   NightPlayers,
+  getDefaultConfirmationMessage,
   getConfirmationMessage,
   getGameOverMessage,
-  Game
+  Game,
 } from 'src/models';
 import { PlayerService } from 'src/services/player.service';
 import { GameService } from 'src/services/game.service';
@@ -87,7 +86,6 @@ export class GameComponent implements OnInit, OnDestroy {
       }
 
       this.getCurrentPlayer(player.aliasId, players, alphaWolf);
-      // this.getUpdates(response);
 
       this.game = response;
       this.showVote = this.canVote();
@@ -103,6 +101,7 @@ export class GameComponent implements OnInit, OnDestroy {
     this.gameService.joinGame();
 
     this.loadPage = true;
+
     /** subscription to show toast for killed player */
     this.sub = gameObservable.pipe(
       map(game => game.players.filter(x => !x.isAlive)),
@@ -127,6 +126,7 @@ export class GameComponent implements OnInit, OnDestroy {
       }))
     ).subscribe(this.toast.show.bind(this.toast))
   };
+
   /** track by function for player list. */
   playersTrackByFn(_: number, player: Player) {
     return player.aliasId
@@ -163,7 +163,9 @@ export class GameComponent implements OnInit, OnDestroy {
     this.modalHeader = 'Confirm Vote';
     this.modalPrimaryButton = 'Confirm';
     this.modalSecondaryButton = 'Cancel';
-    this.modalMessage = getConfirmationMessage(this.role, this.votedPlayer.name);
+    this.modalMessage = this.game.phase.dayOrNight === GamePhaseEnum.DAY
+      ? getDefaultConfirmationMessage(this.votedPlayer.name)
+      : getConfirmationMessage(this.role, this.votedPlayer.name);
 
     $(`#${this.modalId}`).on('hidden.bs.modal', () => {
       this.votedPlayer = null;
@@ -207,7 +209,7 @@ export class GameComponent implements OnInit, OnDestroy {
     }
 
     if (voteAliasId) {
-      setTimeout(() => this.gameService.sendVote(voteAliasId), 300);
+      setTimeout(() => this.gameService.sendVote(voteAliasId), 500);
     }
   }
 
