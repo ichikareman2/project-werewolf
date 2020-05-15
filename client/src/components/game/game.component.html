@@ -3,6 +3,7 @@
         <game-instruction [gamePhase]="game.phase" [role]="role"></game-instruction>
         <div class="col mt-4 mb-4 p-0">
             <game-player
+                #gamePlayer
                 *ngFor="let p of players; trackBy: playersTrackByFn"
                 [player]="p"
                 [showVote]="showVote"

@@ -1,4 +1,6 @@
 .game-player {
+    height: 74px;
+    box-sizing: content-box;
     max-width: 480px;
     border: 1px solid white;
     margin: 4px auto;
@@ -31,8 +33,9 @@
 .player-details {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: start;
     align-items: flex-start;
+    height: 100%;
 }
 
 .player-details-role {
