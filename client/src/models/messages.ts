@@ -25,6 +25,10 @@ const GAME_OVER_MESSAGES = {
     Werewolves: 'Oh no! Werewolves have taken over the village!'
 };
 
+export const getDeadInstructionMessage = () => {
+    return 'Sorry, but you\'re out of the game.';
+}
+
 export const getInstructionMessage = ( mode: GamePhaseEnum, role: RolesEnum ) => {
     return INSTRUCTION_MESSAGES[mode][role];
 };
@@ -32,6 +36,10 @@ export const getInstructionMessage = ( mode: GamePhaseEnum, role: RolesEnum ) =>
 export const getConfirmationMessage = ( role: RolesEnum, playerName: string ) => {
     return GAME_CONFIRMATION_MESSAGES[role].replace('this player', playerName);
 };
+
+export const getDefaultConfirmationMessage = ( playerName: string ) => {
+    return GAME_CONFIRMATION_MESSAGES[RolesEnum.VILLAGER].replace('this player', playerName);
+}
 
 export const getGameOverMessage = ( winner: string ) => {
     return GAME_OVER_MESSAGES[winner];
