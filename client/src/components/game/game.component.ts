@@ -164,6 +164,10 @@ export class GameComponent implements OnInit, OnDestroy {
     this.modalPrimaryButton = 'Confirm';
     this.modalSecondaryButton = 'Cancel';
     this.modalMessage = getConfirmationMessage(this.role, this.votedPlayer.name);
+
+    $(`#${this.modalId}`).on('hidden.bs.modal', () => {
+      this.votedPlayer = null;
+    });
     $(`#${this.modalId}`).modal('show');
   }
 
@@ -188,6 +192,8 @@ export class GameComponent implements OnInit, OnDestroy {
   }
 
   public submit() {
+    const voteAliasId = (this.votedPlayer || {}).aliasId;
+
     $(`#${this.modalId}`).modal('hide');
 
     if (this.hasWinner) {
@@ -200,8 +206,8 @@ export class GameComponent implements OnInit, OnDestroy {
       return;
     }
 
-    if (this.votedPlayer) {
-      setTimeout(() => this.gameService.sendVote(this.votedPlayer.aliasId), 500);
+    if (voteAliasId) {
+      setTimeout(() => this.gameService.sendVote(voteAliasId), 300);
     }
   }
 
