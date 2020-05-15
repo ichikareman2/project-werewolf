@@ -263,10 +263,6 @@ export class GameComponent implements OnInit, OnDestroy {
     return players.map((p) => {
       const vote = this.getVote(p.aliasId);
 
-      if (p.aliasId === this.currentPlayer.aliasId) {
-        this.votedPlayer = vote;
-      }
-
       return {
         ...p,
         vote,
