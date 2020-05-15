@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, ViewChild, ViewChildren, QueryList, ElementRef, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, ViewChildren, QueryList, ElementRef, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import {
   RolesEnum,
@@ -77,7 +77,7 @@ export class GameComponent implements OnInit, OnDestroy {
     });
 
     const gameObservable = this.gameService.getGame();
-    this.sub = gameObservable.subscribe(response => this.animatePlayres(() => {
+    this.sub = gameObservable.subscribe(response => this.animatePlayers(() => {
       console.log(response);
       const { players, alphaWolf, winner, seerPeekedAliasIds } = response;
 
@@ -131,6 +131,7 @@ export class GameComponent implements OnInit, OnDestroy {
   playersTrackByFn(_: number, player: Player) {
     return player.aliasId
   }
+
   public showGameRestartedModal() {
     this.modalHeader = 'Attention';
     this.modalMessage = 'The host restarted the game.';
@@ -294,47 +295,13 @@ export class GameComponent implements OnInit, OnDestroy {
     return playerVotes.length;
   }
 
-  private getKilledPlayer(newGameState: Game): Player|null {
-    const prevEliminatedPlayers = this.game.players.filter(x => !x.isAlive);
-      const newEliminatedPlayers = newGameState.players.filter(x => !x.isAlive);
-
-      return newEliminatedPlayers.filter(x =>
-        prevEliminatedPlayers.findIndex(y => y.id === x.id) === -1
-      )[0];
-  }
-
-  // private getUpdates(response: Game) {
-  //   this.notifications = [];
-
-  //   if( ! this.game || this.game.phase.dayOrNight === response.phase.dayOrNight ) {
-  //     return;
-  //   }
-
-  //   const killedPlayer = this.getKilledPlayer(response);
-  //   if(killedPlayer) {
-  //     this.notifications.unshift({
-  //       header: 'Someone\'s been killed!',
-  //       message: `(gasp) ${killedPlayer.name} has been ${killedPlayer.causeOfDeath.toLowerCase()}`
-  //     });
-  //   }
-
-  //   if(this.isAlphaWolf && response.phase.dayOrNight === GamePhaseEnum.NIGHT) {
-  //     this.notifications.unshift({
-  //       header: 'Hunting time!',
-  //       message: 'You\'re the alpha wolf tonight.'
-  //     });
-  //   }
-
-  //   console.log(this.notifications);
-  // }
-
   private markPeekedPlayers(seerPeekedAliasIds: string[]) {
     this.players.forEach(p => {
       p.peeked = seerPeekedAliasIds.includes(p.aliasId);
     });
   }
 
-  animatePlayres(fn) {
+  animatePlayers(fn) {
     const elements = this.playerBoxes.toArray().map(x => x.nativeElement.firstElementChild);
     const firstItemPositions = elements.map(x => x.getBoundingClientRect());
     
