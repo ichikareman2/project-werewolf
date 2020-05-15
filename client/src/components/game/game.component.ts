@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild, ViewChildren, QueryList, ElementRef, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import {
   RolesEnum,
@@ -15,6 +15,7 @@ import { PlayerService } from 'src/services/player.service';
 import { GameService } from 'src/services/game.service';
 import { ToastComponent } from '../toast/toast.component';
 import { pairwise, filter, map, distinctUntilChanged } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
 
 declare var $: any;
 
@@ -23,7 +24,14 @@ declare var $: any;
   templateUrl: './game.component.html',
   styleUrls: ['./game.component.css']
 })
-export class GameComponent implements OnInit {
+export class GameComponent implements OnInit, OnDestroy {
+  /** rxjs subscriptions (result of subscribe()) need to be disposed or they 
+   * will never be destroyed. */
+  _sub = new Subscription();
+  get sub() { return this._sub; }
+  set sub(subscription: Subscription) {
+    this.sub.add(subscription);
+  }
   loadPage = false;
   game: Game;
   players: Player[] = [];
@@ -43,12 +51,17 @@ export class GameComponent implements OnInit {
   hasGameRestarted = false;
   hasWinner = false;
 
+  /** binded to toast component */
   @ViewChild(ToastComponent) toast: ToastComponent;
+  @ViewChildren('gamePlayer', {read: ElementRef}) playerBoxes: QueryList<ElementRef<HTMLDivElement>>;
   constructor(
     private router: Router,
     private playerService: PlayerService,
     private gameService: GameService
   ) { }
+  ngOnDestroy(): void {
+    this.sub.unsubscribe();
+  }
 
   async ngOnInit() {
     const player = await this.playerService.getPlayer();
@@ -57,14 +70,14 @@ export class GameComponent implements OnInit {
     }
 
     const restartGameObservable = this.gameService.isGameRestart();
-    restartGameObservable.subscribe(() => {
+    this.sub = restartGameObservable.subscribe(() => {
       this.hasGameRestarted = true;
       this.currentPlayer = null;
       this.showGameRestartedModal();
     });
 
     const gameObservable = this.gameService.getGame();
-    gameObservable.subscribe(response => {
+    this.sub = gameObservable.subscribe(response => this.animatePlayres(() => {
       console.log(response);
       const { players, alphaWolf, winner, seerPeekedAliasIds } = response;
 
@@ -85,13 +98,13 @@ export class GameComponent implements OnInit {
       }
 
       $('.toast').toast('show');
-    });
+    }));
 
     this.gameService.joinGame();
 
     this.loadPage = true;
     /** subscription to show toast for killed player */
-    gameObservable.pipe(
+    this.sub = gameObservable.pipe(
       map(game => game.players.filter(x => !x.isAlive)),
       pairwise(),
       map(([prev, curr]) => curr.find(c => prev.findIndex(p => p.aliasId === c.aliasId) === -1)),
@@ -103,7 +116,7 @@ export class GameComponent implements OnInit {
     ).subscribe(this.toast.show.bind(this.toast));
 
     /** subscription to show toast alpha wolf. */
-    gameObservable.pipe(
+    this.sub = gameObservable.pipe(
       distinctUntilChanged((prev, curr) => prev.alphaWolf === curr.alphaWolf && prev.phase.dayOrNight === curr.phase.dayOrNight),
       filter(game => game.alphaWolf === this.currentPlayer.aliasId &&
         game.phase.dayOrNight === GamePhaseEnum.NIGHT
@@ -319,5 +332,40 @@ export class GameComponent implements OnInit {
     this.players.forEach(p => {
       p.peeked = seerPeekedAliasIds.includes(p.aliasId);
     });
+  }
+
+  animatePlayres(fn) {
+    const elements = this.playerBoxes.toArray().map(x => x.nativeElement.firstElementChild);
+    const firstItemPositions = elements.map(x => x.getBoundingClientRect());
+    
+    fn();
+    setTimeout(() => {
+      elements.forEach((el, i) => {
+        const first = firstItemPositions[i];
+        const last = el.getBoundingClientRect();
+        const x = first.left - last.left;
+        const y = first.top - last.top;
+        if(y !== 0) {
+          el.animate(
+            [
+              {
+                transformOrigin: "top left",
+                transform: `translate(${x}px, ${y}px)`
+              },
+              {
+                transformOrigin: "top left",
+                transform: "none"
+              }
+            ],
+            {
+              duration: 350,
+              easing: "ease-in-out",
+              fill: "both"
+            }
+          );
+        }
+      });
+    }, 0);
+    
   }
 }
