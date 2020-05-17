@@ -58,6 +58,7 @@ export class GameComponent implements OnInit, OnDestroy {
     private playerService: PlayerService,
     private gameService: GameService
   ) { }
+
   ngOnDestroy(): void {
     this.sub.unsubscribe();
   }
@@ -65,7 +66,7 @@ export class GameComponent implements OnInit, OnDestroy {
   async ngOnInit() {
     const player = await this.playerService.getPlayer();
     if ( ! player ) {
-      return this.router.navigate(['/']);
+      return this.router.navigate(['/join']);
     }
 
     const restartGameObservable = this.gameService.isGameRestart();
@@ -77,7 +78,6 @@ export class GameComponent implements OnInit, OnDestroy {
 
     const gameObservable = this.gameService.getGame();
     this.sub = gameObservable.subscribe(response => this.animatePlayers(() => {
-      console.log(response);
       const { players, alphaWolf, winner, seerPeekedAliasIds } = response;
 
       if (winner) {
@@ -94,8 +94,6 @@ export class GameComponent implements OnInit, OnDestroy {
       if(this.role === RolesEnum.SEER) {
         this.markPeekedPlayers(seerPeekedAliasIds);
       }
-
-      $('.toast').toast('show');
     }));
 
     this.gameService.joinGame();
@@ -117,8 +115,8 @@ export class GameComponent implements OnInit, OnDestroy {
     /** subscription to show toast alpha wolf. */
     this.sub = gameObservable.pipe(
       distinctUntilChanged((prev, curr) => prev.alphaWolf === curr.alphaWolf && prev.phase.dayOrNight === curr.phase.dayOrNight),
-      filter(game => game.alphaWolf === this.currentPlayer.aliasId &&
-        game.phase.dayOrNight === GamePhaseEnum.NIGHT
+      filter(game => !game.winner && (game.alphaWolf === this.currentPlayer.aliasId &&
+        game.phase.dayOrNight === GamePhaseEnum.NIGHT)
       ),
       map(game => ({
         title: 'Hunting time!',
@@ -145,7 +143,6 @@ export class GameComponent implements OnInit, OnDestroy {
   }
 
   public showWinner(winner) {
-    console.log('game oveeeeer!');
     this.modalHeader = 'Game Over';
     this.modalMessage = getGameOverMessage(winner);
     this.modalPrimaryButton = 'New Game';
@@ -187,9 +184,12 @@ export class GameComponent implements OnInit, OnDestroy {
 
     if (this.hasWinner) {
       this.hasWinner = false;
-      this.playerService.clearPlayer();
       this.gameService.leaveGame();
-      return this.router.navigate(['/']);
+      this.playerService.clearPlayer();
+
+      setTimeout(() => {
+        this.router.navigate(['/']);
+      }, 300);
     }
   }
 
