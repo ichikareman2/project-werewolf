@@ -101,6 +101,7 @@ export class GameComponent implements OnInit, OnDestroy {
 
     /** subscription to show toast for killed player */
     this.sub = gameObservable.pipe(
+      distinctUntilChanged((prev, curr) => !!curr.winner),
       map(game => game.players.filter(x => !x.isAlive)),
       pairwise(),
       map(([prev, curr]) => curr.find(c => prev.findIndex(p => p.aliasId === c.aliasId) === -1)),
@@ -113,7 +114,7 @@ export class GameComponent implements OnInit, OnDestroy {
 
     /** subscription to show toast alpha wolf. */
     this.sub = gameObservable.pipe(
-      distinctUntilChanged((prev, curr) => prev.alphaWolf === curr.alphaWolf && prev.phase.dayOrNight === curr.phase.dayOrNight),
+      distinctUntilChanged((prev, curr) => !!curr.winner || (prev.alphaWolf === curr.alphaWolf && prev.phase.dayOrNight === curr.phase.dayOrNight)),
       filter(game => game.alphaWolf === this.currentPlayer.aliasId &&
         game.phase.dayOrNight === GamePhaseEnum.NIGHT
       ),
