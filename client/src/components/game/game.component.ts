@@ -116,7 +116,7 @@ export class GameComponent implements OnInit, OnDestroy {
     /** subscription to show toast alpha wolf. */
     this.sub = gameObservable.pipe(
       distinctUntilChanged((prev, curr) => prev.alphaWolf === curr.alphaWolf && prev.phase.dayOrNight === curr.phase.dayOrNight),
-      filter(game => game.alphaWolf === this.currentPlayer.aliasId &&
+      filter(game => !!game.winner || (game.alphaWolf === this.currentPlayer.aliasId &&
         game.phase.dayOrNight === GamePhaseEnum.NIGHT)
       ),
       map(game => ({
