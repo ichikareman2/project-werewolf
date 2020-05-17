@@ -102,7 +102,6 @@ export class GameComponent implements OnInit, OnDestroy {
 
     /** subscription to show toast for killed player */
     this.sub = gameObservable.pipe(
-      distinctUntilChanged((prev, curr) => !!curr.winner),
       map(game => game.players.filter(x => !x.isAlive)),
       pairwise(),
       map(([prev, curr]) => curr.find(c => prev.findIndex(p => p.aliasId === c.aliasId) === -1)),
