@@ -2,7 +2,7 @@
     <img src="assets/images/werewolf.png" class="header-image" />
     <ul class="nav nav-pills justify-content-end header-nav">
         <li class="nav-item">
-            <a class="nav-link" [ngClass]="[['/', '/lobby', '/game'].includes(currentUrl) ? 'active' : '']" [routerLink]="['/']">
+            <a class="nav-link" [ngClass]="[['/', '/join', '/lobby', '/game'].includes(currentUrl) ? 'active' : '']" [routerLink]="['/']">
                 Play Game
             </a>
         </li>

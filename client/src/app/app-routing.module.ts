@@ -13,8 +13,8 @@ const routes: Routes = [
     component: LobbyComponent
   },
   {
-    path: 'game',
-    component: GameComponent
+    path: 'join',
+    component: JoinGameComponent
   },
   {
     path: 'roles',
@@ -25,8 +25,12 @@ const routes: Routes = [
     component: GameRulesComponent,
   },
   {
+    path: 'game',
+    component: GameComponent
+  },
+  {
     path: '',
-    component: JoinGameComponent
+    component: GameComponent
   },
   {
     path: '**',

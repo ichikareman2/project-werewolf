@@ -58,6 +58,7 @@ export class GameComponent implements OnInit, OnDestroy {
     private playerService: PlayerService,
     private gameService: GameService
   ) { }
+
   ngOnDestroy(): void {
     this.sub.unsubscribe();
   }
@@ -65,7 +66,7 @@ export class GameComponent implements OnInit, OnDestroy {
   async ngOnInit() {
     const player = await this.playerService.getPlayer();
     if ( ! player ) {
-      return this.router.navigate(['/']);
+      return this.router.navigate(['/join']);
     }
 
     const restartGameObservable = this.gameService.isGameRestart();
