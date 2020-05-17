@@ -117,7 +117,7 @@ export class GameComponent implements OnInit, OnDestroy {
     this.sub = gameObservable.pipe(
       distinctUntilChanged((prev, curr) => !!curr.winner || (prev.alphaWolf === curr.alphaWolf && prev.phase.dayOrNight === curr.phase.dayOrNight)),
       filter(game => game.alphaWolf === this.currentPlayer.aliasId &&
-        game.phase.dayOrNight === GamePhaseEnum.NIGHT
+        game.phase.dayOrNight === GamePhaseEnum.NIGHT)
       ),
       map(game => ({
         title: 'Hunting time!',
