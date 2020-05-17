@@ -49,6 +49,7 @@ export class PlayerService {
     }
 
     clearPlayer() {
+        this.player = null;
         return this.localStorageService.removeItem(LOCAL_STORAGE_KEY);
     }
 }
