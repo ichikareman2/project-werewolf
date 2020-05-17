@@ -77,7 +77,6 @@ export class GameComponent implements OnInit, OnDestroy {
 
     const gameObservable = this.gameService.getGame();
     this.sub = gameObservable.subscribe(response => this.animatePlayers(() => {
-      console.log(response);
       const { players, alphaWolf, winner, seerPeekedAliasIds } = response;
 
       if (winner) {
@@ -94,8 +93,6 @@ export class GameComponent implements OnInit, OnDestroy {
       if(this.role === RolesEnum.SEER) {
         this.markPeekedPlayers(seerPeekedAliasIds);
       }
-
-      $('.toast').toast('show');
     }));
 
     this.gameService.joinGame();
@@ -145,7 +142,6 @@ export class GameComponent implements OnInit, OnDestroy {
   }
 
   public showWinner(winner) {
-    console.log('game oveeeeer!');
     this.modalHeader = 'Game Over';
     this.modalMessage = getGameOverMessage(winner);
     this.modalPrimaryButton = 'New Game';
@@ -187,9 +183,12 @@ export class GameComponent implements OnInit, OnDestroy {
 
     if (this.hasWinner) {
       this.hasWinner = false;
-      this.playerService.clearPlayer();
       this.gameService.leaveGame();
-      return this.router.navigate(['/']);
+      this.playerService.clearPlayer();
+
+      setTimeout(() => {
+        this.router.navigate(['/']);
+      }, 300);
     }
   }
 
