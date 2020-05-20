@@ -7,6 +7,10 @@
                 <div class="room-code-code">{{ roomCode }}</div>
             </div>
 
+            <div class="player-count">
+                Players in room: <strong>{{ playerList.length }}</strong>
+            </div>
+
             <div class="details" *ngFor="let player of playerList">
                 <div class="player">
                     <i class="fa fa-podcast player-host" *ngIf="player.isHost"></i>

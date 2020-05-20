@@ -52,3 +52,7 @@
 .player-host {
     margin-right: 12px;
 }
+
+.player-count {
+    font-size: large;
+}
