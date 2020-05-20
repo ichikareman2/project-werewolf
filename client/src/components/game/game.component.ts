@@ -152,7 +152,12 @@ export class GameComponent implements OnInit, OnDestroy {
   }
 
   public handlePlayerClick(data) {
-    if ( !!this.votedPlayer || ! this.canVote() || ! this.canBeVoted(data) ) {
+    if ( !!this.votedPlayer
+      || ! this.canVote()
+      || ! this.canBeVoted(data)
+      || ! this.currentPlayer.isAlive
+      || this.game.winner
+    ) {
       return;
     }
 
@@ -215,10 +220,6 @@ export class GameComponent implements OnInit, OnDestroy {
 
   // checks if voting is enabled depending on phase and role
   private canVote() {
-    if ( ! this.currentPlayer.isAlive || this.game.winner ) {
-      return false;
-    }
-
     if ( this.game.phase.dayOrNight === GamePhaseEnum.DAY
     ) {
       return true;
