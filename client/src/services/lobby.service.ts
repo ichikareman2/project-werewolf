@@ -51,4 +51,8 @@ export class LobbyService {
     public handleStartGame() {
         this.socket.emit(SOCKET_EVENTS.LOBBY_GAME_START);
     }
+
+    public handleLeaveLobby() {
+        this.socket.emit(SOCKET_EVENTS.LOBBY_LEAVE);
+    }
 }

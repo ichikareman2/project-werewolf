@@ -33,6 +33,7 @@ export class LobbyComponent implements OnInit {
 
     const gameStartObservable = this.lobbyService.isGameStarted();
     gameStartObservable.subscribe(() => {
+      this.lobbyService.handleLeaveLobby();
       this.router.navigate(['/game']);
     });
   }
