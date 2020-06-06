@@ -38,7 +38,7 @@ export class PlayerService {
             if ( ! playerId ) {
                 return null;
             }
-            return this.apiService.get(`/player/${playerId}`, {}).toPromise();
+            this.player = await this.apiService.get(`/player/${playerId}`, {}).toPromise();
         }
 
         return Promise.resolve(this.player);

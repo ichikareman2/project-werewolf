@@ -41,8 +41,10 @@ export class GameService {
     }
 
     public joinGame() {
-        this.socket.emit(SOCKET_EVENTS.GAME_JOIN, this.playerId, (evt) => {
-            console.log('join game', evt);
+        this.socket.emit(SOCKET_EVENTS.GAME_JOIN, this.playerId, (data) => {
+            if(data.error) {
+                this.router.navigate(['/lobby']);
+            }
         });
     }
 

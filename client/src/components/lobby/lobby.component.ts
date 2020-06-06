@@ -44,7 +44,6 @@ export class LobbyComponent implements OnInit {
 
   async handleLeaveLobby() {
     this.lobbyService.handleLeaveLobby();
-    this.playerService.clearPlayer();
     this.router.navigate(['/join']);
   }
 }
