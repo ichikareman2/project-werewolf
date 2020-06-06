@@ -41,4 +41,10 @@ export class LobbyComponent implements OnInit {
   async handleStartGame() {
     this.lobbyService.handleStartGame();
   }
+
+  async handleLeaveLobby() {
+    this.lobbyService.handleLeaveLobby();
+    this.playerService.clearPlayer();
+    this.router.navigate(['/join']);
+  }
 }

@@ -56,3 +56,8 @@
 .player-count {
     font-size: large;
 }
+
+.btn-lobby {
+    margin-left: 4px;
+    margin-right: 4px;;
+}
