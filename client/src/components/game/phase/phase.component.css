@@ -27,9 +27,28 @@
     text-align: right;
 }
 
+.btn-game-phase {
+    margin-right: 8px;
+}
+
 @media only screen and (max-width: 480px) {
-    .game-phase-text {
-        max-width: 50%;
-        font-size: 18px;
+    .game-phase {
+        align-items: flex-start;
+    }
+
+    .game-phase-text-container {
+        flex-direction: column;
+        align-items: flex-end;
+    }
+
+    .game-phase-text,
+    .game-phase-icon {
+        margin-right: 4px;
+        margin-bottom: 6px;
+    }
+
+    .btn-game-phase {
+        width: 100%;
+        margin: 4px 0;
     }
 }

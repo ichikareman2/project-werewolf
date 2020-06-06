@@ -1,7 +1,19 @@
 <div class="row game-phase">
-    <div class="game-phase-controls" *ngIf="isHost">
-        <button class="btn btn-info btn-block" (click)="confirmRestartGame()">
+    <div class="game-phase-controls">
+        <button
+            class="btn btn-info"
+            [ngClass]="[isHost ? 'btn-game-phase' : 'btn-block']"
+            *ngIf="isHost"
+            (click)="confirmRestartGame()"
+        >
             RESTART GAME
+        </button>
+        <button
+            class="btn btn-light"
+            [ngClass]="[isHost ? 'btn-game-phase' : 'btn-block']"
+            (click)="redirectToLobby()"
+        >
+            BACK TO LOBBY
         </button>
     </div>
     <div class="game-phase-text-container">
