@@ -41,7 +41,9 @@ export class GameService {
     }
 
     public joinGame() {
-        this.socket.emit(SOCKET_EVENTS.GAME_JOIN, this.playerId);
+        this.socket.emit(SOCKET_EVENTS.GAME_JOIN, this.playerId, (evt) => {
+            console.log('join game', evt);
+        });
     }
 
     public getGame(): Observable<Game> {

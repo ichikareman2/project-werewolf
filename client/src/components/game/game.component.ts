@@ -80,12 +80,12 @@ export class GameComponent implements OnInit, OnDestroy {
     this.sub = gameObservable.subscribe(response => this.animatePlayers(() => {
       const { players, alphaWolf, winner, seerPeekedAliasIds } = response;
 
+      this.getCurrentPlayer(player.aliasId, players, alphaWolf);
+
       if (winner) {
         this.hasWinner = true;
         return this.showWinner(winner);
       }
-
-      this.getCurrentPlayer(player.aliasId, players, alphaWolf);
 
       this.game = response;
       this.showVote = this.canVote();
@@ -143,17 +143,18 @@ export class GameComponent implements OnInit, OnDestroy {
   }
 
   public showWinner(winner) {
+    const isHost = this.currentPlayer.isHost;
+
     this.modalHeader = 'Game Over';
-    this.modalMessage = getGameOverMessage(winner);
-    this.modalPrimaryButton = 'New Game';
-    this.modalSecondaryButton = 'Leave Game';
+    this.modalMessage = getGameOverMessage(winner).concat(isHost ? '' : '\n\n\nWaiting for the host to create/restart game...');
+    this.modalPrimaryButton = isHost ? 'Restart Game' : 'OK';
+    this.modalSecondaryButton = isHost ? 'Create New Game' : 'Close';
 
     $(`#${this.modalId}`).modal('show');
   }
 
   public handlePlayerClick(data) {
-    if ( !!this.votedPlayer
-      || ! this.canVote()
+    if ( ! this.canVote()
       || ! this.canBeVoted(data)
       || ! this.currentPlayer.isAlive
       || this.game.winner
@@ -189,12 +190,13 @@ export class GameComponent implements OnInit, OnDestroy {
 
     if (this.hasWinner) {
       this.hasWinner = false;
-      this.gameService.leaveGame();
-      this.playerService.clearPlayer();
 
-      setTimeout(() => {
-        this.router.navigate(['/']);
-      }, 300);
+      if(this.currentPlayer.isHost) {
+        this.gameService.leaveGame();
+        setTimeout(() => {
+          this.router.navigate(['/lobby']);
+        }, 300);
+      }
     }
   }
 
@@ -205,7 +207,7 @@ export class GameComponent implements OnInit, OnDestroy {
 
     if (this.hasWinner) {
       this.hasWinner = false;
-      return this.router.navigate(['/lobby']);
+      this.handleRestartGame();
     }
 
     if (this.hasGameRestarted) {
