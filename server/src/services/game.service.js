@@ -67,6 +67,7 @@ module.exports = class GameService extends EventEmitter {
     joinGame = (socketId, playerId) => {
         if (!(playerId && socketId)) { throw new Error(`playerId cannot be empty`); }
         const game = this.#gameState;
+        if (!game) { throw new Error(`Game not started`) }
         if (game.players.findIndex(pl => pl.id === playerId) === -1) {
             throw new Error(`player is not part of the game`)
         }

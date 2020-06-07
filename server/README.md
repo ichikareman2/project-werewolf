@@ -98,7 +98,7 @@ This is used to manage lobby. lobby messages available are designed to accomodat
     * Client should mark the current player in lobby by matching the [`PublicLobbyPlayer.aliasId`](#PublicLobbyPlayer) with the current player's [`Player.aliasId`](#player).
     * Client should mark the current host player by looking for lobby player with `isHost` set to `true`.
 3. When lobby has enough players, the current host should be able to start the game by emitting [`gameStart`](#gameStart). If successful, all players including host will receive the [`"gameStarted"`](##`gameStarted`) message
-4. If the user wants to leave the lobby, then the client should emit the message to leave lobby [`"leaveLobby"`](#`leaveLobby`-|-`disconnect`).
+4. If the user wants to leave the lobby, then the client should emit the message to leave lobby [`"leaveLobby"`](#`leaveLobby`).
 
 #### `/lobby` listeners
 ##### `joinLobby`
@@ -109,15 +109,25 @@ This is used to manage lobby. lobby messages available are designed to accomodat
 ##### `gameStart`
 * emit this to start the game with the current players.
 * payload#1: [`CallbackFn<void>`](#callbackfn<t>) - not necessary, but you can use it to know if the operation is done.
-##### `leaveLobby` | `disconnect`
+##### `leaveLobby`
 * emit this to leave the lobby.
 * `no payload`
+#####  `disconnect`
+* emit (or not. It is automatically called.) to mark player as disconnected.
+* `no payload` 
+##### `kickPlayer`
+* emit to kick a player from lobby. only host can do this.
+* payload#1: `id` - id of requester
+* payload#2: `aliasId` - aliasId of the player to be kicked
+* payload#3: [`CallbackFn<void>`](#callbackfn<t>) - not necessary, but you can use it to know if the operation is done.
 #### `/lobby` emitters
 ##### `playerList`
 * listen to this type of message to get lobby players
 * type : [`PublicLobbyPlayer`](#PublicLobbyPlayer)
 ##### `gameStarted`
 * when this message is emitted, it means the host has started the game and the player should redirect to game page. The host who started the game will also receive if successful.
+##### `playerKicked`
+* when received, this means the client player has been kicked.
 
 ### `/game` namespace
 #### Flow:

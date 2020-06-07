@@ -4,6 +4,7 @@
  * @property {string} playerId
  * @property {string} socketId
  * @property {boolean} isHost
+ * @property {boolean} connected
  */
 /** represents players in lobby but without sensitive data like player
  *   id which can be used to impersonate player
@@ -11,6 +12,7 @@
  * @property {string} aliasId
  * @property {string} name
  * @property {boolean} isHost
+ * @property {boolean} connected
  */
 
 /** represents lobby
@@ -32,23 +34,26 @@ function createNewLobby() {
  * @param {boolean} [isHost] 
  * @returns {LobbyPlayer}
  */
-function createNewLobbyPlayer(playerId, socketId, isHost = false) {
+function createNewLobbyPlayer(playerId, socketId, isHost = false, connected = false) {
   return {
     playerId,
     socketId,
-    isHost
+    isHost,
+    connected
   };
 }
 /** create a public lobby player
  * @param {string} aliasId 
  * @param {string} name 
- * @param {boolean} isHost 
+ * @param {boolean} isHost,
+ * @param {boolean} connected
  */
-function createPublicLobbyPlayer(aliasId, name, isHost) {
+function createPublicLobbyPlayer(aliasId, name, isHost, connected) {
   return {
     aliasId,
     name,
-    isHost
+    isHost,
+    connected
   };
 }
 /** assign player as host

@@ -26,10 +26,12 @@ module.exports = class LobbyIoService {
     #joinLobbyEvent = 'joinLobby';
     #leaveLobbyEvent = 'leaveLobby';
     #getLobbyPlayersEvent = 'getLobbyPlayers';
+    #kickLobbyEvent = 'kickPlayer'
     #gameStartEvent = 'gameStart';
 
     #playerListEmit = 'playerList';
-    #gameStartedEmit = 'gameStarted'
+    #playerKickedEmit = 'playerKicked';
+    #gameStartedEmit = 'gameStarted';
     #lobbyRoomName = 'lobbyRoom';
     /** @type {SocketIO.Server} */
     #io;
@@ -55,13 +57,14 @@ module.exports = class LobbyIoService {
         this.#playerService = playerService;
         this.#gameService = gameService
         this.#lobbyIo = this.#io.of(this.#lobbyNs);
-        this.#lobbyService.on(LobbyService.lobbyUpdatedEvent, this.emitLobbyUpdates)
+        this.#lobbyService.on(LobbyService.lobbyUpdatedEvent, this.emitLobbyUpdates);
 
         this.#lobbyIo.on('connect', socket => {
             socket.on(this.#joinLobbyEvent, this.onJoinLobby(socket));
             socket.on(this.#leaveLobbyEvent, this.onLeaveLobby(socket));
             socket.on(this.#gameStartEvent, this.onStartGame(socket));
-            socket.on('disconnect', this.onLeaveLobby(socket));
+            socket.on(this.#kickLobbyEvent, this.onKickPlayer(socket));
+            socket.on('disconnect', this.onDisconnect.bind(this, socket));
 
             socket.on(this.#getLobbyPlayersEvent, this.getLobbyPlayers);
         })
@@ -76,7 +79,7 @@ module.exports = class LobbyIoService {
         const players = await this.#playerService.getPlayersByIds(playerIds);
         return lobbyPlayers.map(lobbyPl => {
             const matchingPl = players.find(pl => pl.id === lobbyPl.playerId);
-            return createPublicLobbyPlayer(matchingPl.aliasId, matchingPl.name, lobbyPl.isHost);
+            return createPublicLobbyPlayer(matchingPl.aliasId, matchingPl.name, lobbyPl.isHost, lobbyPl.connected);
         });
     }
 
@@ -140,7 +143,7 @@ module.exports = class LobbyIoService {
         async (cb = noop) => {
             try {
                 const players = await this.#lobbyService.getPlayers();
-                const starterIsHost = players.find(x => x.socketId === socket.id).isHost;
+                const starterIsHost = players.find(x => x.socketId === socket.id && x.isHost);
                 if(!starterIsHost) { throw new Error('player is not host.') }
                 await this.#gameService.startGame(players);
                 cb(createSuccessResponse());
@@ -152,4 +155,45 @@ module.exports = class LobbyIoService {
                 cb(createFailedResponse(errorMessage));
             }
         }
+    /**
+     * @param {SocketIO.Socket} socket
+     */
+    onKickPlayer = socket =>
+        /** kick player off lobby.
+         * @param {string} id - id of player requesting to kick. must be host.
+         * @param {string} aliasId - aliasId of player to kick.
+         */
+        async (id, aliasId, cb = noop) => {
+            try {
+                const players = await this.#lobbyService.getPlayers();
+                const requester = players.find(x => x.playerId === id);
+                if (!(requester && requester.isHost)) {
+                    throw new Error('player is not host.')
+                }
+                const playerToKick = await this.#playerService.findPlayer(x => x.aliasId === aliasId);
+                const lobbyPlayerToKick = players.find(pl =>
+                    pl.playerId === playerToKick.id);
+                await this.#lobbyService.kickPlayer(playerToKick.id);
+                if (lobbyPlayerToKick && lobbyPlayerToKick.socketId) {
+                    this.#lobbyIo.to(lobbyPlayerToKick.socketId)
+                        .emit(this.#playerKickedEmit);
+                }
+                cb(createSuccessResponse());
+            } catch (err) {
+                const errorMessage = err && err.message ? err.message : `Unclear error occured. Contact dev.`;
+                console.log('error', errorMessage);
+                cb(createFailedResponse(errorMessage));
+            }
+        }
+    /** mark player as disconnected
+     * @param {SocketIO.Socket} socket
+     */
+    onDisconnect = socket => {
+        try {
+            this.#lobbyService.disconnectPlayer(socket.id);
+        } catch (err) {
+            const errorMessage = err && err.message ? err.message : `Unclear error occured. Contact dev.`;
+            console.log('error', errorMessage);
+        }
+    }
 }
