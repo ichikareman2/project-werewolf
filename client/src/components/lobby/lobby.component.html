@@ -12,7 +12,16 @@
             </div>
 
             <div class="details" *ngFor="let player of playerList">
-                <div class="player">
+                <div class="player-card" *ngIf="isHostPlayer && !player.isHost">
+                    <div class="player player-front">
+                        <i class="fa fa-podcast player-host" *ngIf="player.isHost"></i>
+                        <span>{{ player.name }}</span>
+                    </div>
+                    <div class="player player-back" (click)="handleKickPlayer(player.aliasId)">
+                        KICK
+                    </div>
+                </div>
+                <div class="player-noncard" *ngIf="!isHostPlayer || (isHostPlayer && player.isHost)">
                     <i class="fa fa-podcast player-host" *ngIf="player.isHost"></i>
                     <span>{{ player.name }}</span>
                 </div>

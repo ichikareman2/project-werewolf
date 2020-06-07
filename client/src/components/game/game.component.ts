@@ -31,6 +31,7 @@ export class GameComponent implements OnInit, OnDestroy {
   set sub(subscription: Subscription) {
     this.sub.add(subscription);
   }
+
   loadPage = false;
   game: Game;
   players: Player[] = [];
