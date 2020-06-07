@@ -1,6 +1,7 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { ToastComponent } from 'src/components/toast/toast.component';
 import { LobbyService } from 'src/services/lobby.service';
 import { PlayerService } from 'src/services/player.service';
 import { Player } from 'src/models';
@@ -24,6 +25,7 @@ export class LobbyComponent implements OnInit, OnDestroy {
   isHostPlayer = false;
   canStartGame = false;
 
+  @ViewChild(ToastComponent) lobbyToast: ToastComponent;
   constructor(
     private lobbyService: LobbyService,
     private playerService: PlayerService,
@@ -52,9 +54,13 @@ export class LobbyComponent implements OnInit, OnDestroy {
 
     const playerKickedObservable = this.lobbyService.isPlayerKicked();
     this.sub = playerKickedObservable.subscribe(() => {
+      this.lobbyToast.show({
+        title: 'Oops! Techinical difficulty.',
+        message: 'Looks like the host kicked you out. You\'ll be redirected to the home page in a few seconds..',
+      });
       setTimeout(() => {
         this.router.navigate(['/join']);
-      }, 300);
+      }, 3000);
     });
   }
 
