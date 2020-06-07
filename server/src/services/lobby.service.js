@@ -31,10 +31,14 @@ module.exports = class LobbyService extends EventEmitter {
      * @returns {Promise<Lobby>}
      */
     upsertPlayer = async (playerId, socketId) => {
-        const newPlayer = createNewLobbyPlayer(playerId, socketId);
-        let newLobby = upsertPlayerToLobby(newPlayer, this.#lobby)
+        const newPlayer = createNewLobbyPlayer(playerId, socketId, false, true);
+        let newLobby = upsertPlayerToLobby(newPlayer, this.#lobby);
         newLobby = this.#assignHostPlayer(newLobby);
         return this.#setLobby(newLobby);
+    }
+    /** */
+    getPlayerByAliasId = async (aliasId) => {
+        return playerservice
     }
     /** get player by socket Id
      * @param {string} socketId
@@ -65,6 +69,34 @@ module.exports = class LobbyService extends EventEmitter {
         let newLobby = removePlayerfromLobby(socketId, this.#lobby);
         newLobby = this.#assignHostPlayer(newLobby);
         return this.#setLobby(newLobby)
+    }
+    /** kick player.
+     * @param {string} aliasId - player to kick
+     */
+    kickPlayer = (playerId) => {
+        if (!playerId) { throw new Error(`playerId cannot be empty`); }
+        const lobby = this.#lobby;
+        const playerIndex = lobby.players.findIndex(pl =>
+            pl.playerId === playerId
+        );
+        if (playerIndex === -1) { throw new Error(`player not in game ${pl.playerId} ${playerId}`); }
+        const players = this.#lobby.players.filter(x => x.playerId !== playerId);
+        this.#setLobby({ ...lobby, players })
+    }
+    /** mark player as disconnected
+     * @param {string} socketId
+     */
+    disconnectPlayer = (socketId) => {
+        console.log(socketId, 'socketid')
+        if (!socketId) { throw new Error(`socketId cannot be empty`); }
+        const lobby = this.#lobby;
+        const playerIndex = lobby.players.findIndex(pl =>
+            pl.socketId === socketId
+        );
+        if (playerIndex === -1) { throw new Error(`player not in game ${pl.socketId} ${socketId}`); }
+        const player = { ...lobby.players[playerIndex], socketId: undefined, connected: false };
+        const newLobby =  upsertPlayerToLobby(player, lobby);
+        this.#setLobby(newLobby)
     }
     /** Assign host to lobby
      * @param {Lobby} lobby
