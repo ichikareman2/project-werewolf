@@ -1,4 +1,5 @@
 import { Component, Input, OnChanges, Output, EventEmitter } from '@angular/core';
+import { Router } from '@angular/router';
 import { GamePhaseEnum } from 'src/models';
 
 declare var $: any;
@@ -16,6 +17,10 @@ export class GamePhaseComponent implements OnChanges {
   phaseMessage = '';
   modalId = 'modal-restart-confirm';
 
+  constructor(
+    private router: Router
+  ) { }
+
   ngOnChanges() {
     this.phaseMessage = `${this.mode} ${this.round}`;
   }
@@ -27,5 +32,9 @@ export class GamePhaseComponent implements OnChanges {
   public handleRestartGame() {
     $(`#${this.modalId}`).modal('hide');
     this.restartActionHandler.emit();
+  }
+
+  public redirectToLobby() {
+    return this.router.navigate(['/lobby']);
   }
 }

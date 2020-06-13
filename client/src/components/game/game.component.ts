@@ -12,6 +12,7 @@ import {
 } from 'src/models';
 import { PlayerService } from 'src/services/player.service';
 import { GameService } from 'src/services/game.service';
+import { LobbyService } from 'src/services/lobby.service';
 import { ToastComponent } from '../toast/toast.component';
 import { pairwise, filter, map, distinctUntilChanged } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
@@ -31,6 +32,7 @@ export class GameComponent implements OnInit, OnDestroy {
   set sub(subscription: Subscription) {
     this.sub.add(subscription);
   }
+
   loadPage = false;
   game: Game;
   players: Player[] = [];
@@ -56,7 +58,8 @@ export class GameComponent implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private playerService: PlayerService,
-    private gameService: GameService
+    private gameService: GameService,
+    private lobbyService: LobbyService
   ) { }
 
   ngOnDestroy(): void {
@@ -76,16 +79,24 @@ export class GameComponent implements OnInit, OnDestroy {
       this.showGameRestartedModal();
     });
 
+    const closeGameObservable = this.gameService.isGameClose();
+    this.sub = closeGameObservable.subscribe(() => {
+      $(`#${this.modalId}`).modal('hide');
+      setTimeout(() => {
+        this.router.navigate(['/lobby']);
+      }, 300);
+    });
+
     const gameObservable = this.gameService.getGame();
     this.sub = gameObservable.subscribe(response => this.animatePlayers(() => {
       const { players, alphaWolf, winner, seerPeekedAliasIds } = response;
+
+      this.getCurrentPlayer(player.aliasId, players, alphaWolf);
 
       if (winner) {
         this.hasWinner = true;
         return this.showWinner(winner);
       }
-
-      this.getCurrentPlayer(player.aliasId, players, alphaWolf);
 
       this.game = response;
       this.showVote = this.canVote();
@@ -143,16 +154,22 @@ export class GameComponent implements OnInit, OnDestroy {
   }
 
   public showWinner(winner) {
+    const isHost = this.currentPlayer.isHost;
+
     this.modalHeader = 'Game Over';
-    this.modalMessage = getGameOverMessage(winner);
-    this.modalPrimaryButton = 'New Game';
-    this.modalSecondaryButton = 'Leave Game';
+    this.modalMessage = getGameOverMessage(winner).concat(isHost ? '' : '\n\n\nWaiting for the host to create/restart game...');
+    this.modalPrimaryButton = isHost ? 'Restart Game' : 'OK';
+    this.modalSecondaryButton = isHost ? 'Create New Game' : 'Close';
 
     $(`#${this.modalId}`).modal('show');
   }
 
   public handlePlayerClick(data) {
-    if ( !!this.votedPlayer || ! this.canVote() || ! this.canBeVoted(data) ) {
+    if ( ! this.canVote()
+      || ! this.canBeVoted(data)
+      || ! this.currentPlayer.isAlive
+      || this.game.winner
+    ) {
       return;
     }
 
@@ -184,12 +201,10 @@ export class GameComponent implements OnInit, OnDestroy {
 
     if (this.hasWinner) {
       this.hasWinner = false;
-      this.gameService.leaveGame();
-      this.playerService.clearPlayer();
 
-      setTimeout(() => {
-        this.router.navigate(['/']);
-      }, 300);
+      if(this.currentPlayer.isHost) {
+        this.gameService.closeGame();
+      }
     }
   }
 
@@ -200,7 +215,7 @@ export class GameComponent implements OnInit, OnDestroy {
 
     if (this.hasWinner) {
       this.hasWinner = false;
-      return this.router.navigate(['/lobby']);
+      this.handleRestartGame();
     }
 
     if (this.hasGameRestarted) {
@@ -215,10 +230,6 @@ export class GameComponent implements OnInit, OnDestroy {
 
   // checks if voting is enabled depending on phase and role
   private canVote() {
-    if ( ! this.currentPlayer.isAlive || this.game.winner ) {
-      return false;
-    }
-
     if ( this.game.phase.dayOrNight === GamePhaseEnum.DAY
     ) {
       return true;

@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { ApiService } from 'src/services/api.service';
 import { PlayerService } from 'src/services/player.service';
 
 @Component({
@@ -16,6 +15,7 @@ export class JoinGameComponent implements OnInit {
 
   async ngOnInit() {
     const player = await this.playerService.getPlayer();
+    console.log('player', player);
     if ( player ) {
       return this.router.navigate(['/lobby']);
     }

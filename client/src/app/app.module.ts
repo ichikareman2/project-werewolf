@@ -7,7 +7,7 @@ import { AppComponent } from './app.component';
 import { HeaderModule } from 'src/components/header/header.module';
 import { JoinGameModule } from 'src/components/join-game/join-game.module';
 import { GameModule } from 'src/components/game/game.module';
-import { LobbyComponent } from 'src/components/lobby/lobby.component';
+import { LobbyModule } from 'src/components/lobby/lobby.module';
 import { RolesComponent } from 'src/components/roles/roles.component';
 import { GameRulesComponent } from 'src/components/game-rules/game-rules.component';
 import { LobbyService } from 'src/services/lobby.service';
@@ -20,7 +20,6 @@ import { GameService } from 'src/services/game.service';
 @NgModule({
   declarations: [
     AppComponent,
-    LobbyComponent,
     RolesComponent,
     GameRulesComponent
   ],
@@ -30,6 +29,7 @@ import { GameService } from 'src/services/game.service';
     AppRoutingModule,
     HeaderModule,
     JoinGameModule,
+    LobbyModule,
     GameModule
   ],
   providers: [
