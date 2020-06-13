@@ -19,6 +19,8 @@ const { upsertVote, tallyVote } = require('../models/vote');
 module.exports = class GameService extends EventEmitter {
     /** event name for when game state is updated. */
     static gameUpdatedEvent = 'gameUpdated';
+    /** event name for when game is closed */
+    static gameClosedEvent = 'gameClosed';
     /** Status of the game */
     #gameState = createNewGame();
     /** player service
@@ -36,6 +38,7 @@ module.exports = class GameService extends EventEmitter {
      * @param {Game} game */
     #updateGameState = (game) => {
         this.#gameState = game;
+        if (game === undefined) { return; }
         this.emit(GameService.gameUpdatedEvent, game);
     }
     /** create an instance of the game.
@@ -65,10 +68,12 @@ module.exports = class GameService extends EventEmitter {
      * @param {string} socketId
      */
     joinGame = (socketId, playerId) => {
+        if (this.#gameState === undefined) { throw new Error(`There is no ongoing game`); }
         if (!(playerId && socketId)) { throw new Error(`playerId cannot be empty`); }
         const game = this.#gameState;
         if (!game) { throw new Error(`Game not started`) }
         if (game.players.findIndex(pl => pl.id === playerId) === -1) {
+            console.log(this.#gameState)
             throw new Error(`player is not part of the game`)
         }
         const players = updateGamePlayerInList(
@@ -82,6 +87,7 @@ module.exports = class GameService extends EventEmitter {
      * @param {string} socketId
      */
     leaveGame = (socketId) => {
+        if (this.#gameState === undefined) { throw new Error(`There is no ongoing game`); }
         if (!socketId) { throw new Error(`socketId cannot be empty`); }
         const playerIndex = this.#gameState.players.findIndex(pl =>
             pl.socketId === socketId
@@ -94,12 +100,24 @@ module.exports = class GameService extends EventEmitter {
         );
         this.#updateGameState({ ...this.#gameState, players })
     }
+    /** close game and emit game closed event
+     * @param {string} playerId */
+    closeGame = (playerId) => {
+        console.log('closed game');
+        if (this.#gameState === undefined) { throw new Error(`There is no ongoing game`); }
+        if (!playerId) { throw new Error(`playerId cannot be empty`); }
+        const player = this.#gameState.players.find(pl =>
+            pl.id === playerId);
+        if (!(player && player.isHost)) { throw new Error(`player not a host`); }
+        this.#updateGameState(undefined);
+        this.emit(GameService.gameClosedEvent);
+    }
     /**
      * @param {string} aliasId
      * @param {string} voterPlayerId
      */
     vote = (aliasId, voterPlayerId) => {
-
+        if (this.#gameState === undefined) { throw new Error(`There is no ongoing game`); }
         if (!(aliasId && voterPlayerId)) {
             throw new Error(`alias cannot be empty`);
         }
@@ -310,13 +328,15 @@ module.exports = class GameService extends EventEmitter {
     /** calls `startGame` with the current game players.
      */
     restartGame = async (playerId) => {
+        if (this.#gameState === undefined) { throw new Error(`There is no ongoing game`); }
         const requestor = this.#gameState.players.find(pl => pl.id === playerId);
         if(!(requestor && requestor.isHost)) { throw new Error(`Only host can restart game.`); }
         const prevGamePlayers = this.#gameState.players;
         const players = this.#gameState.players.map(pl => ({
             playerId: pl.id,
             aliasId: pl.aliasId,
-            isHost: pl.isHost
+            isHost: pl.isHost,
+            connected: false
         }));
         await this.startGame(players);
         prevGamePlayers.forEach(pl => this.joinGame(pl.socketId, pl.id));
