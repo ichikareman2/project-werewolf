@@ -36,10 +36,6 @@ module.exports = class LobbyService extends EventEmitter {
         newLobby = this.#assignHostPlayer(newLobby);
         return this.#setLobby(newLobby);
     }
-    /** */
-    getPlayerByAliasId = async (aliasId) => {
-        return playerservice
-    }
     /** get player by socket Id
      * @param {string} socketId
      * @returns {Promise<LobbyPlayer>}
@@ -71,7 +67,7 @@ module.exports = class LobbyService extends EventEmitter {
         return this.#setLobby(newLobby)
     }
     /** kick player.
-     * @param {string} aliasId - player to kick
+     * @param {string} playerId - player to kick
      */
     kickPlayer = (playerId) => {
         if (!playerId) { throw new Error(`playerId cannot be empty`); }
@@ -79,9 +75,13 @@ module.exports = class LobbyService extends EventEmitter {
         const playerIndex = lobby.players.findIndex(pl =>
             pl.playerId === playerId
         );
-        if (playerIndex === -1) { throw new Error(`player not in game ${pl.playerId} ${playerId}`); }
+        if (playerIndex === -1) { throw new Error(`player not in game ${playerId}`); }
         const players = this.#lobby.players.filter(x => x.playerId !== playerId);
         this.#setLobby({ ...lobby, players })
+    }
+    /** clear lobby */
+    clearLobby = () => {
+        this.#setLobby(createNewLobby());
     }
     /** mark player as disconnected
      * @param {string} socketId
@@ -93,7 +93,7 @@ module.exports = class LobbyService extends EventEmitter {
         const playerIndex = lobby.players.findIndex(pl =>
             pl.socketId === socketId
         );
-        if (playerIndex === -1) { throw new Error(`player not in game ${pl.socketId} ${socketId}`); }
+        if (playerIndex === -1) { throw new Error(`player not in game ${socketId}`); }
         const player = { ...lobby.players[playerIndex], socketId: undefined, connected: false };
         const newLobby =  upsertPlayerToLobby(player, lobby);
         this.#setLobby(newLobby)
