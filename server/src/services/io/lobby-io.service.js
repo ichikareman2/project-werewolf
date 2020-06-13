@@ -147,8 +147,11 @@ module.exports = class LobbyIoService {
                 if(!starterIsHost) { throw new Error('player is not host.') }
                 await this.#gameService.startGame(players);
                 cb(createSuccessResponse());
-                players.forEach(x => this.#lobbyIo.to(x.socketId)
-                    .emit(this.#gameStartedEmit));
+                players.forEach(x => {
+                    this.#lobbyIo.to(x.socketId)
+                        .emit(this.#gameStartedEmit)
+                });
+                this.#lobbyService.clearLobby();
             } catch (err) {
                 const errorMessage = err && err.message ? err.message : `Unclear error occured. Contact dev.`
                 console.log('error', errorMessage);
@@ -170,7 +173,7 @@ module.exports = class LobbyIoService {
                 if (!(requester && requester.isHost)) {
                     throw new Error('player is not host.')
                 }
-                const playerToKick = await this.#playerService.findPlayer(x => x.aliasId === aliasId);
+                const playerToKick = await this.#playerService.findPlayer(pl => pl.aliasId === aliasId);
                 const lobbyPlayerToKick = players.find(pl =>
                     pl.playerId === playerToKick.id);
                 await this.#lobbyService.kickPlayer(playerToKick.id);

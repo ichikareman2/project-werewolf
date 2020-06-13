@@ -20,9 +20,11 @@
      #voteEvent = 'vote';
      #leaveGameEvent = 'leaveGame';
      #restartGameEvent = 'restartGame';
+     #closeGameEvent = 'closeGame'
  
      #gameUpdatedEmit = 'gameUpdated';
      #gameRestartedEmit = 'gameRestarted';
+     #gameClosedEmit = 'gameClosed';
  
      /** @type {SocketIO.Server} */
      #io;
@@ -44,13 +46,17 @@
              GameService.gameUpdatedEvent,
              this.#emitGameUpdates
          );
- 
+         this.#gameService.on(
+             GameService.gameClosedEvent,
+             this.#emitGameClosed
+         );
          this.#gameIo.on('connect', socket => {
              socket.on(this.#joinGameEvent, this.onJoinGame(socket));
              socket.on(this.#voteEvent, this.vote)
              socket.on(this.#leaveGameEvent, this.onLeaveGame(socket));
              socket.on('disconnect', this.onLeaveGame(socket));
-             socket.on(this.#restartGameEvent, this.restartGame)
+             socket.on(this.#restartGameEvent, this.restartGame);
+             socket.on(this.#closeGameEvent, this.closeGame);
          })
      }
      /** 
@@ -81,6 +87,9 @@
                  )
              }
          });
+     }
+     #emitGameClosed = (game) => {
+         this.#gameIo.emit(this.#gameClosedEmit);
      }
      /** fn to provide socket to actual joinGame fn
       * @param {SocketIO.Socket} socket */
@@ -143,6 +152,22 @@
              this.#gameService.restartGame(playerId);
              cb(createSuccessResponse());
              this.#gameIo.emit(this.#gameRestartedEmit);
+         } catch (err) {
+             const errorMessage = err && err.message
+                 ? err.message
+                 : `Unclear error occured. Contact dev.`
+             console.error('error', errorMessage);
+             cb(createFailedResponse(errorMessage));
+         }
+     }
+     /** close game and emit message
+      * @param {string} playerId - player requesting
+      * @param {CallbackFn<undefined>} cb - callback
+      */
+     closeGame = (playerId, cb = noop) => {
+         try {
+             this.#gameService.closeGame(playerId);
+             cb(createSuccessResponse())
          } catch (err) {
              const errorMessage = err && err.message
                  ? err.message
