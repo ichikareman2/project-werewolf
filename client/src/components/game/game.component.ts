@@ -12,6 +12,7 @@ import {
 } from 'src/models';
 import { PlayerService } from 'src/services/player.service';
 import { GameService } from 'src/services/game.service';
+import { LobbyService } from 'src/services/lobby.service';
 import { ToastComponent } from '../toast/toast.component';
 import { pairwise, filter, map, distinctUntilChanged } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
@@ -57,7 +58,8 @@ export class GameComponent implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private playerService: PlayerService,
-    private gameService: GameService
+    private gameService: GameService,
+    private lobbyService: LobbyService
   ) { }
 
   ngOnDestroy(): void {
@@ -75,6 +77,14 @@ export class GameComponent implements OnInit, OnDestroy {
       this.hasGameRestarted = true;
       this.currentPlayer = null;
       this.showGameRestartedModal();
+    });
+
+    const closeGameObservable = this.gameService.isGameClose();
+    this.sub = closeGameObservable.subscribe(() => {
+      $(`#${this.modalId}`).modal('hide');
+      setTimeout(() => {
+        this.router.navigate(['/lobby']);
+      }, 300);
     });
 
     const gameObservable = this.gameService.getGame();
@@ -193,10 +203,7 @@ export class GameComponent implements OnInit, OnDestroy {
       this.hasWinner = false;
 
       if(this.currentPlayer.isHost) {
-        this.gameService.leaveGame();
-        setTimeout(() => {
-          this.router.navigate(['/lobby']);
-        }, 300);
+        this.gameService.closeGame();
       }
     }
   }

@@ -33,15 +33,20 @@ export class LobbyService {
     ) {
         this.socket = io(`${environment.SERVER_ENDPOINT}/lobby`);
 
+        this.handleJoinLobby();
+
+        this.lobbyPlayers = fromEvent(this.socket, SOCKET_EVENTS.LOBBY_PLAYER_LIST);
+        this.isGameStart = fromEvent(this.socket, SOCKET_EVENTS.LOBBY_GAME_STARTED);
+        this.isPlayerKick = fromEvent(this.socket, SOCKET_EVENTS.LOBBY_KICKED_PLAYER);
+    }
+
+    public handleJoinLobby() {
         const playerId = this.playerService.getPlayerId();
         if ( !playerId ) {
             this.router.navigate(['/']);
         }
 
-        this.socket.emit( SOCKET_EVENTS.LOBBY_JOIN, playerId );
-        this.lobbyPlayers = fromEvent(this.socket, SOCKET_EVENTS.LOBBY_PLAYER_LIST);
-        this.isGameStart = fromEvent(this.socket, SOCKET_EVENTS.LOBBY_GAME_STARTED);
-        this.isPlayerKick = fromEvent(this.socket, SOCKET_EVENTS.LOBBY_KICKED_PLAYER);
+        this.socket.emit(SOCKET_EVENTS.LOBBY_JOIN, playerId);
     }
 
     public getLobbyPlayers(): Observable<Player[]> {

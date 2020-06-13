@@ -62,6 +62,8 @@ export class LobbyComponent implements OnInit, OnDestroy {
         this.router.navigate(['/join']);
       }, 3000);
     });
+
+    this.lobbyService.handleJoinLobby();
   }
 
   async handleStartGame() {
