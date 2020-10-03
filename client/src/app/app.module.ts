@@ -16,6 +16,7 @@ import { ApiService } from 'src/services/api.service';
 import { LocalStorageService } from 'src/services/local-storage.service';
 import { PlayerService } from 'src/services/player.service';
 import { GameService } from 'src/services/game.service';
+import { CreateRoomModule } from '../components/create-room/create-room.module';
 
 @NgModule({
   declarations: [
@@ -27,6 +28,7 @@ import { GameService } from 'src/services/game.service';
     BrowserModule,
     HttpClientModule,
     AppRoutingModule,
+    CreateRoomModule,
     HeaderModule,
     JoinGameModule,
     LobbyModule,

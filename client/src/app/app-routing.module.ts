@@ -6,6 +6,7 @@ import { GameComponent } from 'src/components/game/game.component';
 import { RolesComponent } from 'src/components/roles/roles.component';
 import { GameRulesComponent } from 'src/components/game-rules/game-rules.component';
 import { Page404Component } from 'src/components/page404/page404.component';
+import { CreateRoomComponent } from '../components/create-room/create-room.component';
 
 const routes: Routes = [
   {
@@ -15,6 +16,10 @@ const routes: Routes = [
   {
     path: 'join',
     component: JoinGameComponent
+  },
+  {
+    path: 'create',
+    component: CreateRoomComponent
   },
   {
     path: 'roles',

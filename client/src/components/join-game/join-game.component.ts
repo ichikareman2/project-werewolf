@@ -8,6 +8,7 @@ import { PlayerService } from 'src/services/player.service';
   styleUrls: ['./join-game.component.css']
 })
 export class JoinGameComponent implements OnInit {
+  roomCode = '';
   playerName = '';
   loadForm = false;
 
