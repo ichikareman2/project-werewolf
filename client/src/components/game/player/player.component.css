@@ -1,0 +1,81 @@
+.game-player {
+    height: 74px;
+    box-sizing: content-box;
+    max-width: 480px;
+    border: 1px solid white;
+    margin: 4px auto;
+    padding: 8px 12px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 4px;
+}
+
+.player-thumbnail {
+    /* border-radius: 100px;
+    text-transform: uppercase;
+    font-size: larger;
+    font-weight: bold; */
+    width: 56px;
+    height: 56px;
+    /* border: 1px solid white; */
+    position: relative;
+}
+
+.player-thumbnail-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+.player-details {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    height: 100%;
+}
+
+.player-details-role {
+    font-size: small;
+}
+
+.text-muted, .text-muted .player-thumbnail {
+    border-color: #6c757d !important;
+}
+
+.game-player:hover:not(.text-muted), .game-player:hover:not(.text-muted) .player-thumbnail {
+    /* border-color: #c82333;
+    color: #c82333; */
+    cursor: pointer;
+}
+
+.player-death, .player-details-vote {
+    font-size: small;
+    font-style: italic;
+}
+
+.player-details-vote {
+    padding-top: 4px;
+}
+
+.player-thumbnail-badge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+}
+
+.player-thumbnail-peek {
+    position: absolute;
+    bottom: -4px;
+    right: -4px;
+}
+
+.player-thumbnail-role {
+    object-fit: cover;
+    object-position: center;
+    width: 104px;
+    height: 104px;
+}

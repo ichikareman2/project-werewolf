@@ -1,0 +1,42 @@
+.role-heading {
+    margin: 24px;
+}
+
+.role-cards-container {
+    margin: 48px 24px;
+}
+
+.role-card {
+    position: relative;
+    cursor: pointer;
+    border: 1px solid grey;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: calc(33% - 16px);
+    margin: 8px;
+    border-radius: 4px;
+    box-shadow: grey 2px 2px;
+}
+
+.role-image {
+    width: 200px;
+    transform: scale(1.5);
+    object-fit: cover;
+    margin-top: 16px;
+    margin-bottom: 24px;
+}
+
+.role-description {
+    margin: 0 24px;
+    font-size: small;
+    font-style: italic;
+    text-align: center;
+}
+
+@media only screen and (max-width: 770px) {
+    .role-card {
+        width: 90%;
+        margin: 8px auto;
+    }
+}

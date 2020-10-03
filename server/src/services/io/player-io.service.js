@@ -39,9 +39,9 @@ module.exports = class PlayerIoService {
         this.#io = io;
         this.#playerService = playerService;
         this.#playerIo = io.of(this.#playerNs);
+        this.#playerService.on(PlayerService.playerUpdateEvent, this.#emitPlayerUpdate);
 
         this.#playerIo.on('connect', socket => {
-            this.#playerService.on(PlayerService.playerUpdateEvent, this.#emitPlayerUpdate);
             socket.on(this.#createPlayerEvent, this.onCreatePlayer(socket));
             socket.on(this.#getPlayerEvent, this.onGetPlayer(socket));
             socket.on(this.#updatePlayerNameEvent, this.updatePlayerName);

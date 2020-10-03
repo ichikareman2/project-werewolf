@@ -1,34 +1,34 @@
+// @ts-check
 /**
  * phases of the day
+ * @constant
  * @readonly
- * @enum {string}
  */
 const DayPhaseEnum = {
     VILLAGERSVOTE: "Villagers Vote",
 }
 /**
  * phases of the night
+ * @constant
  * @readonly
- * @enum {string}
  */
 const NightPhaseEnum = {
     WEREWOLVESHUNT: "Werewolves Hunt",
-    SEERPREEK: "Seer Peek"
+    SEERPEEK: "Seer Peek"
 }
 /**
  * enum for day or night of game phase
- * @enum {string}
  * @readonly
  */
 const dayOrNightEnum = {
     DAY: "Day",
-    NGIHT: "Night"
+    NIGHT: "Night"
 }
 
 /**
  * @typedef {Object} GamePhase
- * @property {dayOrNightEnum} dayOrNight
- * @property {DayPhaseEnum | NightPhaseEnum} roundPhase
+ * @property {string} dayOrNight
+ * @property {string} [roundPhase]
  */
 
 /**
@@ -37,17 +37,23 @@ const dayOrNightEnum = {
  */
 const gamePhases = [
     {
-        dayOrNight: dayOrNightEnum.DAY,
-        roundPhase: DayPhaseEnum.VILLAGERSVOTE
+        dayOrNight: dayOrNightEnum.DAY
     },
     {
-        dayOrNight: dayOrNightEnum.NIGHT,
-        roundPhase: NightPhaseEnum.WEREWOLVESHUNT
-    },
-    {
-        dayOrNight: dayOrNightEnum.NIGHT,
-        roundPhase: NightPhaseEnum.SEERPREEK
-    },
+        dayOrNight: dayOrNightEnum.NIGHT
+    }
+    // {
+    //     dayOrNight: dayOrNightEnum.DAY,
+    //     roundPhase: DayPhaseEnum.VILLAGERSVOTE
+    // },
+    // {
+    //     dayOrNight: dayOrNightEnum.NIGHT,
+    //     roundPhase: NightPhaseEnum.WEREWOLVESHUNT
+    // },
+    // {
+    //     dayOrNight: dayOrNightEnum.NIGHT,
+    //     roundPhase: NightPhaseEnum.SEERPEEK
+    // },
 ]
 /**
  * create a game phase for new game
@@ -57,14 +63,18 @@ function createNewGamePhase() {
     return gamePhases[0]
 }
 
-/**
- * Gets a new game phase next to `currentGamePhase`
- * returns {GamePhase}
+/** Gets a new game phase next to `currentGamePhase`
+ * @param {GamePhase} currentGamePhase
+ * @returns {GamePhase}
  */
 function getNextGamePhase(currentGamePhase) {
-    return (gamePhases.indexOf(currentGamePhase) + 1) % gamePhases.length
+    const newPhaseIndex = (gamePhases.indexOf(currentGamePhase) + 1) % gamePhases.length;
+    return gamePhases[newPhaseIndex];
 }
 module.exports = {
+    DayPhaseEnum,
+    NightPhaseEnum,
+    dayOrNightEnum,
     gamePhases,
     createNewGamePhase,
     getNextGamePhase

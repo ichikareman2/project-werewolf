@@ -12,7 +12,10 @@ const PlayerService = require('./services/player.service');
 const PlayerIoService = require('./services/io/player-io.service')
 const LobbyService = require('./services/lobby.service');
 const LobbyIoService = require('./services/io/lobby-io.service')
+const GameService = require('./services/game.service');
+const GameIoService = require('./services/io/game-io.service')
 const CreatePlayerRoute = require('./routes/player.route');
+const CreateRoleRoute = require('./routes/role.route');
 const {
     createNewPlayer,
     updatePlayerName,
@@ -24,10 +27,9 @@ const { noop } = require('./util')
  * @type {number} */
 const PORT = 8000;
 
-const whitelist = ['http://localhost:4200']
+const whitelist = ['http://localhost:4200', 'http://localhost:8080']
 const corsOptions = {
     origin: function (origin, callback) {
-        console.log(origin)
         if(whitelist.includes(origin)) {
             callback(null, true);
         } else {
@@ -51,16 +53,19 @@ function createApp() {
     const io = socketIo(server);
 
     server.listen(port, () => console.log(`Running server on port ${port}`));
-    
+
     /** Entity Services */
     const playerService = new PlayerService();
-    const lobbyService = new LobbyService()
+    const lobbyService = new LobbyService();
+    const gameService = new GameService(playerService);
 
     app.use('/player/', CreatePlayerRoute(playerService));
+    app.use('/role/', CreateRoleRoute());
 
     /** IO Services */
-    const lobbyIoService = new LobbyIoService(io, lobbyService, playerService);
+    const lobbyIoService = new LobbyIoService(io, lobbyService, playerService, gameService);
     const playerIoService = new PlayerIoService(io, playerService);
+    const gameIoService = new GameIoService(io, gameService);
     
     return app;
 }

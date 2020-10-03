@@ -1,0 +1,17 @@
+.container-404 {
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.content-404 {
+    margin: auto;
+    font-size: larger;
+    font-weight: 600;
+    margin-bottom: 24px;
+}
+
+.container-404 a {
+    color: white;
+    text-decoration: underline;
+}

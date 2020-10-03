@@ -2,51 +2,51 @@
     <div class="row justify-content-center">
         <div class="col text-center container-mid">
 
-            <div class="details room">
-                <div class="room-lobby">LOBBY</div>                    
+            <div class="details room">                  
                 <div class="room-code-text">Room Code:</div>                    
-                <div class="room-code-code">X1Y2Z3</div>
+                <div class="room-code-code">{{ roomCode }}</div>
             </div>
 
-            <div class="details">
-                <div class="player">
-                    <span>Louise</span>
+            <div class="player-count">
+                Players in room: <strong>{{ (playerList || []).length }}</strong>
+            </div>
+
+            <div class="details" *ngFor="let player of playerList">
+                <div class="player-card" *ngIf="isHostPlayer && !player.isHost">
+                    <div class="player player-front">
+                        <i class="fa fa-podcast player-host" *ngIf="player.isHost"></i>
+                        <span>{{ player.name }}</span>
+                    </div>
+                    <div class="player player-back" (click)="handleKickPlayer(player.aliasId)">
+                        KICK
+                    </div>
                 </div>
-                <div class="player">
-                    <span>Zel</span>
+                <div class="player-noncard" *ngIf="!isHostPlayer || (isHostPlayer && player.isHost)">
+                    <i class="fa fa-podcast player-host" *ngIf="player.isHost"></i>
+                    <span>{{ player.name }}</span>
                 </div>
-                <div class="player">
-                    <span>Tricia</span>
-                </div>
-                <div class="player">
-                    <span>Louise</span>
-                </div>
-                <div class="player">
-                    <span>Zel</span>
-                </div>
-                <div class="player">
-                    <span>Tricia</span>
-                </div>
-                <div class="player">
-                    <span>Louise</span>
-                </div>
-                <div class="player">
-                    <span>Zel</span>
-                </div>
-                <div class="player">
-                    <span>Tricia</span>
-                </div>
-                <div class="player">
-                    <span>Louise</span>
-                </div>
-                
             </div>
 
             <div class="details">
                 <div class="lobby-message">Waiting for other players to join...</div>
-                <a href="#" class="btn btn-danger btn-lg">START GAME</a>
+                <button
+                    class="btn btn-danger btn-lg btn-lobby"
+                    *ngIf="isHostPlayer"
+                    [disabled]="!canStartGame"
+                    (click)="handleStartGame()"
+                >
+                    START GAME
+                </button>
+                <button
+                    class="btn btn-secondary btn-lg btn-lobby"
+                    (click)="handleLeaveLobby()"
+                >
+                    LEAVE LOBBY
+                </button>
             </div>
 
         </div>
     </div>
 </div>
+
+<toast #lobbyToast></toast>

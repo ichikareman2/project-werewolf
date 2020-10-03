@@ -1,0 +1,38 @@
+<div class="container container-sm mb-5" *ngIf="loadPage && game">
+    <div class="col justify-content-center game">
+        <game-instruction
+            [gamePhase]="game.phase"
+            [role]="role"
+            [isAlive]="currentPlayer && currentPlayer.isAlive"
+        ></game-instruction>
+        <div class="col mt-4 mb-4 p-0">
+            <game-player
+                #gamePlayer
+                *ngFor="let p of players; trackBy: playersTrackByFn"
+                [player]="p"
+                [showVote]="showVote"
+                (click)="handlePlayerClick(p)"
+            ></game-player>
+        </div>
+        <game-phase
+            [mode]="game.phase.dayOrNight"
+            [round]="game.round"
+            [isHost]="currentPlayer && currentPlayer.isHost"
+            (restartActionHandler)="handleRestartGame()"
+        ></game-phase>
+    </div>
+</div>
+
+
+<toast #toast></toast>
+
+<modal
+    [message]="modalMessage"
+    [modalId]="modalId"
+    [header]="modalHeader"
+    (primaryActionHandler)="submit()"
+    (secondaryActionHandler)="reset()"
+    [primaryButtonLabel]="modalPrimaryButton"
+    [secondaryButtonLabel]="modalSecondaryButton"
+>
+</modal>

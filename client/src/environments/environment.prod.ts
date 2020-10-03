@@ -1,3 +1,4 @@
 export const environment = {
-  production: true
+  production: true,
+  SERVER_ENDPOINT: 'https://project-werewolf.herokuapp.com'
 };

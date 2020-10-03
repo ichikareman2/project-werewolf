@@ -1,0 +1,41 @@
+<div class="row text-center game-player" [ngClass]="[!player.isAlive ? 'text-muted' : '']">
+    <div class="player-details">
+        <h5>
+            <i
+                class="fa fa-podcast"
+                *ngIf="player.isHost"
+                data-toggle="tooltip"
+                data-placement="top"
+                title="Game host"
+            ></i>
+            {{ player.name }}
+            <small class="player-death" *ngIf="!player.isAlive">({{ player.causeOfDeath }})</small>
+        </h5>
+        <div class="player-details-role">
+            {{ player.role || '' }}
+        </div>
+        <div class="player-details-vote" *ngIf="showVote">
+            {{ voteText }}
+        </div>
+    </div>
+    <div class="player-thumbnail">
+        <div class="player-thumbnail-container ">
+            <img [src]="roleImage" class="player-thumbnail-role" />
+        </div>
+        <span
+            class="badge badge-warning player-thumbnail-badge"
+            *ngIf="showVote && player.voteCount && player.voteCount > 0"
+        >
+            {{ player.voteCount }}
+        </span>
+        <span
+            class="badge badge-light player-thumbnail-peek"
+            *ngIf="player.peeked"
+            data-toggle="tooltip"
+            data-placement="right"
+            title="You've already peeked this player's role"
+        >
+            <i class="fa fa-binoculars" *ngIf="player.peeked"></i>
+        </span>
+    </div>
+</div>

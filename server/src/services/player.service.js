@@ -92,7 +92,7 @@ module.exports = class PlayerService extends EventEmitter {
         }).then(() => this.emit(PlayerService.playerUpdateEvent, player))
             .then(() => true);
     /** find player
-     * @param {(pl:Player) => Player} matchFn matching function
+     * @param {(pl:Player) => boolean} matchFn matching function
      * @returns {Promise<Player>}
      */
     findPlayer = (matchFn) =>

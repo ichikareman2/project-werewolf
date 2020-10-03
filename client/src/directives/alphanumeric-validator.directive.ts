@@ -8,7 +8,7 @@ import { FormValidationService } from '../services/form-validation.service';
         {
             provide: NG_VALIDATORS,
             useExisting: AlphanumericValidatorDirective,
-            multi: true 
+            multi: true
         }
     ]
 })
